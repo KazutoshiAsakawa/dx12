@@ -148,6 +148,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\..\..\..\K020G1206\LE2C\GE3\11-2\FbxLoader.cpp" />
+    <ClCompile Include="..\..\..\..\..\..\K020G1206\LE2C\GE3\11-2\FbxModel.cpp" />
+    <ClCompile Include="..\..\..\..\..\..\K020G1206\LE2C\GE3\11-2\FbxObject3d.cpp" />
     <ClCompile Include="AbstractSceneFactory.cpp" />
     <ClCompile Include="Audio.cpp" />
     <ClCompile Include="Camera.cpp" />
@@ -173,11 +176,24 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\..\..\..\..\K020G1206\LE2C\GE3\11-2\Resources\shaders\FBX.hlsli" />
     <None Include="Resources\shaders\Basic.hlsli" />
     <None Include="Resources\shaders\OBJShaderHeader.hlsli" />
     <None Include="Resources\shaders\Sprite.hlsli" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="..\..\..\..\..\..\K020G1206\LE2C\GE3\11-2\Resources\shaders\FBXPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="..\..\..\..\..\..\K020G1206\LE2C\GE3\11-2\Resources\shaders\FBXVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+    </FxCompile>
     <FxCompile Include="Resources\shaders\BasicPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
@@ -216,6 +232,9 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\..\..\..\K020G1206\LE2C\GE3\11-2\FbxLoader.h" />
+    <ClInclude Include="..\..\..\..\..\..\K020G1206\LE2C\GE3\11-2\FbxModel.h" />
+    <ClInclude Include="..\..\..\..\..\..\K020G1206\LE2C\GE3\11-2\FbxObject3d.h" />
     <ClInclude Include="AbstractSceneFactory.h" />
     <ClInclude Include="Audio.h" />
     <ClInclude Include="Camera.h" />
