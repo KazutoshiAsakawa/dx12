@@ -72,15 +72,6 @@
     <ClCompile Include="Camera.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\..\K020G1206\LE2C\GE3\11-2\FbxLoader.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\..\K020G1206\LE2C\GE3\11-2\FbxModel.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\..\K020G1206\LE2C\GE3\11-2\FbxObject3d.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\shaders\Basic.hlsli">
@@ -90,9 +81,6 @@
       <Filter>シェーダーファイル</Filter>
     </None>
     <None Include="Resources\shaders\OBJShaderHeader.hlsli">
-      <Filter>シェーダーファイル</Filter>
-    </None>
-    <None Include="..\..\..\..\..\..\K020G1206\LE2C\GE3\11-2\Resources\shaders\FBX.hlsli">
       <Filter>シェーダーファイル</Filter>
     </None>
   </ItemGroup>
@@ -113,12 +101,6 @@
       <Filter>シェーダーファイル</Filter>
     </FxCompile>
     <FxCompile Include="Resources\shaders\OBJVertexShader.hlsl">
-      <Filter>シェーダーファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="..\..\..\..\..\..\K020G1206\LE2C\GE3\11-2\Resources\shaders\FBXPS.hlsl">
-      <Filter>シェーダーファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="..\..\..\..\..\..\K020G1206\LE2C\GE3\11-2\Resources\shaders\FBXVS.hlsl">
       <Filter>シェーダーファイル</Filter>
     </FxCompile>
   </ItemGroup>
@@ -178,15 +160,6 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Camera.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\..\K020G1206\LE2C\GE3\11-2\FbxLoader.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\..\K020G1206\LE2C\GE3\11-2\FbxModel.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\..\K020G1206\LE2C\GE3\11-2\FbxObject3d.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
