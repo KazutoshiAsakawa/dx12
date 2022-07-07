@@ -1,4 +1,6 @@
 #pragma once
+#include "DirectXCommon.h"
+
 // ‘O•ûéŒ¾
 class SceneManager;
 
@@ -13,7 +15,7 @@ public:
 	/// <summary>
 	/// ‰Šú‰»
 	/// </summary>
-	virtual void Initialize() = 0;
+	virtual void Initialize(DirectXCommon* dxcommon) = 0;
 
 	/// <summary>
 	/// I—¹ˆ—
@@ -28,6 +30,6 @@ public:
 	/// <summary>
 	/// •`‰æ
 	/// </summary>
-	virtual void Draw() = 0;
+	virtual void Draw(DirectXCommon* dxcommon) = 0;
 };
 

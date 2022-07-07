@@ -1,10 +1,5 @@
 #include "FbxModel.h"
 
-FbxModel::~FbxModel()
-{
-	// FBXシーンの解放
-	fbxScene->Destroy();
-}
 
 void FbxModel::CreateBuffers(ID3D12Device* device)
 {
@@ -124,4 +119,10 @@ void FbxModel::Draw(ID3D12GraphicsCommandList* cmdList)
 
 	// 描画コマンド
 	cmdList->DrawIndexedInstanced((UINT)indices.size(), 1, 0, 0, 0);
+}
+
+FbxModel::~FbxModel()
+{
+	// FBXシーンの解放
+	fbxScene->Destroy();
 }

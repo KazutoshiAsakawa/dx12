@@ -3,6 +3,7 @@
 #include "BaseScene.h"
 #include "Sprite.h"
 #include "ObjObject3d.h"
+#include "DirectXCommon.h"
 
 /// <summary>
 /// タイトルシーン
@@ -13,7 +14,7 @@ public:
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize() override;
+	void Initialize(DirectXCommon* dxcommon) override;
 
 	/// <summary>
 	/// 終了処理
@@ -28,7 +29,7 @@ public:
 	/// <summary>
 	/// 描画
 	/// </summary>
-	void Draw() override;
+	void Draw(DirectXCommon* dxcommon) override;
 
 private:
 	// std::vector<Sprite*> sprites;

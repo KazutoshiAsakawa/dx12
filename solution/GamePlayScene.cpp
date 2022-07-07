@@ -4,7 +4,12 @@
 #include "Input.h"
 #include "DebugText.h"
 
-void GamePlayScene::Initialize()
+#include "FbxObject3d.h"
+#include "FbxLoader.h"
+#include "DirectXCommon.h"
+
+
+void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 {
 	// スプライト共通テクスチャ読み込み
 	SpriteCommon::GetInstance()->LoadTexture(1, L"Resources/gameplay.png");
@@ -33,8 +38,9 @@ void GamePlayScene::Initialize()
 	//	sprites.push_back(sprite);
 	//}
 
-	camera.reset(new Camera());
-	camera->Initialize(WinApp::window_width, WinApp::window_height);
+	camera.reset(new DebugCamera(WinApp::window_width, WinApp::window_height));
+	//camera->Initialize(WinApp::window_width, WinApp::window_height);
+	// camera = new DebugCamera(WinApp::window_width, WinApp::window_height);
 
 	ObjObject3d::SetCamera(camera.get());
 
@@ -51,6 +57,20 @@ void GamePlayScene::Initialize()
 	// 3Dオブジェクトに3Dモデルをひもづけ
 	//object3d_1->SetModel(model_1);
 
+	// Fbx読み込み
+	fbxModel = FbxLoader::GetInstance()->LoadModelFromFile("boneTest");
+
+	//デバイスをセット
+	FbxObject3d::SetDevice(dxcommon->GetDev());
+	//カメラをセット
+	FbxObject3d::SetCamera(camera.get());
+	//グラフィックスパイプライン生成
+	FbxObject3d::CreateGraphicsPipeline();
+
+	fbxObj = new FbxObject3d();
+	fbxObj->Initialize();
+	fbxObj->SetModel(fbxModel);
+
 	// 音声読み込み
 	Audio::GetInstance()->LoadWave("Alarm01.wav");
 
@@ -66,6 +86,9 @@ void GamePlayScene::Finalize()
 		}*/
 	delete sprite;
 
+	// delete fbxModel;
+	delete fbxObj;
+
 	// sprites.clear();
 
 	// 3Dモデル解放
@@ -77,10 +100,10 @@ void GamePlayScene::Update()
 	Input* input = Input::GetInstance();
 
 	// 入力の確認
-	if (input->TriggerKey(DIK_0)) // 数字の0キーが押されていたら
-	{
-		OutputDebugStringA("Hit 0\n");  // 出力ウィンドウに「Hit 0」と表示
-	}
+	//if (input->TriggerKey(DIK_0)) // 数字の0キーが押されていたら
+	//{
+	//	OutputDebugStringA("Hit 0\n");  // 出力ウィンドウに「Hit 0」と表示
+	//}
 
 	//if (input->Triggerkey(DIK_SPACE))     // スペースキーが押されていたら
 	//{
@@ -113,6 +136,10 @@ void GamePlayScene::Update()
 	//sprite.rotation = 45;
 	//sprite.position = {1280/2, 720/2, 0};
 	//sprite.color = {0, 0, 1, 1};
+
+	if (input->PushKey(DIK_0)) {
+		fbxObj->PlayAnimation();
+	}
 
 	// カメラ移動
 	{
@@ -148,6 +175,7 @@ void GamePlayScene::Update()
 		camera->SetTarget(camTarget);
 
 		camera->Update();
+		fbxObj->Update();
 	}
 
 	// 3Dオブジェクト更新
@@ -161,7 +189,7 @@ void GamePlayScene::Update()
 	}*/
 }
 
-void GamePlayScene::Draw()
+void GamePlayScene::Draw(DirectXCommon* dxcommon)
 {
 	// スプライト共通コマンド
 	SpriteCommon::GetInstance()->PreDraw();
@@ -175,6 +203,8 @@ void GamePlayScene::Draw()
 	ObjObject3d::PreDraw();
 	// 3Dオブジェクトの描画
 	object3d->Draw();
+
+	fbxObj->Draw(dxcommon->GetCmdList());
 
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる

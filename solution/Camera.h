@@ -7,7 +7,7 @@
 /// </summary>
 class Camera
 {
-private: // エイリアス
+protected: // エイリアス
 	// DirectX::を省略
 	using XMFLOAT2 = DirectX::XMFLOAT2;
 	using XMFLOAT3 = DirectX::XMFLOAT3;
@@ -19,19 +19,19 @@ public: // メンバ関数
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	Camera();
+	/// <param name="window_width">画面幅</param>
+	/// <param name="window_height">画面高さ</param>
+	Camera(int window_width, int window_height);
 
 	/// <summary>
-	/// 初期化処理
+	/// デストラクタ
 	/// </summary>
-	/// <param name="window_width">画面横幅</param>
-	/// <param name="window_height">画面縦幅</param>
-	void Initialize(int window_width, int window_height);
+	virtual ~Camera() = default;
 
 	/// <summary>
 	/// 毎フレーム更新
 	/// </summary>
-	void Update();
+	virtual void Update();
 
 	/// <summary>
 	/// ビュー行列を更新
@@ -47,7 +47,7 @@ public: // メンバ関数
 	/// ビュー行列の取得
 	/// </summary>
 	/// <returns>ビュー行列</returns>
-	const XMMATRIX& GetViewMatrix() {
+	inline const XMMATRIX& GetViewMatrix() {
 		return matView;
 	}
 
@@ -55,7 +55,7 @@ public: // メンバ関数
 	/// 射影行列の取得
 	/// </summary>
 	/// <returns>射影行列</returns>
-	const XMMATRIX& GetProjectionMatrix() {
+	inline const XMMATRIX& GetProjectionMatrix() {
 		return matProjection;
 	}
 
@@ -63,7 +63,7 @@ public: // メンバ関数
 	/// ビュー射影行列の取得
 	/// </summary>
 	/// <returns>ビュー射影行列</returns>
-	const XMMATRIX& GetViewProjectionMatrix() {
+	inline const XMMATRIX& GetViewProjectionMatrix() {
 		return matViewProjection;
 	}
 
@@ -71,7 +71,7 @@ public: // メンバ関数
 	/// ビルボード行列の取得
 	/// </summary>
 	/// <returns>ビルボード行列</returns>
-	const XMMATRIX& GetBillboardMatrix() {
+	inline const XMMATRIX& GetBillboardMatrix() {
 		return matBillboard;
 	}
 
@@ -79,7 +79,7 @@ public: // メンバ関数
 	/// 視点座標の取得
 	/// </summary>
 	/// <returns>座標</returns>
-	const XMFLOAT3& GetEye() {
+	inline const XMFLOAT3& GetEye() {
 		return eye;
 	}
 
@@ -87,7 +87,7 @@ public: // メンバ関数
 	/// 視点座標の設定
 	/// </summary>
 	/// <param name="eye">座標</param>
-	void SetEye(XMFLOAT3 eye) {
+	inline void SetEye(XMFLOAT3 eye) {
 		this->eye = eye; viewDirty = true;
 	}
 
@@ -95,7 +95,7 @@ public: // メンバ関数
 	/// 注視点座標の取得
 	/// </summary>
 	/// <returns>座標</returns>
-	const XMFLOAT3& GetTarget() {
+	inline const XMFLOAT3& GetTarget() {
 		return target;
 	}
 
@@ -103,7 +103,7 @@ public: // メンバ関数
 	/// 注視点座標の設定
 	/// </summary>
 	/// <param name="target">座標</param>
-	void SetTarget(XMFLOAT3 target) {
+	inline void SetTarget(XMFLOAT3 target) {
 		this->target = target; viewDirty = true;
 	}
 
@@ -111,7 +111,7 @@ public: // メンバ関数
 	/// 上方向ベクトルの取得
 	/// </summary>
 	/// <returns>上方向ベクトル</returns>
-	const XMFLOAT3& GetUp() {
+	inline const XMFLOAT3& GetUp() {
 		return up;
 	}
 
@@ -119,7 +119,7 @@ public: // メンバ関数
 	/// 上方向ベクトルの設定
 	/// </summary>
 	/// <param name="up">上方向ベクトル</param>
-	void SetUp(XMFLOAT3 up) {
+	inline void SetUp(XMFLOAT3 up) {
 		this->up = up; viewDirty = true;
 	}
 
@@ -137,7 +137,7 @@ public: // メンバ関数
 	void MoveVector(const XMFLOAT3& move);
 	void MoveVector(const XMVECTOR& move);
 
-private: // メンバ変数
+protected: // メンバ変数
 	// ビュー行列
 	XMMATRIX matView = DirectX::XMMatrixIdentity();
 	// ビルボード行列
@@ -161,3 +161,4 @@ private: // メンバ変数
 	// アスペクト比
 	float aspectRatio = 1.0f;
 };
+

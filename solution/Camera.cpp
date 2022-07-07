@@ -1,12 +1,12 @@
 #include "Camera.h"
 
 using namespace DirectX;
-
-Camera::Camera()
-{
-}
-
-void Camera::Initialize(int window_width, int window_height)
+/// <summary>
+/// 
+/// </summary>
+/// <param name="window_width"></param>
+/// <param name="window_height"></param>
+Camera::Camera(int window_width, int window_height)
 {
 	aspectRatio = (float)window_width / window_height;
 

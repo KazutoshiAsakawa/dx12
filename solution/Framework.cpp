@@ -1,4 +1,5 @@
 #include "Framework.h"
+#include "FbxLoader.h"
 
 void Framework::Run()
 {
@@ -30,6 +31,9 @@ void Framework::Initialize()
 	dxCommon = new DirectXCommon();
 	dxCommon->Initialize(winApp);
 
+	// FBXの初期化
+	FbxLoader ::GetInstance()->Initialize(dxCommon->GetDev());
+
 	// スプライト共通部分の初期化
 	spriteCommon = SpriteCommon::GetInstance();
 	spriteCommon->Initialize(dxCommon->GetDev(), dxCommon->GetCmdList(), winApp->window_width, winApp->window_height);
@@ -58,8 +62,8 @@ void Framework::Initialize()
 
 void Framework::Finalize()
 {
-	// シーンファクトリ解放
-
+	// FBXの解放
+	FbxLoader::GetInstance()->Finalize();
 
 	// デバッグテキスト解放
 	debugText->Finalize();
@@ -85,7 +89,7 @@ void Framework::Update()
 	// 入力の更新
 	input->Update();
 	// シーンの更新
-	SceneManager::GetInstance()->Update();
+	SceneManager::GetInstance()->Update(dxCommon);
 }
 
 void Framework::Draw()
@@ -94,7 +98,7 @@ void Framework::Draw()
 	dxCommon->PreDraw();
 
 	// シーン描画
-	SceneManager::GetInstance()->Draw();
+	SceneManager::GetInstance()->Draw(dxCommon);
 
 	// デバッグテキスト描画
 	debugText->DrawAll();

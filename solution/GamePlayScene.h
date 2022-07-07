@@ -3,7 +3,9 @@
 #include "BaseScene.h"
 #include "Sprite.h"
 #include "ObjObject3d.h"
-#include "Camera.h"
+#include "FbxObject3d.h"
+
+#include "DebugCamera.h"
 
 #include <memory>
 
@@ -16,7 +18,7 @@ public:
 	/// <summary>
 	/// èâä˙âª
 	/// </summary>
-	void Initialize() override;
+	void Initialize(DirectXCommon* dxcommon) override;
 
 	/// <summary>
 	/// èIóπèàóù
@@ -31,7 +33,7 @@ public:
 	/// <summary>
 	/// ï`âÊ
 	/// </summary>
-	void Draw() override;
+	void Draw(DirectXCommon* dxcommon) override;
 
 private:
 	// std::vector<Sprite*> sprites;
@@ -40,6 +42,11 @@ private:
 	std::unique_ptr<ObjObject3d> object3d;
 	// Object3d* object3d = nullptr;
 
-	std::unique_ptr<Camera> camera;
+	
+	
+	std::unique_ptr<DebugCamera> camera;
+
+	FbxModel* fbxModel = nullptr;
+	FbxObject3d* fbxObj = nullptr;
 };
 

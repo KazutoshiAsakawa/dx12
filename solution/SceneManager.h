@@ -14,12 +14,12 @@ public:
 	/// <summary>
 	/// 更新
 	/// </summary>
-	void Update();
+	void Update(DirectXCommon* dxcommon);
 
 	/// <summary>
 	/// 描画
 	/// </summary>
-	void Draw();
+	void Draw(DirectXCommon* dxcommon);
 
 	/// <summary>
 	/// 次シーン予約

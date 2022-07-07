@@ -14,7 +14,7 @@ SceneManager* SceneManager::GetInstance()
 	return &instance;
 }
 
-void SceneManager::Update()
+void SceneManager::Update(DirectXCommon* dxcommon)
 {
 	// シーン切り替えがあるなら
 	if (nextScene_) {
@@ -28,14 +28,14 @@ void SceneManager::Update()
 		nextScene_ = nullptr;
 
 		// 新シーンの初期化
-		scene_->Initialize();
+		scene_->Initialize(dxcommon);
 	}
 	scene_->Update();
 }
 
-void SceneManager::Draw()
+void SceneManager::Draw(DirectXCommon* dxcommon)
 {
-	scene_->Draw();
+	scene_->Draw(dxcommon);
 }
 
 void SceneManager::ChangeScene(const std::string& sceneName)
