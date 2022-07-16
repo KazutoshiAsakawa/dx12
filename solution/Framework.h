@@ -10,6 +10,7 @@
 #include "Audio.h"
 #include "SceneManager.h"
 #include "AbstractSceneFactory.h"
+#include "PostEffect.h"
 
 #include<memory>
 
@@ -54,5 +55,7 @@ protected:
 	SpriteCommon* spriteCommon = nullptr;
 	// èäóLé“(ä«óùé“)
 	std::unique_ptr<AbstractSceneFactory> sceneFactory_ = nullptr;
+
+	std::unique_ptr<PostEffect> postEffect = nullptr;
 };
 

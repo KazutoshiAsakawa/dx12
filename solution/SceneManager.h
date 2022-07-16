@@ -22,6 +22,11 @@ public:
 	void Draw(DirectXCommon* dxcommon);
 
 	/// <summary>
+	/// 前景スプライト描画
+	/// </summary>
+	void DrawFrontSprite(DirectXCommon* dxcommon);
+
+	/// <summary>
 	/// 次シーン予約
 	/// </summary>
 	/// <param name="sceneName">シーン名</param>

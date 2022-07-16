@@ -1,5 +1,7 @@
 #include "Framework.h"
 #include "FbxLoader.h"
+#include "PostEffect.h"
+#include "SpriteCommon.h"
 
 void Framework::Run()
 {
@@ -58,6 +60,9 @@ void Framework::Initialize()
 
 	// 3Dオブジェクト静的初期化
 	ObjObject3d::StaticInitialize(dxCommon->GetDev(), dxCommon->GetCmdList(), WinApp::window_width, WinApp::window_height);
+
+	PostEffect::SetDevice(dxCommon->GetDev());
+	postEffect = std::make_unique<PostEffect>();
 }
 
 void Framework::Finalize()
@@ -94,11 +99,23 @@ void Framework::Update()
 
 void Framework::Draw()
 {
-	// 描画前処理
-	dxCommon->PreDraw();
+	postEffect->PreDrawScene(dxCommon->GetCmdList());
 
 	// シーン描画
 	SceneManager::GetInstance()->Draw(dxCommon);
+
+	postEffect->PostDrawScene(dxCommon->GetCmdList());
+
+	// 描画前処理
+	dxCommon->PreDraw();
+
+	// 背景スプライト、3Dオブジェクトの描画
+	postEffect->Draw(dxCommon->GetCmdList());
+
+	// 前景スプライト描画準備
+	SpriteCommon::GetInstance()->PreDraw();
+	// 前景スプライトの描画
+	SceneManager::GetInstance()->DrawFrontSprite(dxCommon);
 
 	// デバッグテキスト描画
 	debugText->DrawAll();

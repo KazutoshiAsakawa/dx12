@@ -8,7 +8,6 @@
 #include "FbxLoader.h"
 #include "DirectXCommon.h"
 
-
 void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 {
 	// スプライト共通テクスチャ読み込み
@@ -70,6 +69,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 	fbxObj = new FbxObject3d();
 	fbxObj->Initialize();
 	fbxObj->SetModel(fbxModel);
+	fbxObj->SetPosition({ 0,0,0 });
 
 	// 音声読み込み
 	Audio::GetInstance()->LoadWave("Alarm01.wav");
@@ -151,18 +151,20 @@ void GamePlayScene::Update()
 		DirectX::XMFLOAT3 camMoveVal{};
 		constexpr float camMoveLen = 0.1f;
 
-		if(hitW || hitS) {
-			if(hitW){
+		if (hitW || hitS) {
+			if (hitW) {
 				camMoveVal.z += camMoveLen;
-			} else if (hitS) {
+			}
+			else if (hitS) {
 				camMoveVal.z -= camMoveLen;
 			}
 		}
 
-		if(hitA || hitD) {
-			if(hitA) {
+		if (hitA || hitD) {
+			if (hitA) {
 				camMoveVal.x -= camMoveLen;
-			}else if(hitD){
+			}
+			else if (hitD) {
 				camMoveVal.x += camMoveLen;
 			}
 		}
@@ -214,4 +216,9 @@ void GamePlayScene::Draw(DirectXCommon* dxcommon)
 	ObjObject3d::PostDraw();
 	// スプライト共通コマンド
 	SpriteCommon::GetInstance()->PreDraw();
+}
+
+void GamePlayScene::DrawFrontSprite(DirectXCommon* dxcommon){
+	SpriteCommon::GetInstance()->PreDraw();
+
 }

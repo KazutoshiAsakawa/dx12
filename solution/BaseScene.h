@@ -31,5 +31,10 @@ public:
 	/// •`‰æ
 	/// </summary>
 	virtual void Draw(DirectXCommon* dxcommon) = 0;
+
+	/// <summary>
+	/// ‘OŒiƒXƒvƒ‰ƒCƒg•`‰æ
+	/// </summary>
+	virtual void DrawFrontSprite(DirectXCommon* dxcommon){};
 };
 

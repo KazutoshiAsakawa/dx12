@@ -35,6 +35,11 @@ public:
 	/// </summary>
 	void Draw(DirectXCommon* dxcommon) override;
 
+	/// <summary>
+	/// 前景スプライト描画
+	/// </summary>
+	void DrawFrontSprite(DirectXCommon* dxcommon) override;
+
 private:
 	// std::vector<Sprite*> sprites;
 	Sprite* sprite = nullptr;

@@ -38,6 +38,11 @@ void SceneManager::Draw(DirectXCommon* dxcommon)
 	scene_->Draw(dxcommon);
 }
 
+void SceneManager::DrawFrontSprite(DirectXCommon* dxcommon)
+{
+	scene_->DrawFrontSprite(dxcommon);
+}
+
 void SceneManager::ChangeScene(const std::string& sceneName)
 {
 	assert(sceneFactory_);

@@ -85,6 +85,8 @@ public: // メンバ関数
 
 	inline void SetRotation(const XMFLOAT3& rotation) { this->rotation = rotation; }
 
+	inline void SetPosition(const XMFLOAT3& position) { this->position = position; }
+
 protected: // メンバ変数
 	// 定数バッファ
 	ComPtr<ID3D12Resource> constBuffTransform;
