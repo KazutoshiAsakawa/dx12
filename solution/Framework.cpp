@@ -62,7 +62,6 @@ void Framework::Initialize()
 	ObjObject3d::StaticInitialize(dxCommon->GetDev(), dxCommon->GetCmdList(), WinApp::window_width, WinApp::window_height);
 
 	PostEffect::SetDevice(dxCommon->GetDev());
-	postEffect = std::make_unique<PostEffect>();
 }
 
 void Framework::Finalize()
@@ -99,18 +98,18 @@ void Framework::Update()
 
 void Framework::Draw()
 {
-	postEffect->PreDrawScene(dxCommon->GetCmdList());
+	PostEffect::GetInstance()->PreDrawScene(dxCommon->GetCmdList());
 
 	// シーン描画
 	SceneManager::GetInstance()->Draw(dxCommon);
 
-	postEffect->PostDrawScene(dxCommon->GetCmdList());
+	PostEffect::GetInstance()->PostDrawScene(dxCommon->GetCmdList());
 
 	// 描画前処理
 	dxCommon->PreDraw();
 
 	// 背景スプライト、3Dオブジェクトの描画
-	postEffect->Draw(dxCommon->GetCmdList());
+	PostEffect::GetInstance()->Draw(dxCommon->GetCmdList());
 
 	// 前景スプライト描画準備
 	SpriteCommon::GetInstance()->PreDraw();

@@ -5,10 +5,16 @@ class PostEffect
 {
 	template<class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
 
+	PostEffect();
+	PostEffect(const PostEffect &postEffect) = delete;
+	void operator=(const PostEffect &postEffect) = delete;
+
 public:
+	static PostEffect* GetInstance();
+
 	/// <summary>
-		/// 頂点データ構造体
-		/// </summary>
+	/// 頂点データ構造体
+	/// </summary>
 	struct VertexPosUv
 	{
 		DirectX::XMFLOAT3 pos; // xyz座標
@@ -23,8 +29,6 @@ public:
 	};
 
 	static const float clearColor[4];
-
-	PostEffect();
 
 	/// <summary>
 	/// 初期化
@@ -51,6 +55,8 @@ public:
 	/// パイプライン生成
 	/// </summary>
 	void CreateGraphicsPipelineState();
+
+	inline void SetMosaicNum(DirectX::XMFLOAT2 mosaicnum){ this->mosaicNum = mosaicnum, constBuffDirty = true;}
 
 	static void SetDevice(ID3D12Device* device);
 
@@ -80,6 +86,8 @@ private: // メンバ変数
 	D3D12_VERTEX_BUFFER_VIEW vbView{};
 	// 定数バッファ
 	ComPtr<ID3D12Resource> constBuff;
+
+	bool constBuffDirty = true;
 	// モザイクの細かさ
 	DirectX::XMFLOAT2 mosaicNum{};
 };

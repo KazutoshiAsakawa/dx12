@@ -17,6 +17,12 @@ const float PostEffect::clearColor[4] = { 0.0f, 0.5f, 0.0f, 0.0f };
 
 ID3D12Device* PostEffect::device_ = nullptr;
 
+PostEffect* PostEffect::GetInstance()
+{
+	static PostEffect postEffect{};
+	return &postEffect;
+}
+
 PostEffect::PostEffect() : mosaicNum(XMFLOAT2(WinApp::window_width,
  											  WinApp::window_height)) {
 	 Initialize();
@@ -351,12 +357,16 @@ void PostEffect::Initialize()
 
 void PostEffect::Draw(ID3D12GraphicsCommandList* cmdList)
 {
-	// 定数バッファにデータ転送
-	ConstBufferData* constMap = nullptr;
-	HRESULT result = this->constBuff->Map(0, nullptr, (void**)&constMap);
-	if (SUCCEEDED(result)) {
-		constMap->mosaicNum = mosaicNum;
-		this->constBuff->Unmap(0, nullptr);
+	if(constBuffDirty){
+		// 定数バッファにデータ転送
+		ConstBufferData* constMap = nullptr;
+		HRESULT result = this->constBuff->Map(0, nullptr, (void**)&constMap);
+		if (SUCCEEDED(result)) {
+			constMap->mosaicNum = mosaicNum;
+			this->constBuff->Unmap(0, nullptr);
+		}
+
+		constBuffDirty = false;
 	}
 
 	cmdList->SetPipelineState(pipelineState.Get());

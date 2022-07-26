@@ -47,11 +47,11 @@ private:
 	std::unique_ptr<ObjObject3d> object3d;
 	// Object3d* object3d = nullptr;
 
-	
-	
 	std::unique_ptr<DebugCamera> camera;
 
 	FbxModel* fbxModel = nullptr;
 	FbxObject3d* fbxObj = nullptr;
+
+	bool mosaicFlag = false;
 };
 

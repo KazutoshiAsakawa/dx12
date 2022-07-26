@@ -8,6 +8,8 @@
 #include "FbxLoader.h"
 #include "DirectXCommon.h"
 
+#include "PostEffect.h"
+
 void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 {
 	// スプライト共通テクスチャ読み込み
@@ -139,6 +141,27 @@ void GamePlayScene::Update()
 
 	if (input->PushKey(DIK_0)) {
 		fbxObj->PlayAnimation();
+	}
+
+	// モザイク切り替え
+	{
+		const bool TriggerP = input->TriggerKey(DIK_P);
+		if (TriggerP) {
+			// モザイクの細かさ
+			// ウインドウサイズと同じ細かさのモザイク = モザイクなし
+			DirectX::XMFLOAT2 mosaicNum { WinApp::window_width, WinApp::window_height};
+
+			// モザイクをかける場合は、細かさを変更
+			if (mosaicFlag) {
+				mosaicNum = DirectX::XMFLOAT2(100, 100);
+			}
+
+			// モザイクをかける
+			PostEffect::GetInstance()->SetMosaicNum(mosaicNum);
+
+			// フラグを反転
+			mosaicFlag = !mosaicFlag;
+		}
 	}
 
 	// カメラ移動
