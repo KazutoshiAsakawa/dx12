@@ -6,8 +6,8 @@ class PostEffect
 	template<class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
 
 	PostEffect();
-	PostEffect(const PostEffect &postEffect) = delete;
-	void operator=(const PostEffect &postEffect) = delete;
+	PostEffect(const PostEffect& postEffect) = delete;
+	void operator=(const PostEffect& postEffect) = delete;
 
 public:
 	static PostEffect* GetInstance();
@@ -36,7 +36,7 @@ public:
 	void Initialize();
 
 	//void Draw(DirectXCommon* dxCom);
-	void Draw(ID3D12GraphicsCommandList* cmdList);
+	void Draw(ID3D12GraphicsCommandList* cmdList, UINT shaderNum);
 
 
 	/// <summary>
@@ -54,9 +54,9 @@ public:
 	/// <summary>
 	/// パイプライン生成
 	/// </summary>
-	void CreateGraphicsPipelineState();
+	void CreateGraphicsPipelineState(UINT shaderNum = 0, const wchar_t* PSpath = L"Resources/shaders/PostEffectTestPS.hlsl");
 
-	inline void SetMosaicNum(DirectX::XMFLOAT2 mosaicnum){ this->mosaicNum = mosaicnum, constBuffDirty = true;}
+	inline void SetMosaicNum(DirectX::XMFLOAT2 mosaicnum) { this->mosaicNum = mosaicnum, constBuffDirty = true; }
 
 	static void SetDevice(ID3D12Device* device);
 
@@ -76,7 +76,7 @@ private: // メンバ変数
 	ComPtr<ID3D12DescriptorHeap> descHeapDSV;
 
 	// グラフィックスパイプライン
-	ComPtr<ID3D12PipelineState> pipelineState;
+	ComPtr<ID3D12PipelineState> pipelineState[2];
 	// ルートシグネチャ
 	ComPtr<ID3D12RootSignature> rootSignature;
 

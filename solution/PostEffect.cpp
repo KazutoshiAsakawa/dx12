@@ -28,7 +28,7 @@ PostEffect::PostEffect() : mosaicNum(XMFLOAT2(WinApp::window_width,
 	 Initialize();
 }
 
-void PostEffect::CreateGraphicsPipelineState() {
+void PostEffect::CreateGraphicsPipelineState(UINT shaderNum , const wchar_t* PSpath) {
 	HRESULT result = S_FALSE;
 	ComPtr<ID3DBlob> vsBlob; // 頂点シェーダオブジェクト
 	ComPtr<ID3DBlob> psBlob;	// ピクセルシェーダオブジェクト
@@ -60,7 +60,7 @@ void PostEffect::CreateGraphicsPipelineState() {
 
 	// ピクセルシェーダの読み込みとコンパイル
 	result = D3DCompileFromFile(
-		L"Resources/shaders/PostEffectTestPS.hlsl",	// シェーダファイル名
+		PSpath,	// シェーダファイル名
 		nullptr,
 		D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
 		"main", "ps_5_0",	// エントリーポイント名、シェーダーモデル指定
@@ -171,7 +171,7 @@ void PostEffect::CreateGraphicsPipelineState() {
 	gpipeline.pRootSignature = rootSignature.Get();
 
 	// グラフィックスパイプラインの生成
-	result = device_->CreateGraphicsPipelineState(&gpipeline, IID_PPV_ARGS(&pipelineState));
+	result = device_->CreateGraphicsPipelineState(&gpipeline, IID_PPV_ARGS(&pipelineState[shaderNum]));
 	assert(SUCCEEDED(result));
 }
 
@@ -184,7 +184,8 @@ void PostEffect::Initialize()
 {
 	HRESULT result;
 
-	CreateGraphicsPipelineState();
+	CreateGraphicsPipelineState(0);
+	CreateGraphicsPipelineState(1, L"Resources/shaders/PostEffectTestPS1.hlsl");
 
 	constexpr UINT vertNum = 4;
 
@@ -355,7 +356,7 @@ void PostEffect::Initialize()
 		descHeapDSV->GetCPUDescriptorHandleForHeapStart());
 }
 
-void PostEffect::Draw(ID3D12GraphicsCommandList* cmdList)
+void PostEffect::Draw(ID3D12GraphicsCommandList* cmdList,UINT shaderNum)
 {
 	if(constBuffDirty){
 		// 定数バッファにデータ転送
@@ -369,7 +370,7 @@ void PostEffect::Draw(ID3D12GraphicsCommandList* cmdList)
 		constBuffDirty = false;
 	}
 
-	cmdList->SetPipelineState(pipelineState.Get());
+	cmdList->SetPipelineState(pipelineState[shaderNum].Get());
 	cmdList->SetGraphicsRootSignature(rootSignature.Get());
 	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 

@@ -34,7 +34,7 @@ void Framework::Initialize()
 	dxCommon->Initialize(winApp);
 
 	// FBXの初期化
-	FbxLoader ::GetInstance()->Initialize(dxCommon->GetDev());
+	FbxLoader::GetInstance()->Initialize(dxCommon->GetDev());
 
 	// スプライト共通部分の初期化
 	spriteCommon = SpriteCommon::GetInstance();
@@ -94,22 +94,42 @@ void Framework::Update()
 	input->Update();
 	// シーンの更新
 	SceneManager::GetInstance()->Update(dxCommon);
+
+	if (input->TriggerKey(DIK_R)) {
+		if (shaderNum == 0u) {
+			shaderNum = 1u;
+		}
+		else {
+			shaderNum = 0u;
+		}
+	}
 }
 
 void Framework::Draw()
 {
+//0
 	PostEffect::GetInstance()->PreDrawScene(dxCommon->GetCmdList());
 
 	// シーン描画
 	SceneManager::GetInstance()->Draw(dxCommon);
-
+	//0
 	PostEffect::GetInstance()->PostDrawScene(dxCommon->GetCmdList());
+
+	//1
+	//PostEffect::GetInstance()->PreDrawScene(dxCommon->GetCmdList());
+
+	//0
+	// 背景スプライト、3Dオブジェクトの描画
+	//PostEffect::GetInstance()->Draw(dxCommon->GetCmdList(), shaderNum);
+	//1
+	// PostEffect::GetInstance()->PostDrawScene(dxCommon->GetCmdList());
+
 
 	// 描画前処理
 	dxCommon->PreDraw();
 
-	// 背景スプライト、3Dオブジェクトの描画
-	PostEffect::GetInstance()->Draw(dxCommon->GetCmdList());
+	//1
+	PostEffect::GetInstance()->Draw(dxCommon->GetCmdList(), shaderNum);
 
 	// 前景スプライト描画準備
 	SpriteCommon::GetInstance()->PreDraw();

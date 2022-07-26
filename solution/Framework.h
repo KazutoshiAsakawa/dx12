@@ -55,5 +55,7 @@ protected:
 	SpriteCommon* spriteCommon = nullptr;
 	// Š—LÒ(ŠÇ—Ò)
 	std::unique_ptr<AbstractSceneFactory> sceneFactory_ = nullptr;
+
+	UINT shaderNum = 0u;
 };
 

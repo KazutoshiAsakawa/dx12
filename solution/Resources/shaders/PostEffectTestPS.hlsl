@@ -87,9 +87,7 @@ float4 main(VSOutput input) : SV_TARGET
 	// Gaussian
 	float4 blurColor = GaussianBlur(tex1, mosaicUv);
 
-
 	return float4(retColor.rgb - vignVal, 1.0f);
-
 
 }
 
