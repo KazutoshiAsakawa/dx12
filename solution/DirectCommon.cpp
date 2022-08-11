@@ -1,10 +1,26 @@
 #include "DirectXCommon.h"
+
+#include "WinApp.h"
+
 #include <cassert>
 
 #pragma comment(lib, "d3d12.lib")
 #pragma comment(lib, "dxgi.lib")
 
 using namespace Microsoft::WRL;
+
+DirectXCommon* DirectXCommon::GetInstance(){
+    static DirectXCommon dxCom{};
+    return &dxCom;
+}
+
+DirectXCommon::DirectXCommon(){
+    Initialize(WinApp::GetInstance());
+}
+
+DirectXCommon::~DirectXCommon(){
+
+}
 
 void DirectXCommon::Initialize(WinApp* winApp)
 {

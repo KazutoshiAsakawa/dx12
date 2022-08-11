@@ -7,9 +7,24 @@
 
 class DirectXCommon
 {
-public://メンバー変数
+	// privateなコンストラクタ（シングルトンパターン）
+	DirectXCommon();
+	// privateなデストラクタ（シングルトンパターン）
+	~DirectXCommon();
+	// コピーコンストラクタを禁止（シングルトンパターン）
+	DirectXCommon(const DirectXCommon& obj) = delete;
+	// コピー代入演算子を禁止（シングルトンパターン）
+	void operator=(const DirectXCommon& obj) = delete;
+
+public:
+	static DirectXCommon* GetInstance();
+
+private:
 	//初期化
 	void Initialize(WinApp* winApp);
+
+
+public://メンバー変数
 
 	void PreDraw();
 
@@ -20,7 +35,7 @@ public://メンバー変数
 	//デバイスの取得
 	ID3D12Device* GetDev() { return dev.Get(); }
 
-	ID3D12GraphicsCommandList * GetCmdList() { return cmdList.Get(); }
+	ID3D12GraphicsCommandList* GetCmdList() { return cmdList.Get(); }
 
 private:
 

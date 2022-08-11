@@ -6,6 +6,7 @@
 #include "FbxObject3d.h"
 
 #include "DebugCamera.h"
+#include "Player.h"
 
 #include <memory>
 
@@ -49,8 +50,10 @@ private:
 
 	std::unique_ptr<DebugCamera> camera;
 
-	FbxModel* fbxModel = nullptr;
-	FbxObject3d* fbxObj = nullptr;
+	//FbxModel* fbxModel = nullptr;
+	//FbxObject3d* fbxObj = nullptr;
+
+	std::unique_ptr<Player> player;
 
 	bool mosaicFlag = false;
 };

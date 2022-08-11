@@ -1,6 +1,19 @@
 ﻿#include "WinApp.h"
 #include <windows.h>
 
+WinApp* WinApp::GetInstance(){
+    static WinApp winApp{};
+    return &winApp;
+}
+
+WinApp::WinApp(){
+    Initialize();
+}
+
+WinApp::~WinApp(){
+    Finalize();
+}
+
 void WinApp::Initialize() 
 {
     w.cbSize = sizeof(WNDCLASSEX);

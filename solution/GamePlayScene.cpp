@@ -59,7 +59,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 	//object3d_1->SetModel(model_1);
 
 	// Fbx読み込み
-	fbxModel = FbxLoader::GetInstance()->LoadModelFromFile("boneTest");
+	//fbxModel = FbxLoader::GetInstance()->LoadModelFromFile("boneTest");
 
 	//デバイスをセット
 	FbxObject3d::SetDevice(dxcommon->GetDev());
@@ -68,10 +68,12 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 	//グラフィックスパイプライン生成
 	FbxObject3d::CreateGraphicsPipeline();
 
-	fbxObj = new FbxObject3d();
-	fbxObj->Initialize();
-	fbxObj->SetModel(fbxModel);
-	fbxObj->SetPosition({ 0,0,0 });
+	//fbxObj = new FbxObject3d();
+	//fbxObj->Initialize();
+	//fbxObj->SetModel(fbxModel);
+	//fbxObj->SetPosition({ 0,0,0 });
+
+	player = std::make_unique<Player>();
 
 	// 音声読み込み
 	Audio::GetInstance()->LoadWave("Alarm01.wav");
@@ -89,7 +91,7 @@ void GamePlayScene::Finalize()
 	delete sprite;
 
 	// delete fbxModel;
-	delete fbxObj;
+	//delete fbxObj;
 
 	// sprites.clear();
 
@@ -140,7 +142,7 @@ void GamePlayScene::Update()
 	//sprite.color = {0, 0, 1, 1};
 
 	if (input->PushKey(DIK_0)) {
-		fbxObj->PlayAnimation();
+		player->PlayAnimation();
 	}
 
 	// モザイク切り替え
@@ -165,43 +167,44 @@ void GamePlayScene::Update()
 	}
 
 	// カメラ移動
-	{
-		const bool hitW = input->PushKey(DIK_W);
-		const bool hitS = input->PushKey(DIK_S);
-		const bool hitA = input->PushKey(DIK_A);
-		const bool hitD = input->PushKey(DIK_D);
+	//{
+	//	const bool hitW = input->PushKey(DIK_W);
+	//	const bool hitS = input->PushKey(DIK_S);
+	//	const bool hitA = input->PushKey(DIK_A);
+	//	const bool hitD = input->PushKey(DIK_D);
 
-		DirectX::XMFLOAT3 camMoveVal{};
-		constexpr float camMoveLen = 0.1f;
+	//	DirectX::XMFLOAT3 camMoveVal{};
+	//	constexpr float camMoveLen = 0.1f;
 
-		if (hitW || hitS) {
-			if (hitW) {
-				camMoveVal.z += camMoveLen;
-			}
-			else if (hitS) {
-				camMoveVal.z -= camMoveLen;
-			}
-		}
+	//	if (hitW || hitS) {
+	//		if (hitW) {
+	//			camMoveVal.z += camMoveLen;
+	//		}
+	//		else if (hitS) {
+	//			camMoveVal.z -= camMoveLen;
+	//		}
+	//	}
 
-		if (hitA || hitD) {
-			if (hitA) {
-				camMoveVal.x -= camMoveLen;
-			}
-			else if (hitD) {
-				camMoveVal.x += camMoveLen;
-			}
-		}
+	//	if (hitA || hitD) {
+	//		if (hitA) {
+	//			camMoveVal.x -= camMoveLen;
+	//		}
+	//		else if (hitD) {
+	//			camMoveVal.x += camMoveLen;
+	//		}
+	//	}
 
-		camera->MoveEyeVector(camMoveVal);
-		DirectX::XMFLOAT3 camTarget = camera->GetTarget();
-		camTarget.x += camMoveVal.x;
-		camTarget.y += camMoveVal.y;
-		camTarget.z += camMoveVal.z;
-		camera->SetTarget(camTarget);
+	//	camera->MoveEyeVector(camMoveVal);
+	//	DirectX::XMFLOAT3 camTarget = camera->GetTarget();
+	//	camTarget.x += camMoveVal.x;
+	//	camTarget.y += camMoveVal.y;
+	//	camTarget.z += camMoveVal.z;
+	//	camera->SetTarget(camTarget);
 
 		camera->Update();
-		fbxObj->Update();
-	}
+		//fbxObj->Update();
+		player->Update();
+	//}
 
 	// 3Dオブジェクト更新
 	object3d->Update();
@@ -229,7 +232,8 @@ void GamePlayScene::Draw(DirectXCommon* dxcommon)
 	// 3Dオブジェクトの描画
 	object3d->Draw();
 
-	fbxObj->Draw(dxcommon->GetCmdList());
+	//fbxObj->Draw(dxcommon->GetCmdList());
+	player->Draw();
 
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる

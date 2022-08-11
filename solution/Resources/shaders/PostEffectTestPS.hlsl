@@ -67,25 +67,25 @@ float4 main(VSOutput input) : SV_TARGET
 	float2 mosaicUv = floor(input.uv * mosaicNum) / mosaicNum;
 
 	// RgbShift
-	float4 rgbShiftColor = RgbShiftGaussianBlur(tex0,
-												mosaicUv,
-												float2(0.000f, 0.0020f),
-												float2(0.010f, 0.0000f),
-												float2(0.000f, 0.0025f));
+	float4 rgbShiftColor = RgbShift(tex0,
+									mosaicUv,
+									float2(0.000f, 0.0000f),
+									float2(0.000f, 0.0000f),
+									float2(0.000f, 0.0000f));
 
 	float4 retColor = rgbShiftColor;
 	float4 colortex1 = tex0.Sample(smp, mosaicUv);
 
-	if (fmod(mosaicUv.y, 0.1f) < 0.05f) {
+	/*if (fmod(mosaicUv.y, 0.1f) < 0.05f) {
 		retColor = colortex1;
 		return float4(1.0f - retColor.rgb, 1);
-	}
+	}*/
 
 	// vignatte
 	float vignVal = vignette(mosaicUv);
 
 	// Gaussian
-	float4 blurColor = GaussianBlur(tex1, mosaicUv);
+	// float4 blurColor = GaussianBlur(tex1, mosaicUv);
 
 	return float4(retColor.rgb - vignVal, 1.0f);
 

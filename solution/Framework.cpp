@@ -26,12 +26,8 @@ void Framework::Run()
 
 void Framework::Initialize()
 {
-	winApp = new WinApp();
-	winApp->Initialize();
-
-	// DirectXの初期化
-	dxCommon = new DirectXCommon();
-	dxCommon->Initialize(winApp);
+	winApp = WinApp::GetInstance();
+	dxCommon = DirectXCommon::GetInstance();
 
 	// FBXの初期化
 	FbxLoader::GetInstance()->Initialize(dxCommon->GetDev());
@@ -73,12 +69,6 @@ void Framework::Finalize()
 	debugText->Finalize();
 	// オーディオ解放
 	audio->Finalize();
-	// DirectX解放
-	delete dxCommon;
-	// WindowsAPIの終了処理
-	winApp->Finalize();
-	//WindowsAPI解放
-	delete winApp;
 }
 
 void Framework::Update()
@@ -107,28 +97,16 @@ void Framework::Update()
 
 void Framework::Draw()
 {
-//0
 	PostEffect::GetInstance()->PreDrawScene(dxCommon->GetCmdList());
 
 	// シーン描画
 	SceneManager::GetInstance()->Draw(dxCommon);
-	//0
+
 	PostEffect::GetInstance()->PostDrawScene(dxCommon->GetCmdList());
-
-	//1
-	//PostEffect::GetInstance()->PreDrawScene(dxCommon->GetCmdList());
-
-	//0
-	// 背景スプライト、3Dオブジェクトの描画
-	//PostEffect::GetInstance()->Draw(dxCommon->GetCmdList(), shaderNum);
-	//1
-	// PostEffect::GetInstance()->PostDrawScene(dxCommon->GetCmdList());
-
 
 	// 描画前処理
 	dxCommon->PreDraw();
 
-	//1
 	PostEffect::GetInstance()->Draw(dxCommon->GetCmdList(), shaderNum);
 
 	// 前景スプライト描画準備
