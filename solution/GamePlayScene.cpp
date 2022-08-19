@@ -141,10 +141,6 @@ void GamePlayScene::Update()
 	//sprite.position = {1280/2, 720/2, 0};
 	//sprite.color = {0, 0, 1, 1};
 
-	if (input->PushKey(DIK_0)) {
-		player->PlayAnimation();
-	}
-
 	// ƒ‚ƒUƒCƒNØ‚è‘Ö‚¦
 	{
 		const bool TriggerP = input->TriggerKey(DIK_P);

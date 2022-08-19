@@ -1,28 +1,24 @@
 #pragma once
+
+#include "GameObject.h"
 #include "FbxObject3d.h"
 #include "FbxModel.h"
 #include <memory>
 
-class Player
+class Player : public GameObject
 {
 public:
-	// コンストラクタ
+	using GameObject::GameObject;
+
 	Player();
 
-	// デストラクタ
-	~Player();
+	void Move(float speed = 0.2f);
 
-	// 更新
-	void Update();
-	//  描画
-	void Draw();
+	void Update() override;
 
-	void PlayAnimation();
-
-	void Move(float speed = 1.f);
+	// void Bullet();
 
 private:
-	std::unique_ptr <FbxModel> model;
-	std::unique_ptr <FbxObject3d> object;
+	std::unique_ptr <ObjModel> model;
 };
 

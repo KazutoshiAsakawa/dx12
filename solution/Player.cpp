@@ -4,33 +4,19 @@
 #include "Input.h"
 
 Player::Player()
-	: model(FbxLoader::GetInstance()->LoadModelFromFile("boneTest")),
-	object(new FbxObject3d())
+	:Player(ObjModel::LoadFromObj("rat"))
 {
-	object->Initialize();
-	object->SetModel(model.get());
-
-	object->SetPosition({ 0,0,0 });
+	obj->SetPosition({0,0,0});
+	obj->SetScale({1,1,1});
 }
 
-Player::~Player()
-{
 
-}
 
 void Player::Update()
 {
 	Move();
-	object->Update();
-}
 
-void Player::Draw()
-{
-	object->Draw(DirectXCommon::GetInstance()->GetCmdList());
-}
-
-void Player::PlayAnimation() {
-	object->PlayAnimation();
+	obj->Update();
 }
 
 void Player::Move(float speed) {
@@ -40,13 +26,13 @@ void Player::Move(float speed) {
 	const bool hitD = Input::GetInstance()->PushKey(DIK_D);
 
 	if (hitW || hitS || hitA || hitD) {
-		auto pos = object->GetPosition();
+		auto pos = obj->GetPosition();
 
 		if (hitW) {
-			pos.z += speed;
+			pos.y += speed;
 		}
 		else if (hitS) {
-			pos.z -= speed;
+			pos.y -= speed;
 		}
 
 		if (hitD) {
@@ -56,6 +42,15 @@ void Player::Move(float speed) {
 			pos.x -= speed;
 		}
 
-		object->SetPosition(pos);
+		obj->SetPosition(pos);
 	}
 }
+
+//void Player::Bullet()
+//{
+//	const bool hitSpace = Input::GetInstance()->PushKey(DIK_SPACE);
+//
+//	if (hitSpace) {
+//
+//	}
+//}

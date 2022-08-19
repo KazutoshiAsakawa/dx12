@@ -68,7 +68,7 @@ public: // 静的メンバ関数
 	static std::unique_ptr <ObjObject3d> Create();
 	//static Object3d* Create();
 
-	static void SetCamera(Camera* camera){ObjObject3d::camera = camera;};
+	static void SetCamera(Camera* camera) { ObjObject3d::camera = camera; };
 
 private: // 静的メンバ変数
 	// デバイス
@@ -114,6 +114,10 @@ public: // メンバ関数
 	/// <returns>座標</returns>
 	const XMFLOAT3& GetPosition() { return position_; }
 
+	const XMFLOAT3& GetScale() { return scale_; }
+
+	const XMFLOAT3& GetRotation() { return rotation_; }
+
 	/// <summary>
 	/// 座標の設定
 	/// </summary>
@@ -121,6 +125,8 @@ public: // メンバ関数
 	void SetPosition(XMFLOAT3 position) { this->position_ = position; }
 
 	void SetScale(XMFLOAT3 scale) { this->scale_ = scale; }
+
+	void SetRotation(XMFLOAT3 rotation) { this->rotation_ = rotation; }
 
 	// inline void SetScale(const XMFLOAT3& scale) { this->scale = scale; }
 

@@ -63,7 +63,7 @@ void Framework::Initialize()
 void Framework::Finalize()
 {
 	// FBXの解放
-	FbxLoader::GetInstance()->Finalize();
+	//FbxLoader::GetInstance()->Finalize();
 
 	// デバッグテキスト解放
 	debugText->Finalize();
