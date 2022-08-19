@@ -8,6 +8,7 @@
 #include "DebugCamera.h"
 #include "Player.h"
 #include "PlayerBullet.h"
+#include "Enemy.h"
 
 #include <Vector>
 #include <memory>
@@ -52,12 +53,19 @@ private:
 
 	std::unique_ptr<ObjModel> pBulletModel = nullptr;
 
+	float pBulletScale = 2;
+
+	std::unique_ptr<ObjModel> enemyModel = nullptr;
+
+	float enemyScale = 2;
+
 	std::unique_ptr<DebugCamera> camera;
 
 	//FbxModel* fbxModel = nullptr;
 	//FbxObject3d* fbxObj = nullptr;
 
 	std::unique_ptr<Player> player;
+	std::vector<std::unique_ptr<Enemy>> enemy;
 
 	bool mosaicFlag = false;
 };

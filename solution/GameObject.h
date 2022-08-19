@@ -17,8 +17,7 @@ public:
 
 
 	inline bool GetAlive() const { return alive; }
-	// alive‚ðfalse‚É‚·‚é
-	inline void kill() { alive = false; }
+	inline void SetAlive(bool alive) { this->alive = alive; }
 
 	inline void SetPos(const DirectX::XMFLOAT3& position) { obj->SetPosition(position); }
 	inline const DirectX::XMFLOAT3& GetPos() const { return obj->GetPosition(); }

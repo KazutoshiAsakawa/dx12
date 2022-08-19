@@ -7,6 +7,7 @@
 #include "FbxObject3d.h"
 #include "FbxLoader.h"
 #include "DirectXCommon.h"
+#include "Collision.h"
 
 #include "PostEffect.h"
 
@@ -57,7 +58,8 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 
 	object3d->SetModel(model);
 
-	pBulletModel.reset(ObjModel::LoadFromObj("triangle_mat"));
+	pBulletModel.reset(ObjModel::LoadFromObj("sphere"));
+	enemyModel.reset(ObjModel::LoadFromObj("sphere"));
 
 	// 3Dオブジェクトに3Dモデルをひもづけ
 	//object3d_1->SetModel(model_1);
@@ -78,6 +80,13 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 	//fbxObj->SetPosition({ 0,0,0 });
 
 	player = std::make_unique<Player>();
+
+	constexpr UINT enemyNum = 1;
+	enemy.resize(enemyNum);
+	for (auto& i : enemy) {
+		i = std::make_unique<Enemy>(enemyModel.get(), XMFLOAT3(0, 0, 20));
+		i->SetScale(XMFLOAT3(enemyScale, enemyScale, enemyScale));
+	}
 
 	// 音声読み込み
 	Audio::GetInstance()->LoadWave("Alarm01.wav");
@@ -131,7 +140,33 @@ void GamePlayScene::Update()
 	}
 
 	if (input->TriggerKey(DIK_0)) {
-		player->Shot(pBulletModel.get(),3);
+		player->Shot(pBulletModel.get(), pBulletScale);
+
+	}
+
+	{
+		Sphere pBulletShape;
+
+		for (auto& pb : player->GetBullet()) {
+			if (!pb.GetAlive())continue;
+			pBulletShape.center = XMLoadFloat3(&pb.GetPos());
+			pBulletShape.radius = pb.GetScale().x;
+
+			// 衝突判定をする
+			for (auto& e : enemy) {
+				Sphere enemyShape;
+				enemyShape.center = XMLoadFloat3(&e->GetPos());
+				enemyShape.radius = e->GetScale().x;
+
+				// 当たったら
+				if (Collision::CheckSphere2Sphere(pBulletShape, enemyShape)) {
+					e->SetAlive(false);
+					pb.SetAlive(false);
+					break;
+				}
+			}
+		}
+		enemy.erase(std::remove_if(enemy.begin(), enemy.end(), [](const std::unique_ptr <Enemy>& i) {return !i->GetAlive(); }), enemy.end());
 	}
 
 	// シーン切り替え
@@ -209,6 +244,9 @@ void GamePlayScene::Update()
 	//fbxObj->Update();
 	player->Update();
 	//}
+	for (auto& i : enemy) {
+		i->Update();
+	}
 
 	// 3Dオブジェクト更新
 	object3d->Update();
@@ -238,7 +276,9 @@ void GamePlayScene::Draw(DirectXCommon* dxcommon)
 
 	//fbxObj->Draw(dxcommon->GetCmdList());
 	player->Draw();
-
+	for (auto& i : enemy) {
+		i->Draw();
+	}
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>

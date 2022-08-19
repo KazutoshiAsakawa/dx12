@@ -10,8 +10,6 @@ Player::Player()
 	obj->SetScale({1,1,1});
 }
 
-
-
 void Player::Update()
 {
 	Move();

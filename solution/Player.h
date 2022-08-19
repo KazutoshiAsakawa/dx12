@@ -20,7 +20,9 @@ public:
 	void Update() override;
 	void Draw() override;
 
-	void Shot(ObjModel* model,float scale = 1);
+	void Shot(ObjModel* model, float scale = 1);
+
+	inline auto& GetBullet() { return bullet; }
 
 	// void Bullet();
 
