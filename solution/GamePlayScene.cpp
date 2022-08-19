@@ -10,6 +10,8 @@
 
 #include "PostEffect.h"
 
+using namespace DirectX;
+
 void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 {
 	// スプライト共通テクスチャ読み込み
@@ -54,6 +56,8 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 	// object3d.reset(Object3d::Create());
 
 	object3d->SetModel(model);
+
+	pBulletModel.reset(ObjModel::LoadFromObj("triangle_mat"));
 
 	// 3Dオブジェクトに3Dモデルをひもづけ
 	//object3d_1->SetModel(model_1);
@@ -126,6 +130,11 @@ void GamePlayScene::Update()
 
 	}
 
+	if (input->TriggerKey(DIK_0)) {
+		playerBullet.emplace_back(pBulletModel.get(), XMFLOAT3(0, 0, 10));
+		playerBullet.back().SetScale({ 3,3,3 });
+	}
+
 	// シーン切り替え
 	if (input->TriggerKey(DIK_SPACE))
 	{
@@ -147,7 +156,7 @@ void GamePlayScene::Update()
 		if (TriggerP) {
 			// モザイクの細かさ
 			// ウインドウサイズと同じ細かさのモザイク = モザイクなし
-			DirectX::XMFLOAT2 mosaicNum { WinApp::window_width, WinApp::window_height};
+			DirectX::XMFLOAT2 mosaicNum{ WinApp::window_width, WinApp::window_height };
 
 			// モザイクをかける場合は、細かさを変更
 			if (mosaicFlag) {
@@ -197,9 +206,9 @@ void GamePlayScene::Update()
 	//	camTarget.z += camMoveVal.z;
 	//	camera->SetTarget(camTarget);
 
-		camera->Update();
-		//fbxObj->Update();
-		player->Update();
+	camera->Update();
+	//fbxObj->Update();
+	player->Update();
 	//}
 
 	// 3Dオブジェクト更新
@@ -226,10 +235,16 @@ void GamePlayScene::Draw(DirectXCommon* dxcommon)
 	// 3Dオブジェクト描画前処理
 	ObjObject3d::PreDraw();
 	// 3Dオブジェクトの描画
-	object3d->Draw();
+	// object3d->Draw();
 
 	//fbxObj->Draw(dxcommon->GetCmdList());
 	player->Draw();
+
+	for (auto& i : playerBullet)
+	{
+		i.Update();
+		i.Draw();
+	}
 
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる
@@ -241,7 +256,7 @@ void GamePlayScene::Draw(DirectXCommon* dxcommon)
 	SpriteCommon::GetInstance()->PreDraw();
 }
 
-void GamePlayScene::DrawFrontSprite(DirectXCommon* dxcommon){
+void GamePlayScene::DrawFrontSprite(DirectXCommon* dxcommon) {
 	SpriteCommon::GetInstance()->PreDraw();
 
 }

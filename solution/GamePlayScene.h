@@ -7,7 +7,9 @@
 
 #include "DebugCamera.h"
 #include "Player.h"
+#include "PlayerBullet.h"
 
+#include <Vector>
 #include <memory>
 
 /// <summary>
@@ -48,12 +50,16 @@ private:
 	std::unique_ptr<ObjObject3d> object3d;
 	// Object3d* object3d = nullptr;
 
+	std::unique_ptr<ObjModel> pBulletModel = nullptr;
+
 	std::unique_ptr<DebugCamera> camera;
 
 	//FbxModel* fbxModel = nullptr;
 	//FbxObject3d* fbxObj = nullptr;
 
 	std::unique_ptr<Player> player;
+
+	std::vector<PlayerBullet> playerBullet;
 
 	bool mosaicFlag = false;
 };

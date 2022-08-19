@@ -166,6 +166,7 @@
     <ClCompile Include="ObjModel.cpp" />
     <ClCompile Include="ObjObject3d.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="PlayerBullet.cpp" />
     <ClCompile Include="PostEffect.cpp" />
     <ClCompile Include="SceneFactory.cpp" />
     <ClCompile Include="SceneManager.cpp" />
@@ -274,6 +275,7 @@
     <ClInclude Include="ObjObject3d.h" />
     <ClInclude Include="PipelineSet.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="PlayerBullet.h" />
     <ClInclude Include="PostEffect.h" />
     <ClInclude Include="SceneFactory.h" />
     <ClInclude Include="SceneManager.h" />
