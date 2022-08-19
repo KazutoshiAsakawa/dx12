@@ -16,7 +16,30 @@ void Player::Update()
 {
 	Move();
 
+	for (auto& i : bullet)
+	{
+		i.Update();
+	}
+
+	bullet.erase(std::remove_if(bullet.begin(), bullet.end(), [](PlayerBullet& i) {return !i.GetAlive(); }), bullet.end());
+
 	obj->Update();
+}
+
+void Player::Draw()
+{
+	for (auto& i :bullet)
+	{
+		i.Draw();
+	}
+
+	obj->Draw();
+}
+
+void Player::Shot(ObjModel* model, float scale)
+{
+	bullet.emplace_back(model, obj->GetPosition());
+	bullet.back().SetScale({ scale,scale,scale });
 }
 
 void Player::Move(float speed) {

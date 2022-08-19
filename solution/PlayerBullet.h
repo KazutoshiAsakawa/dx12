@@ -8,6 +8,10 @@ public:
 
 	void Update() override;
 
+	UINT life = 60;
+
+	UINT numFrame = 0;
+
 private:
 
 };

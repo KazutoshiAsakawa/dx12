@@ -59,8 +59,6 @@ private:
 
 	std::unique_ptr<Player> player;
 
-	std::vector<PlayerBullet> playerBullet;
-
 	bool mosaicFlag = false;
 };
 

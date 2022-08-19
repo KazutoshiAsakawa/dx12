@@ -131,8 +131,7 @@ void GamePlayScene::Update()
 	}
 
 	if (input->TriggerKey(DIK_0)) {
-		playerBullet.emplace_back(pBulletModel.get(), XMFLOAT3(0, 0, 10));
-		playerBullet.back().SetScale({ 3,3,3 });
+		player->Shot(pBulletModel.get(),3);
 	}
 
 	// シーン切り替え
@@ -239,12 +238,6 @@ void GamePlayScene::Draw(DirectXCommon* dxcommon)
 
 	//fbxObj->Draw(dxcommon->GetCmdList());
 	player->Draw();
-
-	for (auto& i : playerBullet)
-	{
-		i.Update();
-		i.Draw();
-	}
 
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる
