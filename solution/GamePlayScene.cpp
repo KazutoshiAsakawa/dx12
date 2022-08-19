@@ -84,8 +84,9 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 	constexpr UINT enemyNum = 1;
 	enemy.resize(enemyNum);
 	for (auto& i : enemy) {
-		i = std::make_unique<Enemy>(enemyModel.get(), XMFLOAT3(0, 0, 20));
+		i = std::make_unique<Enemy>(enemyModel.get(), XMFLOAT3(0, 0, 30));
 		i->SetScale(XMFLOAT3(enemyScale, enemyScale, enemyScale));
+		i->SetVel(XMFLOAT3(0,0,-0.2));
 	}
 
 	// ‰¹º“Ç‚Ýž‚Ý
@@ -129,9 +130,17 @@ void GamePlayScene::Update()
 	//}
 
 	// À•W‘€ì
-	if (input->TriggerKey(DIK_UP) || input->TriggerKey(DIK_DOWN) || input->TriggerKey(DIK_RIGHT) || input->TriggerKey(DIK_LEFT))
+	if (input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN) || input->PushKey(DIK_RIGHT) || input->PushKey(DIK_LEFT))
 	{
+		XMFLOAT3 playerRot = player->GetRotation();
+		if (input->PushKey(DIK_RIGHT)) {
+			playerRot.y += 1.f;
+		}
+		if (input->PushKey(DIK_LEFT)) {
+			playerRot.y -= 1.f;
+		}
 
+		player->SetRotation(playerRot);
 	}
 
 	if (input->TriggerKey(DIK_D) || input->TriggerKey(DIK_A))

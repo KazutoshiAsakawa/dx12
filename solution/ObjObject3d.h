@@ -118,6 +118,8 @@ public: // メンバ関数
 
 	const XMFLOAT3& GetRotation() { return rotation_; }
 
+	inline const XMMATRIX& GetMatRot() {return matRot;}
+
 	/// <summary>
 	/// 座標の設定
 	/// </summary>
@@ -155,5 +157,7 @@ private: // メンバ変数
 	XMMATRIX matWorld_;
 	// 親オブジェクト
 	ObjObject3d* parent_ = nullptr;
+
+	XMMATRIX matRot;
 };
 

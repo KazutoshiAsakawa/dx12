@@ -3,6 +3,8 @@
 #include "DirectXCommon.h"
 #include "Input.h"
 
+using namespace DirectX;
+
 Player::Player()
 	:Player(ObjModel::LoadFromObj("rat"))
 {
@@ -38,6 +40,9 @@ void Player::Shot(ObjModel* model, float scale)
 {
 	bullet.emplace_back(model, obj->GetPosition());
 	bullet.back().SetScale({ scale,scale,scale });
+	XMFLOAT3 vel;
+	XMStoreFloat3(&vel, XMVector3Transform(XMVectorSet(0, 0, 1, 1), obj->GetMatRot()));
+	bullet.back().SetVel(vel);
 }
 
 void Player::Move(float speed) {

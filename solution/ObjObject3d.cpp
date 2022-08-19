@@ -316,7 +316,7 @@ void ObjObject3d::Draw()
 
 void ObjObject3d::UpdateWorldMatrix()
 {
-	XMMATRIX matScale, matRot, matTrans;
+	XMMATRIX matScale,  matTrans;
 
 	// スケール、回転、平行移動行列の計算
 	matScale = XMMatrixScaling(scale_.x, scale_.y, scale_.z);

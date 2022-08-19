@@ -7,7 +7,9 @@ void PlayerBullet::Update()
 	}
 
 	auto pos = obj->GetPosition();
-	pos.z += 1.f;
+	pos.x += vel.x;
+	pos.y += vel.y;
+	pos.z += vel.z;
 	obj->SetPosition(pos);
 
 	obj->Update();
