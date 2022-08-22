@@ -2,6 +2,7 @@
 #include "FbxLoader.h"
 #include "PostEffect.h"
 #include "SpriteCommon.h"
+#include "ParticleManager.h"
 
 void Framework::Run()
 {
@@ -53,6 +54,8 @@ void Framework::Initialize()
 	// オーディオの初期化
 	audio = Audio::GetInstance();
 	audio->Initialize();
+
+	ParticleManager::GetInstance()->Initialize(dxCommon->GetDev());
 
 	// 3Dオブジェクト静的初期化
 	ObjObject3d::StaticInitialize(dxCommon->GetDev(), dxCommon->GetCmdList(), WinApp::window_width, WinApp::window_height);

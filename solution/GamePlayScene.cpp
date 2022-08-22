@@ -8,6 +8,7 @@
 #include "FbxLoader.h"
 #include "DirectXCommon.h"
 #include "Collision.h"
+#include "ParticleManager.h"
 
 #include "PostEffect.h"
 
@@ -86,8 +87,12 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 	for (auto& i : enemy) {
 		i = std::make_unique<Enemy>(enemyModel.get(), XMFLOAT3(-10, 0, 30));
 		i->SetScale(XMFLOAT3(enemyScale, enemyScale, enemyScale));
-		i->SetVel(XMFLOAT3(0,0,-0.1));
+		i->SetVel(XMFLOAT3(0, 0, -0.1));
 	}
+
+	ParticleManager::GetInstance()->SetCamera(camera.get());
+	ParticleManager::GetInstance()->Add(200, player->GetPos(), XMFLOAT3(0, 0, 0), { 0,0,0 }, 10, 0);
+
 
 	// 音声読み込み
 	Audio::GetInstance()->LoadWave("Alarm01.wav");
@@ -159,6 +164,7 @@ void GamePlayScene::Update()
 	if (input->TriggerKey(DIK_0)) {
 		player->Shot(pBulletModel.get(), pBulletScale);
 
+		ParticleManager::GetInstance()->CreateParticle(player->GetPos(),100,1,1);
 	}
 
 	{
@@ -171,7 +177,7 @@ void GamePlayScene::Update()
 
 			// 衝突判定をする
 			for (auto& e : enemy) {
-				if(!e->GetAlive())continue;
+				if (!e->GetAlive())continue;
 				Sphere enemyShape;
 				enemyShape.center = XMLoadFloat3(&e->GetPos());
 				enemyShape.radius = e->GetScale().x;
@@ -185,8 +191,8 @@ void GamePlayScene::Update()
 			}
 		}
 		// 敵を消す
-		enemy.erase(std::remove_if(enemy.begin(), enemy.end(), 
-		[](const std::unique_ptr <Enemy>& i) {return !i->GetAlive()&&i->GetBullet().empty(); }), enemy.end());
+		enemy.erase(std::remove_if(enemy.begin(), enemy.end(),
+			[](const std::unique_ptr <Enemy>& i) {return !i->GetAlive() && i->GetBullet().empty(); }), enemy.end());
 	}
 
 	// シーン切り替え
@@ -260,6 +266,9 @@ void GamePlayScene::Update()
 	//	camTarget.z += camMoveVal.z;
 	//	camera->SetTarget(camTarget);
 
+	// パーティクル更新
+	ParticleManager::GetInstance()->Update();
+
 	camera->Update();
 	//fbxObj->Update();
 	player->Update();
@@ -294,6 +303,7 @@ void GamePlayScene::Draw(DirectXCommon* dxcommon)
 	// 3Dオブジェクトの描画
 	// object3d->Draw();
 
+
 	//fbxObj->Draw(dxcommon->GetCmdList());
 	player->Draw();
 	for (auto& i : enemy) {
@@ -305,6 +315,8 @@ void GamePlayScene::Draw(DirectXCommon* dxcommon)
 
 	// 3Dオブジェクト描画後処理
 	ObjObject3d::PostDraw();
+	// パーティクル描画
+	ParticleManager::GetInstance()->Draw(dxcommon->GetCmdList());
 	// スプライト共通コマンド
 	SpriteCommon::GetInstance()->PreDraw();
 }
