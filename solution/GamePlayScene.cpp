@@ -84,7 +84,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 	constexpr UINT enemyNum = 1;
 	enemy.resize(enemyNum);
 	for (auto& i : enemy) {
-		i = std::make_unique<Enemy>(enemyModel.get(), XMFLOAT3(0, 0, 30));
+		i = std::make_unique<Enemy>(enemyModel.get(), XMFLOAT3(-10, 0, 30));
 		i->SetScale(XMFLOAT3(enemyScale, enemyScale, enemyScale));
 		i->SetVel(XMFLOAT3(0,0,-0.1));
 	}
@@ -132,6 +132,7 @@ void GamePlayScene::Update()
 	// 座標操作
 	if (input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN) || input->PushKey(DIK_RIGHT) || input->PushKey(DIK_LEFT))
 	{
+		// プレイヤーの回転
 		XMFLOAT3 playerRot = player->GetRotation();
 		if (input->PushKey(DIK_RIGHT)) {
 			playerRot.y += 1.f;
@@ -174,7 +175,7 @@ void GamePlayScene::Update()
 				enemyShape.center = XMLoadFloat3(&e->GetPos());
 				enemyShape.radius = e->GetScale().x;
 
-				// 当たったら
+				// 当たったら消える
 				if (Collision::CheckSphere2Sphere(pBulletShape, enemyShape)) {
 					e->SetAlive(false);
 					pb.SetAlive(false);

@@ -160,6 +160,7 @@
     <ClCompile Include="DirectCommon.cpp" />
     <ClCompile Include="EndScene.cpp" />
     <ClCompile Include="Enemy.cpp" />
+    <ClCompile Include="EnemyBullet.cpp" />
     <ClCompile Include="FbxLoader.cpp" />
     <ClCompile Include="FbxModel.cpp" />
     <ClCompile Include="FbxObject3d.cpp" />
@@ -272,6 +273,7 @@
     <ClInclude Include="DirectXCommon.h" />
     <ClInclude Include="EndScene.h" />
     <ClInclude Include="Enemy.h" />
+    <ClInclude Include="EnemyBullet.h" />
     <ClInclude Include="FbxLoader.h" />
     <ClInclude Include="FbxModel.h" />
     <ClInclude Include="FbxObject3d.h" />
