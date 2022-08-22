@@ -4,7 +4,7 @@ using namespace DirectX;
 Enemy::Enemy(ObjModel* model, const DirectX::XMFLOAT3& position)
 	:GameObject(model, position), phase(std::bind(&Enemy::approach, this)) {
 	// Shot(ObjModel::LoadFromObj("rat"),1);
-	bulletModel.reset(ObjModel::LoadFromObj("rat"));
+	bulletModel.reset(ObjModel::LoadFromObj("enemyBullet"));
 	nowShotFrame = shotInterval;
 }
 
@@ -18,6 +18,9 @@ void Enemy::Update()
 		i.Update();
 	}
 
+	// “G‚Ì’e‚ðÁ
+	bullet.erase(std::remove_if(bullet.begin(), bullet.end(), [](EnemyBullet& i) {return !i.GetAlive(); }), bullet.end());
+
 	obj->Update();
 }
 
@@ -27,7 +30,9 @@ void Enemy::Draw()
 		i.Draw();
 	}
 
-	obj->Draw();
+	if (alive) {
+		obj->Draw();
+	}
 }
 
 void Enemy::Shot(ObjModel* model, float scale)

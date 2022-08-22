@@ -58,7 +58,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 
 	object3d->SetModel(model);
 
-	pBulletModel.reset(ObjModel::LoadFromObj("sphere"));
+	pBulletModel.reset(ObjModel::LoadFromObj("playerBullet"));
 	enemyModel.reset(ObjModel::LoadFromObj("sphere"));
 
 	// 3Dオブジェクトに3Dモデルをひもづけ
@@ -171,6 +171,7 @@ void GamePlayScene::Update()
 
 			// 衝突判定をする
 			for (auto& e : enemy) {
+				if(!e->GetAlive())continue;
 				Sphere enemyShape;
 				enemyShape.center = XMLoadFloat3(&e->GetPos());
 				enemyShape.radius = e->GetScale().x;
@@ -183,7 +184,9 @@ void GamePlayScene::Update()
 				}
 			}
 		}
-		enemy.erase(std::remove_if(enemy.begin(), enemy.end(), [](const std::unique_ptr <Enemy>& i) {return !i->GetAlive(); }), enemy.end());
+		// 敵を消す
+		enemy.erase(std::remove_if(enemy.begin(), enemy.end(), 
+		[](const std::unique_ptr <Enemy>& i) {return !i->GetAlive()&&i->GetBullet().empty(); }), enemy.end());
 	}
 
 	// シーン切り替え
