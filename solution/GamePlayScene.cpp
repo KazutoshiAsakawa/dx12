@@ -86,7 +86,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 	for (auto& i : enemy) {
 		i = std::make_unique<Enemy>(enemyModel.get(), XMFLOAT3(0, 0, 30));
 		i->SetScale(XMFLOAT3(enemyScale, enemyScale, enemyScale));
-		i->SetVel(XMFLOAT3(0,0,-0.2));
+		i->SetVel(XMFLOAT3(0,0,-0.1));
 	}
 
 	// 音声読み込み
@@ -140,6 +140,13 @@ void GamePlayScene::Update()
 			playerRot.y -= 1.f;
 		}
 
+		if (input->PushKey(DIK_UP)) {
+			playerRot.x += 1.f;
+		}
+		if (input->PushKey(DIK_DOWN)) {
+			playerRot.x -= 1.f;
+		}
+
 		player->SetRotation(playerRot);
 	}
 
@@ -181,7 +188,7 @@ void GamePlayScene::Update()
 	// シーン切り替え
 	if (input->TriggerKey(DIK_SPACE))
 	{
-		SceneManager::GetInstance()->ChangeScene("TITLE");
+		SceneManager::GetInstance()->ChangeScene("END");
 	}
 
 	// X座標,Y座標を指定して表示
