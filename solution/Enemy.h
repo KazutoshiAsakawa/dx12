@@ -20,7 +20,7 @@ public:
 	inline const DirectX::XMFLOAT3& GetVel() { return vel; }
 	inline void SetVel(const DirectX::XMFLOAT3& vel) { this->vel = vel; }
 
-	inline auto& GetBullet()const { return bullet; }
+	inline auto& GetBullet() { return bullet; }
 
 private:
 

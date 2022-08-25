@@ -6,10 +6,10 @@
 using namespace DirectX;
 
 Player::Player()
-	:Player(ObjModel::LoadFromObj("rat"))
+	:Player(ObjModel::LoadFromObj("player"))
 {
-	obj->SetPosition({0,0,0});
-	obj->SetScale({1,1,1});
+	obj->SetPosition({ 0,0,0 });
+	obj->SetScale({ 1,1,1 });
 }
 
 void Player::Update()
@@ -28,12 +28,14 @@ void Player::Update()
 
 void Player::Draw()
 {
-	for (auto& i :bullet)
+	for (auto& i : bullet)
 	{
 		i.Draw();
 	}
 
-	obj->Draw();
+	if (alive) {
+		obj->Draw();
+	}
 }
 
 void Player::Shot(ObjModel* model, float scale)

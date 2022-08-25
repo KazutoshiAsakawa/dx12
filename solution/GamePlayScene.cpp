@@ -164,9 +164,11 @@ void GamePlayScene::Update()
 	if (input->TriggerKey(DIK_0)) {
 		player->Shot(pBulletModel.get(), pBulletScale);
 
-		ParticleManager::GetInstance()->CreateParticle(player->GetPos(),100,1,1);
+		ParticleManager::GetInstance()->CreateParticle(player->GetPos(), 100, 1, 1);
 	}
 
+
+	// “G‚Æ©‹@‚Ì’e‚Ì“–‚½‚è”»’è
 	{
 		Sphere pBulletShape;
 
@@ -193,6 +195,35 @@ void GamePlayScene::Update()
 		// “G‚ğÁ‚·
 		enemy.erase(std::remove_if(enemy.begin(), enemy.end(),
 			[](const std::unique_ptr <Enemy>& i) {return !i->GetAlive() && i->GetBullet().empty(); }), enemy.end());
+	}
+
+	// “G‚Ì’e‚Æ©‹@
+	{
+		Sphere playerShape;
+
+		playerShape.center = XMLoadFloat3(&player->GetPos());
+		playerShape.radius = player->GetScale().z;
+
+		// Õ“Ë”»’è‚ğ‚·‚é
+
+		if (player->GetAlive()) {
+			for (auto& e : enemy) {
+				if (!e->GetAlive())continue;
+				for (auto& eb : e->GetBullet()) {
+					Sphere eBulletShape;
+					eBulletShape.center = XMLoadFloat3(&eb.GetPos());
+					eBulletShape.radius = eb.GetScale().z;
+
+					// “–‚½‚Á‚½‚çÁ‚¦‚é
+					if (Collision::CheckSphere2Sphere(playerShape, eBulletShape)) {
+						eb.SetAlive(false);
+						player->SetAlive(false);
+						break;
+					}
+				}
+			}
+		}
+
 	}
 
 	// ƒV[ƒ“Ø‚è‘Ö‚¦
