@@ -88,6 +88,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 		i = std::make_unique<Enemy>(enemyModel.get(), XMFLOAT3(-10, 0, 30));
 		i->SetScale(XMFLOAT3(enemyScale, enemyScale, enemyScale));
 		i->SetVel(XMFLOAT3(0, 0, -0.1));
+		i->SetShotTarget(player.get());
 	}
 
 	ParticleManager::GetInstance()->SetCamera(camera.get());

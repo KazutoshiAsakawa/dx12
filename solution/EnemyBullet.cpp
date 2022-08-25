@@ -7,9 +7,9 @@ void EnemyBullet::Update()
 	}
 
 	auto pos = obj->GetPosition();
-	pos.x -= vel.x;
-	pos.y -= vel.y;
-	pos.z -= vel.z;
+	pos.x += vel.x;
+	pos.y += vel.y;
+	pos.z += vel.z;
 	obj->SetPosition(pos);
 
 	obj->Update();

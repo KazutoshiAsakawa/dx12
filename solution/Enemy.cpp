@@ -68,8 +68,29 @@ void Enemy::Shot(ObjModel* model, float scale)
 {
 	bullet.emplace_back(model, obj->GetPosition());
 	bullet.back().SetScale({ scale,scale,scale });
-	XMFLOAT3 vel = { 0,0,0.3 };
-	// XMStoreFloat3(&vel, XMVector3Transform(XMVectorSet(0, 0, 1, 1), obj->GetMatRot()));
+	XMFLOAT3 vel;
+
+	if (shotTarget == nullptr) {
+		vel = { 0,0,-0.3 };
+	}
+	else {
+		// 速度を計算
+		// 自分か標的までのベクトル
+		vel = {
+			shotTarget->GetPos().x - obj->GetPosition().x,
+			shotTarget->GetPos().y - obj->GetPosition().y,
+			shotTarget->GetPos().z - obj->GetPosition().z
+		};
+		// XMVECTORに変換
+		XMVECTOR vectorVel = XMLoadFloat3(&vel);
+		// 大きさを1にする
+		vectorVel = XMVector3Normalize(vectorVel);
+		// 大きさを任意の値にする
+		vectorVel = XMVectorScale(vectorVel,0.3);
+		
+		// FLOAT3に変換
+		XMStoreFloat3(&vel,vectorVel);
+	}
 
 	bullet.back().SetVel(vel);
 }

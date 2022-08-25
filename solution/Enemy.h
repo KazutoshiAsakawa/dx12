@@ -25,6 +25,8 @@ public:
 
 	inline auto& GetBullet() { return bullet; }
 
+	inline void SetShotTarget(GameObject* shotTarget) { this->shotTarget = shotTarget; }
+
 private:
 
 	std::function<void()> phase;
@@ -39,5 +41,7 @@ private:
 	std::vector<EnemyBullet> bullet;
 	UINT shotInterval = 60;
 	UINT nowShotFrame;
+
+	GameObject* shotTarget;
 };
 
