@@ -67,7 +67,7 @@ void Enemy::Draw()
 void Enemy::Shot(ObjModel* model, float scale)
 {
 	bullet.emplace_back(model, obj->GetPosition());
-	bullet.back().SetScale({ scale,scale,scale });
+	bullet.back().SetScale({ scale / 3,scale / 3 ,scale });
 	XMFLOAT3 vel;
 
 	if (shotTarget == nullptr) {
@@ -86,11 +86,17 @@ void Enemy::Shot(ObjModel* model, float scale)
 		// ‘å‚«‚³‚ð1‚É‚·‚é
 		vectorVel = XMVector3Normalize(vectorVel);
 		// ‘å‚«‚³‚ð”CˆÓ‚Ì’l‚É‚·‚é
-		vectorVel = XMVectorScale(vectorVel,0.3);
-		
+		vectorVel = XMVectorScale(vectorVel, 0.3);
+
 		// FLOAT3‚É•ÏŠ·
-		XMStoreFloat3(&vel,vectorVel);
+		XMStoreFloat3(&vel, vectorVel);
+
+		// •W“I‚ÉŒü‚¯‚é
+		float rotx = atan2f(vel.y, vel.z);
+		float roty = atan2f(vel.x, vel.z);
+		bullet.back().SetRotation(XMFLOAT3(XMConvertToDegrees(rotx), XMConvertToDegrees(roty),0));
 	}
+
 
 	bullet.back().SetVel(vel);
 }
