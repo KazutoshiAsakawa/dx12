@@ -12,6 +12,9 @@ public:
 	Enemy(ObjModel* model,
 		const DirectX::XMFLOAT3& position = { 0,0,0 });
 
+	// CSVì«Ç›çûÇ›
+	static std::vector<std::vector<std::string>> LoadCsv(const std::string& FilePath);
+
 	void Update() override;
 	void Draw() override;
 

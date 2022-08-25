@@ -1,4 +1,8 @@
 #include "Enemy.h"
+
+#include <fstream>
+#include <sstream>
+
 using namespace DirectX;
 
 Enemy::Enemy(ObjModel* model, const DirectX::XMFLOAT3& position)
@@ -6,6 +10,31 @@ Enemy::Enemy(ObjModel* model, const DirectX::XMFLOAT3& position)
 	// Shot(ObjModel::LoadFromObj("rat"),1);
 	bulletModel.reset(ObjModel::LoadFromObj("enemyBullet"));
 	nowShotFrame = shotInterval;
+}
+
+// CSV読み込み
+std::vector<std::vector<std::string>> Enemy::LoadCsv(const std::string& FilePath) {
+	std::vector<std::vector<std::string>> csvData{};
+
+	// ファイルを開く
+	std::ifstream ifs(FilePath);
+	if (!ifs) {
+		return csvData;
+	}
+
+	std::string line{};
+	// 一行ずつ読み込む
+	for (UINT i = 0; std::getline(ifs, line); i++) {
+		csvData.emplace_back();
+
+		std::istringstream stream(line);
+		std::string field;
+		// 読み込んだ行を','区切りで分割
+		while (std::getline(stream, field, ',')) {
+			csvData[i].emplace_back(field);
+		}
+	}
+	return csvData;
 }
 
 void Enemy::Update()
