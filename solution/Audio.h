@@ -73,7 +73,7 @@ public:
 	/// 音声再生
 	/// </summary>
 	/// <param name="">サウンドデータ名</param>
-	void PlayWave(const std::string filename);
+	void PlayWave(const std::string filename,float volume = 0.5);
 
 private:
 	// XAudio2のインスタンス

@@ -124,7 +124,7 @@ void Audio::Unload(SoundData* soundData)
 	soundData->wfex = {};
 }
 
-void Audio::PlayWave(const std::string filename)
+void Audio::PlayWave(const std::string filename, float volume)
 {
 	HRESULT result;
 
@@ -147,5 +147,6 @@ void Audio::PlayWave(const std::string filename)
 
 	// 波形データの再生
 	result = pSourceVoice->SubmitSourceBuffer(&buf);
+	result = pSourceVoice->SetVolume(volume);
 	result = pSourceVoice->Start();
 }

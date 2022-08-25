@@ -21,7 +21,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 	// spriteCommon->LoadTexture(2, L"Resources/house.png");
 
 	// スプライトの生成
-	sprite = Sprite::Create(1, { 0,0 }, false, false);
+	sprite.reset(Sprite::Create(1, { 0,0 }, false, false));
 
 	//for (int i = 0; i < 20; i++)// 20個生成するとき
 	//{
@@ -43,7 +43,11 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 	//	sprites.push_back(sprite);
 	//}
 
+	// カメラの初期化
 	camera.reset(new DebugCamera(WinApp::window_width, WinApp::window_height));
+	camera->SetEye({ 0, 5, -20 });
+	camera->SetTarget({ 0, 0, 50 });
+
 	//camera->Initialize(WinApp::window_width, WinApp::window_height);
 	// camera = new DebugCamera(WinApp::window_width, WinApp::window_height);
 
@@ -51,16 +55,19 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 
 	// OBJからモデルデータを読み込む
 	// model_1 = Model::LoadFromObj("ground");
-	model = ObjModel::LoadFromObj("triangle_mat");
+	model.reset( ObjModel::LoadFromObj("triangle_mat"));
+
 	// 3Dオブジェクト生成
 
 	object3d = ObjObject3d::Create();
 	// object3d.reset(Object3d::Create());
 
-	object3d->SetModel(model);
+	object3d->SetModel(model.get());
 
+	// 自機の読み込み
 	pBulletModel.reset(ObjModel::LoadFromObj("playerBullet"));
-	enemyModel.reset(ObjModel::LoadFromObj("sphere"));
+	// 敵の読み込み
+	enemyModel.reset(ObjModel::LoadFromObj("enemy"));
 
 	// 3Dオブジェクトに3Dモデルをひもづけ
 	//object3d_1->SetModel(model_1);
@@ -82,6 +89,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 
 	player = std::make_unique<Player>();
 
+	// 敵の複数描画
 	constexpr UINT enemyNum = 1;
 	enemy.resize(enemyNum);
 	for (auto& i : enemy) {
@@ -91,9 +99,10 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 		i->SetShotTarget(player.get());
 	}
 
+	// パーティクル初期化
 	ParticleManager::GetInstance()->SetCamera(camera.get());
-	ParticleManager::GetInstance()->Add(200, player->GetPos(), XMFLOAT3(0, 0, 0), { 0,0,0 }, 10, 0);
 
+	updateProcess = std::bind(&GamePlayScene::start, this);
 
 	// 音声読み込み
 	Audio::GetInstance()->LoadWave("Alarm01.wav");
@@ -108,33 +117,43 @@ void GamePlayScene::Finalize()
 		/*for (auto& sprite : sprites) {
 			delete sprite;
 		}*/
-	delete sprite;
 
 	// delete fbxModel;
 	//delete fbxObj;
 
 	// sprites.clear();
-
-	// 3Dモデル解放
-	delete model;
 }
 
 void GamePlayScene::Update()
 {
+	updateProcess();
+
+}
+
+void GamePlayScene::start()
+{
 	Input* input = Input::GetInstance();
+	// DebugText::GetInstance()->Print("START", 50, 50, 20);
 
-	// 入力の確認
-	//if (input->TriggerKey(DIK_0)) // 数字の0キーが押されていたら
-	//{
-	//	OutputDebugStringA("Hit 0\n");  // 出力ウィンドウに「Hit 0」と表示
-	//}
+	constexpr UINT mosaicFrameMax = 40;
 
-	//if (input->Triggerkey(DIK_SPACE))     // スペースキーが押されていたら
-	//{
-	//    // 画面クリアカラーの数値を書き換える
-	//    clearColor[1] = 1.0f;
-	//}
+	if (++mosaicFrame > mosaicFrameMax) {
+		PostEffect::GetInstance()->SetMosaicNum({ WinApp::window_width ,WinApp::window_height });
+		updateProcess = std::bind(&GamePlayScene::play, this);
+	}
+	else {
+		XMFLOAT2 mosaicLevel = {};
+		float rate = (float)mosaicFrame / mosaicFrameMax;
+		mosaicLevel.x = WinApp::window_width * rate;
+		mosaicLevel.y = WinApp::window_height * rate;
+		PostEffect::GetInstance()->SetMosaicNum(mosaicLevel);
+	}
 
+}
+
+void GamePlayScene::play()
+{
+	Input* input = Input::GetInstance();
 	// 座標操作
 	if (input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN) || input->PushKey(DIK_RIGHT) || input->PushKey(DIK_LEFT))
 	{
@@ -146,21 +165,15 @@ void GamePlayScene::Update()
 		if (input->PushKey(DIK_LEFT)) {
 			playerRot.y -= 1.f;
 		}
-
 		if (input->PushKey(DIK_UP)) {
-			playerRot.x += 1.f;
-		}
-		if (input->PushKey(DIK_DOWN)) {
 			playerRot.x -= 1.f;
 		}
-
+		if (input->PushKey(DIK_DOWN)) {
+			playerRot.x += 1.f;
+		}
 		player->SetRotation(playerRot);
 	}
 
-	if (input->TriggerKey(DIK_D) || input->TriggerKey(DIK_A))
-	{
-
-	}
 
 	if (input->TriggerKey(DIK_0)) {
 		player->Shot(pBulletModel.get(), pBulletScale);
