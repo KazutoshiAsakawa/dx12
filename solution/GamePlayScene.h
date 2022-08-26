@@ -9,6 +9,7 @@
 #include "Player.h"
 #include "PlayerBullet.h"
 #include "Enemy.h"
+#include "TrackingCamera.h"
 
 #include <Vector>
 #include <memory>
@@ -51,11 +52,8 @@ public:
 private:
 	std::unique_ptr<Sprite> sprite; 
 
-	// ObjModel* model = nullptr;
-	std::unique_ptr<ObjModel> model;
-
-	std::unique_ptr<ObjObject3d> object3d;
-	// Object3d* object3d = nullptr;
+	std::unique_ptr<ObjModel> skyDomeModel;
+	std::unique_ptr<ObjObject3d> skyDomeObj;
 
 	std::unique_ptr<ObjModel> pBulletModel = nullptr;
 	// ’e‚Ì‘å‚«‚³
@@ -65,7 +63,7 @@ private:
 	// “G‚Ì‘å‚«‚³
 	float enemyScale = 2;
 
-	std::unique_ptr<DebugCamera> camera;
+	std::unique_ptr<TrackingCamera> camera;
 
 	//FbxModel* fbxModel = nullptr;
 	//FbxObject3d* fbxObj = nullptr;

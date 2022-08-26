@@ -6,7 +6,7 @@
 using namespace DirectX;
 
 Player::Player()
-	:Player(ObjModel::LoadFromObj("player"))
+	:Player(ObjModel::LoadFromObj("rat"))
 {
 	obj->SetPosition({ 0,0,0 });
 	obj->SetScale({ 1,1,1 });

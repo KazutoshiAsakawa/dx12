@@ -8,7 +8,7 @@ float vignette(float2 uv) {
 	// 中心からの距離
 	float2 dista2 = distance(uv, 0.5f);
 	// 距離が遠いほど暗くする
-	return sqrt(dista2.x * dista2.x + dista2.y * dista2.y) * 0.25f;
+	return sqrt(dista2.x * dista2.x + dista2.y * dista2.y) * 0.25;
 }
 
 

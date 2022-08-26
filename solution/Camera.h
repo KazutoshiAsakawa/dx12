@@ -138,6 +138,9 @@ public: // メンバ関数
 	void MoveVector(const XMVECTOR& move);
 
 protected: // メンバ変数
+
+	virtual void startUpdate() {};
+
 	// ビュー行列
 	XMMATRIX matView = DirectX::XMMatrixIdentity();
 	// ビルボード行列
