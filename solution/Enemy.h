@@ -15,9 +15,19 @@ public:
 	// CSV読み込み
 	static std::vector<std::vector<std::string>> LoadCsv(const std::string& FilePath);
 
+	/// <summary>
+	/// 毎フレーム更新
+	/// </summary>
 	void Update() override;
+
+	/// <summary>
+	/// 描画
+	/// </summary>
 	void Draw() override;
 
+	/// <summary>
+	/// 弾発射
+	/// </summary>
 	void Shot(ObjModel* model, float scale = 1);
 
 	inline const DirectX::XMFLOAT3& GetVel() { return vel; }
@@ -28,20 +38,21 @@ public:
 	inline void SetShotTarget(GameObject* shotTarget) { this->shotTarget = shotTarget; }
 
 private:
-
+	// 敵の行動パターン
 	std::function<void()> phase;
 	void approach();
 	void leave();
 
+	// モデル
 	std::unique_ptr<ObjModel> bulletModel;
-
 	// 敵の移動速度
 	DirectX::XMFLOAT3 vel{};
-
+	// 弾
 	std::vector<EnemyBullet> bullet;
+	
 	UINT shotInterval = 60;
 	UINT nowShotFrame;
-
+	// 標的
 	GameObject* shotTarget;
 };
 

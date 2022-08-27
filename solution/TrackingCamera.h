@@ -22,6 +22,5 @@ private:
 	float trackingTargetToCameraTargetHeight = 5;
 	// ƒJƒƒ‰‚Ì‹“_‚©‚ç’‹“_‚Ü‚Å‚Ì‹——£
 	float eyeToCameraTargetLength = 10;
-
 };
 

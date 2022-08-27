@@ -49,25 +49,30 @@ public:
 	/// </summary>
 	void DrawFrontSprite(DirectXCommon* dxcommon) override;
 
-private:
-	std::unique_ptr<Sprite> sprite; 
 
+	DirectX::XMVECTOR splinePosition(const std::vector<DirectX::XMVECTOR>& posints, size_t startIndex, float t);
+
+private:
+	// 背景
+	std::unique_ptr<Sprite> sprite;
+
+	// スカイドーム
 	std::unique_ptr<ObjModel> skyDomeModel;
 	std::unique_ptr<ObjObject3d> skyDomeObj;
 
+	// 弾
 	std::unique_ptr<ObjModel> pBulletModel = nullptr;
 	// 弾の大きさ
 	float pBulletScale = 2;
 
+	// 敵
 	std::unique_ptr<ObjModel> enemyModel = nullptr;
 	// 敵の大きさ
 	float enemyScale = 2;
-
+	// カメラ
 	std::unique_ptr<TrackingCamera> camera;
 
-	//FbxModel* fbxModel = nullptr;
-	//FbxObject3d* fbxObj = nullptr;
-
+	// プレイヤー
 	std::unique_ptr<Player> player;
 	std::vector<std::unique_ptr<Enemy>> enemy;
 
@@ -76,5 +81,9 @@ private:
 	bool mosaicFlag = false;
 
 	UINT mosaicFrame = 0;
-};
 
+	std::vector<DirectX::XMVECTOR> points;
+	size_t splineStartIndex;
+
+	UINT frame = 0;
+};

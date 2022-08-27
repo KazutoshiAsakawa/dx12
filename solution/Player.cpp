@@ -14,6 +14,7 @@ Player::Player()
 
 void Player::Update()
 {
+	// ˆÚ“®ˆ—
 	Move();
 
 	for (auto& i : bullet)

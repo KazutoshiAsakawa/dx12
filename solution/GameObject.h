@@ -9,12 +9,9 @@ class GameObject {
 
 protected:
 	std::unique_ptr<ObjObject3d> obj;
-
 	bool alive = true;
 
-
 public:
-
 
 	inline bool GetAlive() const { return alive; }
 	inline void SetAlive(bool alive) { this->alive = alive; }

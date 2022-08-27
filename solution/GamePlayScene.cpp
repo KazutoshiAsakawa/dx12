@@ -35,6 +35,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 	skyDomeModel.reset(ObjModel::LoadFromObj("skydome"));
 	skyDomeObj = ObjObject3d::Create();
 	skyDomeObj->SetModel(skyDomeModel.get());
+	skyDomeObj->SetScale({ 5,5,5 });
 
 	// 自機の読み込み
 	pBulletModel.reset(ObjModel::LoadFromObj("playerBullet"));
@@ -47,9 +48,10 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 	FbxObject3d::SetCamera(camera.get());
 	//グラフィックスパイプライン生成
 	FbxObject3d::CreateGraphicsPipeline();
-
+	// プレイヤー初期化
 	player = std::make_unique<Player>();
 
+	// カメラをプレイヤーの位置にセット
 	camera->SetTrackingTarget(player.get());
 	camera->SetTarget(player->GetPos());
 	XMFLOAT3 eye = player->GetPos();
@@ -70,6 +72,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 	// パーティクル初期化
 	ParticleManager::GetInstance()->SetCamera(camera.get());
 
+	// 更新処理の関数を入れる
 	updateProcess = std::bind(&GamePlayScene::start, this);
 
 	// 音声読み込み
@@ -77,6 +80,17 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 
 	// 音声再生
 	// audio->PlayWave("Alarm01.wav");
+
+	// スプライン曲線
+	// posints = { start, start, p2, p3, end, end }
+	points.emplace_back(XMVectorSet(0, 0, 0, 0));
+	points.emplace_back(XMVectorSet(0, 0, 0, 0));
+	points.emplace_back(XMVectorSet(0, 0, 20, 0));
+	points.emplace_back(XMVectorSet(0, 20, 40, 0));
+	points.emplace_back(XMVectorSet(0, 0, 0, 0));
+	points.emplace_back(XMVectorSet(0, 0, 0, 0));
+
+	splineStartIndex = 1;
 }
 
 void GamePlayScene::Finalize()
@@ -88,6 +102,21 @@ void GamePlayScene::Update()
 {
 	updateProcess();
 
+	// パーティクル更新
+	ParticleManager::GetInstance()->Update();
+
+	camera->Update();
+	//fbxObj->Update();
+	player->Update();
+	//}
+	for (auto& i : enemy) {
+		i->Update();
+	}
+
+	skyDomeObj->Update();
+
+	// スプライト更新
+	sprite->Update();
 }
 
 void GamePlayScene::start()
@@ -107,7 +136,6 @@ void GamePlayScene::start()
 		mosaicLevel.y = WinApp::window_height * rate;
 		PostEffect::GetInstance()->SetMosaicNum(mosaicLevel);
 	}
-
 }
 
 void GamePlayScene::play()
@@ -136,9 +164,11 @@ void GamePlayScene::play()
 	}
 
 
+	// 0を押したら
 	if (input->TriggerKey(DIK_0)) {
+		// 自機の弾の発射
 		player->Shot(pBulletModel.get(), pBulletScale);
-
+		// パーティクルの発生
 		ParticleManager::GetInstance()->CreateParticle(player->GetPos(), 100, 1, 1);
 	}
 
@@ -191,13 +221,37 @@ void GamePlayScene::play()
 					// 当たったら消える
 					if (Collision::CheckSphere2Sphere(playerShape, eBulletShape)) {
 						eb.SetAlive(false);
-						player->SetAlive(false);
+						// player->SetAlive(false);
 						break;
 					}
 				}
 			}
 		}
+	}
 
+	// スプライン曲線で移動
+	{
+		frame++;
+		float timeRate = (float)frame / 120.f;
+
+		if (timeRate >= 1.0f)
+		{
+			if (splineStartIndex < points.size() - 3) {
+				splineStartIndex++;
+				timeRate -= 1.0f;
+				frame = 0;
+			}
+			else
+			{
+				timeRate = 1.0f;
+			}
+		}
+
+		// ベクターをフロートに変換
+		XMFLOAT3 splineFloat;
+		XMStoreFloat3(&splineFloat, splinePosition(points, splineStartIndex, timeRate));
+
+		player->SetPos(splineFloat);
 	}
 
 	// シーン切り替え
@@ -226,22 +280,6 @@ void GamePlayScene::play()
 			mosaicFlag = !mosaicFlag;
 		}
 	}
-
-	// パーティクル更新
-	ParticleManager::GetInstance()->Update();
-
-	camera->Update();
-	//fbxObj->Update();
-	player->Update();
-	//}
-	for (auto& i : enemy) {
-		i->Update();
-	}
-
-	skyDomeObj->Update();
-
-	// スプライト更新
-	sprite->Update();
 }
 
 void GamePlayScene::Draw(DirectXCommon* dxcommon)
@@ -254,9 +292,12 @@ void GamePlayScene::Draw(DirectXCommon* dxcommon)
 	// 3Dオブジェクト描画前処理
 	ObjObject3d::PreDraw();
 
+	//スカイドームの描画
 	skyDomeObj->Draw();
 
+	// プレイヤーの描画
 	player->Draw();
+	// 敵の複数描画
 	for (auto& i : enemy) {
 		i->Draw();
 	}
@@ -274,5 +315,24 @@ void GamePlayScene::Draw(DirectXCommon* dxcommon)
 
 void GamePlayScene::DrawFrontSprite(DirectXCommon* dxcommon) {
 	SpriteCommon::GetInstance()->PreDraw();
-
 }
+
+XMVECTOR GamePlayScene::splinePosition(const std::vector<XMVECTOR>& posints, size_t startIndex, float t)
+{
+	size_t n = posints.size() - 2;
+
+	if (startIndex > n)return posints[n];
+	if (startIndex < 1)return posints[1];
+
+	XMVECTOR p0 = posints[startIndex - 1];
+	XMVECTOR p1 = posints[startIndex];
+	XMVECTOR p2 = posints[startIndex + 1];
+	XMVECTOR p3 = posints[startIndex + 2];
+
+	XMVECTOR position = 0.5 * ((2 * p1 + (-p0 + p2) * t) +
+		(2 * p0 - 5 * p1 + 4 * p2 - p3) * t * t +
+		(-p0 + 3 * p1 - 3 * p2 + p3) * t * t * t);
+
+	return position;
+}
+

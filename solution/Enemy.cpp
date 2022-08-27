@@ -47,7 +47,7 @@ void Enemy::Update()
 		i.Update();
 	}
 
-	// 敵の弾を消
+	// 敵の弾を消す
 	bullet.erase(std::remove_if(bullet.begin(), bullet.end(), [](EnemyBullet& i) {return !i.GetAlive(); }), bullet.end());
 
 	obj->Update();
@@ -70,10 +70,11 @@ void Enemy::Shot(ObjModel* model, float scale)
 	bullet.back().SetScale({ scale / 3,scale / 3 ,scale });
 	XMFLOAT3 vel;
 
+	// 標的が設定されていないとき
 	if (shotTarget == nullptr) {
 		vel = { 0,0,-0.3 };
 	}
-	else {
+	else {// 設定されていたら
 		// 速度を計算
 		// 自分か標的までのベクトル
 		vel = {
@@ -87,7 +88,6 @@ void Enemy::Shot(ObjModel* model, float scale)
 		vectorVel = XMVector3Normalize(vectorVel);
 		// 大きさを任意の値にする
 		vectorVel = XMVectorScale(vectorVel, 0.3);
-
 		// FLOAT3に変換
 		XMStoreFloat3(&vel, vectorVel);
 
@@ -96,7 +96,6 @@ void Enemy::Shot(ObjModel* model, float scale)
 		float roty = atan2f(vel.x, vel.z);
 		bullet.back().SetRotation(XMFLOAT3(XMConvertToDegrees(rotx), XMConvertToDegrees(roty),0));
 	}
-
 
 	bullet.back().SetVel(vel);
 }
@@ -112,12 +111,13 @@ void Enemy::approach()
 	obj->SetPosition(pos);
 	obj->Update();
 
+	// 敵がZ軸0に行ったら行動パターンをleaveに変える
 	if (pos.z < 0) {
 		vel = XMFLOAT3(0.5, 0.5, 0);
 		phase = std::bind(&Enemy::leave, this);
 	}
 
-	if (nowShotFrame-- == 0u) {
+	if (nowShotFrame-- == 0) {
 		Shot(bulletModel.get(), 1);
 		nowShotFrame = shotInterval;
 	}
@@ -134,6 +134,7 @@ void Enemy::leave()
 	obj->SetPosition(pos);
 	obj->Update();
 
+	// 敵を消す
 	if (pos.x > 10) {
 		alive = false;
 	}

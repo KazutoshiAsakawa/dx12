@@ -16,10 +16,10 @@ void TrackingCamera::startUpdate()
 	// トラッキングターゲットが存在したら
 	if (trackingTarget) {
 		XMFLOAT3 target = trackingTarget->GetPos();
-		target.y += trackingTargetToCameraTargetHeight;
+		// target.y += trackingTargetToCameraTargetHeight;
 
-		float sinNum = sinf(XMConvertToRadians(-trackingTarget->GetRotation().x) );
-		float cosNum = cosf(XMConvertToRadians(-trackingTarget->GetRotation().x));
+		float sinNum = sinf(XMConvertToRadians(trackingTarget->GetRotation().x) );
+		float cosNum = cosf(XMConvertToRadians(trackingTarget->GetRotation().x));
 
 		// x軸回転を反映した位置
 		XMFLOAT3 tempPosition = { 0,sinNum * eyeToCameraTargetLength ,-cosNum * eyeToCameraTargetLength };
@@ -40,6 +40,6 @@ void TrackingCamera::startUpdate()
 		target.z + tempPosition2.z };
 
 		SetEye(eye);
-		SetTarget(target);
+		 SetTarget(target);
 	}
 }
