@@ -30,6 +30,8 @@ public:
 	/// </summary>
 	void Shot(ObjModel* model, float scale = 1);
 
+	void leaveChange(DirectX::XMFLOAT3 vel);
+
 	inline const DirectX::XMFLOAT3& GetVel() { return vel; }
 	inline void SetVel(const DirectX::XMFLOAT3& vel) { this->vel = vel; }
 

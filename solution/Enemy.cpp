@@ -111,11 +111,7 @@ void Enemy::approach()
 	obj->SetPosition(pos);
 	obj->Update();
 
-	// 敵がZ軸0に行ったら行動パターンをleaveに変える
-	if (pos.z < 0) {
-		vel = XMFLOAT3(0.5, 0.5, 0);
-		phase = std::bind(&Enemy::leave, this);
-	}
+	
 
 	// 撃つ
 	if (nowShotFrame-- == 0) {
@@ -139,4 +135,13 @@ void Enemy::leave()
 	if (pos.x > 10) {
 		alive = false;
 	}
+}
+
+void Enemy::leaveChange(XMFLOAT3 vel) {
+	SetVel(vel);
+
+	// leaveに変える
+	phase = std::bind(&Enemy::leave, this);
+
+
 }

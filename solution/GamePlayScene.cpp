@@ -180,11 +180,18 @@ void GamePlayScene::play()
 	// 敵を発生
 	for (auto& i : enemyFrame) {
 		if (i <= frame) {
-			enemyAdd({ 10, 0, 30 }, { 0, 0, -0.1 });
+			enemyAdd({ -10, 0, 30 }, { 0, 0, -0.1 });
 		}
 	}
 
 	enemyFrame.remove_if([&](UINT& i) {return i <= frame; });
+
+	// 敵がZ軸0に行ったら行動パターンをleaveに変える
+	for (auto& i : enemy) {
+		if (i->GetPos().z < 0) {
+			i->leaveChange(XMFLOAT3(0.5, 0.5, 0));
+		}
+	}
 
 	// 敵と自機の弾の当たり判定
 	{
