@@ -89,4 +89,9 @@ private:
 	size_t splineStartIndex;
 
 	UINT frame = 0;
+
+	// “G‚ğ”­¶
+	std::list<UINT> enemyFrame;
+
+
 };

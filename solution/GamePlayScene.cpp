@@ -60,23 +60,8 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 	camera->SetEye(eye);
 
 	// “G‚Ì•¡”•`‰æ
-	constexpr UINT enemyNum = 1;
-	// UINT enemyNum = 1;
 
-	enemy.resize(enemyNum);
-	for (auto& i : enemy) {
-		// “G‚Ì‰ŠúÀ•W
-		i = std::make_unique<Enemy>(enemyModel.get(), XMFLOAT3(-10, 0, 30));
-		// “G‚Ì‘å‚«‚³
-		i->SetScale(XMFLOAT3(enemyScale, enemyScale, enemyScale));
-		// “G‚Ì‘¬“x
-		i->SetVel(XMFLOAT3(0, 0, -0.1));
-		// “G‚Ì•W“I
-		i->SetShotTarget(player.get());
-	}
-
-	// enemy[0]->SetPos({ 10, 0, 30 });
-
+	enemy.resize(0);
 
 	// ƒp[ƒeƒBƒNƒ‹‰Šú‰»
 	ParticleManager::GetInstance()->SetCamera(camera.get());
@@ -100,6 +85,11 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 	points.emplace_back(XMVectorSet(0, 0, 0, 0));
 
 	splineStartIndex = 1;
+
+	enemyFrame.emplace_front(0);
+	enemyFrame.emplace_front(60);
+	enemyFrame.emplace_front(120);
+	enemyFrame.emplace_front(180);
 }
 
 void GamePlayScene::Finalize()
@@ -153,6 +143,8 @@ void GamePlayScene::start()
 
 void GamePlayScene::play()
 {
+
+
 	Input* input = Input::GetInstance();
 	// À•W‘€ì
 	if (input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN) || input->PushKey(DIK_RIGHT) || input->PushKey(DIK_LEFT))
@@ -186,9 +178,13 @@ void GamePlayScene::play()
 	}
 
 	// “G‚ğ”­¶
-	if (input->TriggerKey(DIK_2)) {
-		enemyAdd({ 10, 0, 30 },{ 0, 0, -0.1 });
+	for (auto& i : enemyFrame) {
+		if (i <= frame) {
+			enemyAdd({ 10, 0, 30 }, { 0, 0, -0.1 });
+		}
 	}
+
+	enemyFrame.remove_if([&](UINT& i) {return i <= frame; });
 
 	// “G‚Æ©‹@‚Ì’e‚Ì“–‚½‚è”»’è
 	{
@@ -297,6 +293,8 @@ void GamePlayScene::play()
 			mosaicFlag = !mosaicFlag;
 		}
 	}
+
+	frame++;
 }
 
 void GamePlayScene::Draw(DirectXCommon* dxcommon)
@@ -353,7 +351,7 @@ XMVECTOR GamePlayScene::splinePosition(const std::vector<XMVECTOR>& posints, siz
 	return position;
 }
 
-void GamePlayScene::enemyAdd(XMFLOAT3 pos,XMFLOAT3 vel)
+void GamePlayScene::enemyAdd(XMFLOAT3 pos, XMFLOAT3 vel)
 {
 	enemy.emplace_back();
 	auto& e = enemy.back();
