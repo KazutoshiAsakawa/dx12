@@ -86,10 +86,28 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 
 	splineStartIndex = 1;
 
-	enemyFrame.emplace_back(0, 60);
-	enemyFrame.emplace_back(60, 120);
-	enemyFrame.emplace_back(120, 180);
-	enemyFrame.emplace_back(180, 240);
+	// CSV“Ç‚İ‚İ
+	csv = Enemy::LoadCsv("Resources/enemy.csv");
+
+	{
+		UINT nowframe = 0;
+
+		for (auto& y : csv) {
+			if (y[0].find("//") == 0) {
+				continue;
+			}
+			if (y[0] == "POPPOSITION") {
+				// “G‚ğo‚·
+				enemyPos.emplace_back(std::stof(y[1]), std::stof(y[2]), std::stof(y[3]));
+			}
+			else if (y[0] == "POPTIME") {
+				// w’èŠÔ
+				nowframe += std::stof(y[1]);
+				enemyFrame.emplace_back(nowframe, nowframe + 60);
+			}
+		}
+	}
+
 }
 
 void GamePlayScene::Finalize()
@@ -143,9 +161,14 @@ void GamePlayScene::start()
 
 void GamePlayScene::play()
 {
-
-
 	Input* input = Input::GetInstance();
+
+	{
+		char tmp[32]{};
+		sprintf_s(tmp, 32, "%u", frame);
+		DebugText::GetInstance()->Print(tmp, 0, 50);
+	}
+
 	// À•W‘€ì
 	if (input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN) || input->PushKey(DIK_RIGHT) || input->PushKey(DIK_LEFT))
 	{
@@ -169,6 +192,7 @@ void GamePlayScene::play()
 	}
 
 
+
 	// 0‚ğ‰Ÿ‚µ‚½‚ç
 	if (input->TriggerKey(DIK_0)) {
 		// ©‹@‚Ì’e‚Ì”­Ë
@@ -180,7 +204,8 @@ void GamePlayScene::play()
 	// “G‚ğ”­¶
 	for (auto& i : enemyFrame) {
 		if (i.first <= frame) {
-			auto& a = enemyAdd({ -10, 0, 30 }, { 0, 0, -0.1 });
+			auto& a = enemyAdd(enemyPos[addedEnemyNum], { 0, 0, -0.1 });
+			addedEnemyNum++;
 			a->SetLifeSpan(i.second);
 		}
 	}
@@ -197,7 +222,7 @@ void GamePlayScene::play()
 
 	enemy.remove_if([&](std::unique_ptr<Enemy>& i) {return i->GetLifeSpan() <= frame; });
 
-		// “G‚Æ©‹@‚Ì’e‚Ì“–‚½‚è”»’è
+	// “G‚Æ©‹@‚Ì’e‚Ì“–‚½‚è”»’è
 	{
 		Sphere pBulletShape;
 

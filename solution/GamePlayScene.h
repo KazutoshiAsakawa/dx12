@@ -95,4 +95,9 @@ private:
 	std::list<std::pair<UINT, UINT>> enemyFrame;
 
 
+	std::vector< std::vector<std::string>> csv;
+
+	std::vector<DirectX::XMFLOAT3> enemyPos;
+
+	UINT addedEnemyNum = 0;
 };
