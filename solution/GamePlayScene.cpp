@@ -86,10 +86,10 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 
 	splineStartIndex = 1;
 
-	enemyFrame.emplace_front(0);
-	enemyFrame.emplace_front(60);
-	enemyFrame.emplace_front(120);
-	enemyFrame.emplace_front(180);
+	enemyFrame.emplace_back(0, 60);
+	enemyFrame.emplace_back(60, 120);
+	enemyFrame.emplace_back(120, 180);
+	enemyFrame.emplace_back(180, 240);
 }
 
 void GamePlayScene::Finalize()
@@ -179,21 +179,25 @@ void GamePlayScene::play()
 
 	// ìGÇî≠ê∂
 	for (auto& i : enemyFrame) {
-		if (i <= frame) {
-			enemyAdd({ -10, 0, 30 }, { 0, 0, -0.1 });
+		if (i.first <= frame) {
+			auto& a = enemyAdd({ -10, 0, 30 }, { 0, 0, -0.1 });
+			a->SetLifeSpan(i.second);
 		}
 	}
 
-	enemyFrame.remove_if([&](UINT& i) {return i <= frame; });
+	enemyFrame.remove_if([&](std::pair<UINT, UINT>& i) {return i.first <= frame; });
 
 	// ìGÇ™Zé≤0Ç…çsÇ¡ÇΩÇÁçsìÆÉpÉ^Å[ÉìÇleaveÇ…ïœÇ¶ÇÈ
 	for (auto& i : enemy) {
 		if (i->GetPos().z < 0) {
 			i->leaveChange(XMFLOAT3(0.5, 0.5, 0));
 		}
+
 	}
 
-	// ìGÇ∆é©ã@ÇÃíeÇÃìñÇΩÇËîªíË
+	enemy.remove_if([&](std::unique_ptr<Enemy>& i) {return i->GetLifeSpan() <= frame; });
+
+		// ìGÇ∆é©ã@ÇÃíeÇÃìñÇΩÇËîªíË
 	{
 		Sphere pBulletShape;
 
@@ -358,7 +362,7 @@ XMVECTOR GamePlayScene::splinePosition(const std::vector<XMVECTOR>& posints, siz
 	return position;
 }
 
-void GamePlayScene::enemyAdd(XMFLOAT3 pos, XMFLOAT3 vel)
+std::unique_ptr<Enemy>& GamePlayScene::enemyAdd(XMFLOAT3 pos, XMFLOAT3 vel)
 {
 	enemy.emplace_back();
 	auto& e = enemy.back();
@@ -371,4 +375,6 @@ void GamePlayScene::enemyAdd(XMFLOAT3 pos, XMFLOAT3 vel)
 	e->SetVel(vel);
 	// ìGÇÃïWìI
 	e->SetShotTarget(player.get());
+
+	return e;
 }

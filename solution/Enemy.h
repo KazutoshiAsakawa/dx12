@@ -30,6 +30,7 @@ public:
 	/// </summary>
 	void Shot(ObjModel* model, float scale = 1);
 
+
 	void leaveChange(DirectX::XMFLOAT3 vel);
 
 	inline const DirectX::XMFLOAT3& GetVel() { return vel; }
@@ -38,6 +39,11 @@ public:
 	inline auto& GetBullet() { return bullet; }
 
 	inline void SetShotTarget(GameObject* shotTarget) { this->shotTarget = shotTarget; }
+
+	inline const DirectX::XMFLOAT3& Getframe() { return vel; }
+
+	inline void SetLifeSpan(UINT lifeSpan) { this->lifeSpan = lifeSpan; }
+	inline UINT GetLifeSpan() { return lifeSpan; }
 
 private:
 	// 敵の行動パターン
@@ -51,10 +57,16 @@ private:
 	DirectX::XMFLOAT3 vel{};
 	// 弾
 	std::vector<EnemyBullet> bullet;
-	
+
 	UINT shotInterval = 60;
 	UINT nowShotFrame;
 	// 標的
 	GameObject* shotTarget;
+
+	// 経過フレーム数
+	UINT frame;
+
+	// 寿命
+	UINT lifeSpan;
 };
 

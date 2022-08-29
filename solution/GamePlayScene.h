@@ -53,7 +53,7 @@ public:
 	DirectX::XMVECTOR splinePosition(const std::vector<DirectX::XMVECTOR>& posints, size_t startIndex, float t);
 
 	// “G‚ğ”­¶‚³‚¹‚é
-	void enemyAdd(DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 vel);
+	std::unique_ptr<Enemy>& enemyAdd(DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 vel);
 
 private:
 	// ”wŒi
@@ -77,7 +77,7 @@ private:
 
 	// ƒvƒŒƒCƒ„[
 	std::unique_ptr<Player> player;
-	std::vector<std::unique_ptr<Enemy>> enemy;
+	std::list<std::unique_ptr<Enemy>> enemy;
 
 	std::function<void()> updateProcess;
 
@@ -91,7 +91,8 @@ private:
 	UINT frame = 0;
 
 	// “G‚ğ”­¶
-	std::list<UINT> enemyFrame;
+	// n‚Ü‚è,I‚í‚è
+	std::list<std::pair<UINT, UINT>> enemyFrame;
 
 
 };

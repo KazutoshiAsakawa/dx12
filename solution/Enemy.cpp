@@ -47,6 +47,8 @@ void Enemy::Update()
 		i.Update();
 	}
 
+	frame++;
+
 	// “G‚Ì’e‚ðÁ‚·
 	bullet.erase(std::remove_if(bullet.begin(), bullet.end(), [](EnemyBullet& i) {return !i.GetAlive(); }), bullet.end());
 
@@ -131,10 +133,6 @@ void Enemy::leave()
 	obj->SetPosition(pos);
 	obj->Update();
 
-	// “G‚ðÁ‚·
-	if (pos.x > 10) {
-		alive = false;
-	}
 }
 
 void Enemy::leaveChange(XMFLOAT3 vel) {
