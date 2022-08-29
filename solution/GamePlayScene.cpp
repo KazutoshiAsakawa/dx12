@@ -61,13 +61,22 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 
 	// 敵の複数描画
 	constexpr UINT enemyNum = 1;
+	// UINT enemyNum = 1;
+
 	enemy.resize(enemyNum);
 	for (auto& i : enemy) {
+		// 敵の初期座標
 		i = std::make_unique<Enemy>(enemyModel.get(), XMFLOAT3(-10, 0, 30));
+		// 敵の大きさ
 		i->SetScale(XMFLOAT3(enemyScale, enemyScale, enemyScale));
+		// 敵の速度
 		i->SetVel(XMFLOAT3(0, 0, -0.1));
+		// 敵の標的
 		i->SetShotTarget(player.get());
 	}
+
+	// enemy[0]->SetPos({ 10, 0, 30 });
+
 
 	// パーティクル初期化
 	ParticleManager::GetInstance()->SetCamera(camera.get());
@@ -100,6 +109,7 @@ void GamePlayScene::Finalize()
 
 void GamePlayScene::Update()
 {
+	// シーン遷移
 	updateProcess();
 
 	// パーティクル更新
@@ -119,14 +129,17 @@ void GamePlayScene::Update()
 	sprite->Update();
 }
 
+// シーン遷移
 void GamePlayScene::start()
 {
 	Input* input = Input::GetInstance();
-
+	// モザイクをかける時間
 	constexpr UINT mosaicFrameMax = 40;
 
+	// モザイクの時間が最大までいったらplay関数に変える
 	if (++mosaicFrame > mosaicFrameMax) {
 		PostEffect::GetInstance()->SetMosaicNum({ WinApp::window_width ,WinApp::window_height });
+		// updateProcessにplay関数をセット
 		updateProcess = std::bind(&GamePlayScene::play, this);
 	}
 	else {
@@ -172,6 +185,10 @@ void GamePlayScene::play()
 		ParticleManager::GetInstance()->CreateParticle(player->GetPos(), 100, 1, 1);
 	}
 
+	// 敵を発生
+	if (input->TriggerKey(DIK_2)) {
+		enemyAdd({ 10, 0, 30 },{ 0, 0, -0.1 });
+	}
 
 	// 敵と自機の弾の当たり判定
 	{
@@ -230,29 +247,29 @@ void GamePlayScene::play()
 	}
 
 	// スプライン曲線で移動
-	{
-		frame++;
-		float timeRate = (float)frame / 120.f;
+	//{
+	//	frame++;
+	//	float timeRate = (float)frame / 120.f;
 
-		if (timeRate >= 1.0f)
-		{
-			if (splineStartIndex < points.size() - 3) {
-				splineStartIndex++;
-				timeRate -= 1.0f;
-				frame = 0;
-			}
-			else
-			{
-				timeRate = 1.0f;
-			}
-		}
+	//	if (timeRate >= 1.0f)
+	//	{
+	//		if (splineStartIndex < points.size() - 3) {
+	//			splineStartIndex++;
+	//			timeRate -= 1.0f;
+	//			frame = 0;
+	//		}
+	//		else
+	//		{
+	//			timeRate = 1.0f;
+	//		}
+	//	}
 
-		// ベクターをフロートに変換
-		XMFLOAT3 splineFloat;
-		XMStoreFloat3(&splineFloat, splinePosition(points, splineStartIndex, timeRate));
+	//	// ベクターをフロートに変換
+	//	XMFLOAT3 splineFloat;
+	//	XMStoreFloat3(&splineFloat, splinePosition(points, splineStartIndex, timeRate));
 
-		player->SetPos(splineFloat);
-	}
+	//	player->SetPos(splineFloat);
+	//}
 
 	// シーン切り替え
 	if (input->TriggerKey(DIK_SPACE))
@@ -336,3 +353,17 @@ XMVECTOR GamePlayScene::splinePosition(const std::vector<XMVECTOR>& posints, siz
 	return position;
 }
 
+void GamePlayScene::enemyAdd(XMFLOAT3 pos,XMFLOAT3 vel)
+{
+	enemy.emplace_back();
+	auto& e = enemy.back();
+
+	// 敵の初期座標
+	e = std::make_unique<Enemy>(enemyModel.get(), pos);
+	// 敵の大きさ
+	e->SetScale(XMFLOAT3(enemyScale, enemyScale, enemyScale));
+	// 敵の速度
+	e->SetVel(vel);
+	// 敵の標的
+	e->SetShotTarget(player.get());
+}

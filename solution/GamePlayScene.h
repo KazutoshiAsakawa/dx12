@@ -52,6 +52,9 @@ public:
 
 	DirectX::XMVECTOR splinePosition(const std::vector<DirectX::XMVECTOR>& posints, size_t startIndex, float t);
 
+	// ìGÇî≠ê∂Ç≥ÇπÇÈ
+	void enemyAdd(DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 vel);
+
 private:
 	// îwåi
 	std::unique_ptr<Sprite> sprite;
@@ -78,8 +81,8 @@ private:
 
 	std::function<void()> updateProcess;
 
+	// ÉÇÉUÉCÉN
 	bool mosaicFlag = false;
-
 	UINT mosaicFrame = 0;
 
 	std::vector<DirectX::XMVECTOR> points;

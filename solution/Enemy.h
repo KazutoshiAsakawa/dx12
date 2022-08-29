@@ -8,7 +8,7 @@ class Enemy :
 {
 public:
 	using GameObject::GameObject;
-
+	// コンストラクタ
 	Enemy(ObjModel* model,
 		const DirectX::XMFLOAT3& position = { 0,0,0 });
 

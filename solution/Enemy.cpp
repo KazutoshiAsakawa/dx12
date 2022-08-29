@@ -117,6 +117,7 @@ void Enemy::approach()
 		phase = std::bind(&Enemy::leave, this);
 	}
 
+	// Œ‚‚Â
 	if (nowShotFrame-- == 0) {
 		Shot(bulletModel.get(), 1);
 		nowShotFrame = shotInterval;
