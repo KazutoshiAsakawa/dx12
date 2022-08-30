@@ -28,6 +28,11 @@ void Input::Update()
 {
 	HRESULT result;
 
+	// スクリーン上での座標を取る
+	GetCursorPos(&mousePos);
+	// スクリーン座標をクライアント座標(ウィンドウ内での座標)に変換
+	ScreenToClient(WinApp::GetInstance()->GetHwnd(), &mousePos);
+
 	//前回のキー入力を保存
 	memcpy(keyPre, key, sizeof(key));
 

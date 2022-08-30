@@ -16,7 +16,7 @@ Player::Player()
 	aim->SetModel(ObjModel::LoadFromObj("sphere"));
 	constexpr float aimLength = 10;
 	aim->SetPosition({0,0,aimLength });
-	aim->SetScale({ 0.8,0.8,0.8 });
+	aim->SetScale({ 0.5,0.5,1 });
 	aim->SetParent(obj.get());
 }
 

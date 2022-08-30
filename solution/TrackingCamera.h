@@ -20,7 +20,12 @@ private:
 
 	// トラッキングターゲットからのカメラの高さ
 	float trackingTargetToCameraTargetHeight = 5;
+
+	XMFLOAT3 trackingTargetToCameraTarget = { 0,5,0 };
+
 	// カメラの視点から注視点までの距離
-	float eyeToCameraTargetLength = 10;
+	float eyeToCameraTargetLength = 20;
+
+
 };
 

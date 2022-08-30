@@ -25,6 +25,9 @@ public:
 	inline void SetRotation(const DirectX::XMFLOAT3& rotation) { obj->SetRotation(rotation); }
 	inline const DirectX::XMFLOAT3& GetRotation() const { return obj->GetRotation(); }
 
+	inline const DirectX::XMMATRIX& GetMatRotation() const { return obj->GetMatRot(); }
+
+
 	GameObject(
 		ObjModel* model,
 		const DirectX::XMFLOAT3& position = { 0,0,0 });

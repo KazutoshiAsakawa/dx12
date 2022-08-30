@@ -59,8 +59,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 	eye.y += 10;
 	camera->SetEye(eye);
 
-	// 敵の複数描画
-
+	// 敵
 	enemy.resize(0);
 
 	// パーティクル初期化
