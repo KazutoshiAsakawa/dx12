@@ -10,12 +10,22 @@ Player::Player()
 {
 	obj->SetPosition({ 0,0,0 });
 	obj->SetScale({ 1,1,1 });
+
+	aim = ObjObject3d::Create();
+	aim->Initialize();
+	aim->SetModel(ObjModel::LoadFromObj("sphere"));
+	constexpr float aimLength = 10;
+	aim->SetPosition({0,0,aimLength });
+	aim->SetScale({ 0.8,0.8,0.8 });
+	aim->SetParent(obj.get());
 }
 
 void Player::Update()
 {
 	// ˆÚ“®ˆ—
 	Move();
+	
+	
 
 	for (auto& i : bullet)
 	{
@@ -25,6 +35,7 @@ void Player::Update()
 	bullet.erase(std::remove_if(bullet.begin(), bullet.end(), [](PlayerBullet& i) {return !i.GetAlive(); }), bullet.end());
 
 	obj->Update();
+	aim->Update();
 }
 
 void Player::Draw()
@@ -36,7 +47,9 @@ void Player::Draw()
 
 	if (alive) {
 		obj->Draw();
+		aim->Draw();
 	}
+
 }
 
 void Player::Shot(ObjModel* model, float scale)

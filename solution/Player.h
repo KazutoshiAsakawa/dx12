@@ -31,5 +31,8 @@ private:
 	std::unique_ptr <ObjModel> model;
 
 	std::vector<PlayerBullet> bullet;
+
+	// è∆èÄ
+	std::unique_ptr <ObjObject3d> aim;
 };
 

@@ -132,6 +132,8 @@ public: // メンバ関数
 
 	// inline void SetScale(const XMFLOAT3& scale) { this->scale = scale; }
 
+	void SetParent(ObjObject3d* parent) {this-> parent_ = parent;};
+
 	/// <summary>
 	/// setter
 	/// </summary>

@@ -18,8 +18,8 @@ void TrackingCamera::startUpdate()
 		XMFLOAT3 target = trackingTarget->GetPos();
 		// target.y += trackingTargetToCameraTargetHeight;
 
-		float sinNum = sinf(XMConvertToRadians(trackingTarget->GetRotation().x) );
-		float cosNum = cosf(XMConvertToRadians(trackingTarget->GetRotation().x));
+		float sinNum = sinf(XMConvertToRadians(trackingTarget->GetRotation().x + 30) );
+		float cosNum = cosf(XMConvertToRadians(trackingTarget->GetRotation().x + 30));
 
 		// xŽ²‰ñ“]‚ð”½‰f‚µ‚½ˆÊ’u
 		XMFLOAT3 tempPosition = { 0,sinNum * eyeToCameraTargetLength ,-cosNum * eyeToCameraTargetLength };

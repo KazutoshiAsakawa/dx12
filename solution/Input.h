@@ -16,7 +16,7 @@ public://メンバー関数
 	static Input* GetInstance();
 
 	//初期化
-	void Initialize(WinApp * winApp);
+	void Initialize(WinApp* winApp);
 	//更新
 	void Update();
 	/// <summary>
@@ -31,6 +31,9 @@ public://メンバー関数
 	/// <param name="kyeNumber">キー番号( DIK_0 等)</param>
 	/// <returns>トリガーか</returns>
 	bool TriggerKey(BYTE keyNumber);
+
+	inline POINT GetMousePos() { return mousePos; };
+
 private://メンバー変数
 	//キーボードのデバイス
 	ComPtr<IDirectInputDevice8> devkeyboard;
@@ -39,6 +42,9 @@ private://メンバー変数
 	BYTE key[256] = {};
 	//前回の全キーの状態
 	BYTE keyPre[256] = {};
+
+	POINT mousePos;
+
 private:
 	// WindowsAPI
 	WinApp* winApp = nullptr;
