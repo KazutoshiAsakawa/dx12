@@ -5,6 +5,34 @@
 
 using namespace DirectX;
 
+namespace {
+	// 球面線形補間
+	XMVECTOR SLerp(XMVECTOR vel, XMVECTOR vec, float t) {
+		// 大きさを1にする
+		XMVECTOR normVel = XMVector3Normalize(vel);
+		XMVECTOR normVec = XMVector3Normalize(vec);
+		// velとvecの成す角
+		float angle = 0.f;
+		XMStoreFloat(&angle, XMVector3Dot(normVel, normVec));
+
+		float sinAngle = acos(sin(angle));
+		float sinAngleFrom = sin((1 - t) * angle);
+		float sinAngleTo = sin(t * angle);
+		// 長さを計算
+		float a = 0.f;
+		XMStoreFloat(&a, XMVector3Length(vel));
+		float b = 0.f;
+		XMStoreFloat(&b, XMVector3Length(vec));
+
+		// a + t * (b - a);
+		// ベクトルの大きさ
+		float lerpVal = a + t * (b - a);
+		// 向き
+		XMVECTOR slerpVec = (sinAngleFrom * normVel + sinAngleTo * normVec) / sinAngle;
+		return lerpVal * slerpVec;
+	}
+}
+
 Enemy::Enemy(ObjModel* model, const DirectX::XMFLOAT3& position)
 	:GameObject(model, position), phase(std::bind(&Enemy::approach, this)) {
 	// Shot(ObjModel::LoadFromObj("rat"),1);
@@ -43,6 +71,40 @@ void Enemy::Update()
 		phase();
 	}
 
+	// 誘導弾
+	{
+		XMVECTOR vel, vec;
+		XMFLOAT3 floatVel;
+
+		for (auto& i : bullet) {
+			vel = XMVectorSet(i.GetVel().x, i.GetVel().y, i.GetVel().z, 1);
+			vel = XMVector3Normalize(vel);
+
+			vec = XMVectorSet(
+				shotTarget->GetPos().x - i.GetPos().x,
+				shotTarget->GetPos().y - i.GetPos().y,
+				shotTarget->GetPos().z - i.GetPos().z,
+				1
+			);
+			vec = XMVector3Normalize(vec);
+
+			vel = SLerp(vel, vec, 0.03f);
+			// 速度の大きさを指定
+			vel *= 0.1f;
+
+			// XMStoreFloat3(&XMFLOAT3の変数, XMVECTORの変数);
+			XMStoreFloat3(&floatVel, vel);
+			i.SetVel(floatVel);
+
+			// 標的に向ける
+			float rotx = atan2f(-floatVel.y,
+				sqrtf(floatVel.x * floatVel.x + floatVel.z * floatVel.z));
+			float roty = atan2f(floatVel.x, floatVel.z);
+
+			i.SetRotation(XMFLOAT3(XMConvertToDegrees(rotx), XMConvertToDegrees(roty), 0));
+		}
+	}
+
 	for (auto& i : bullet) {
 		i.Update();
 	}
@@ -70,15 +132,12 @@ void Enemy::Shot(ObjModel* model, float scale)
 {
 	bullet.emplace_back(model, obj->GetPosition());
 	bullet.back().SetScale({ scale / 3,scale / 3 ,scale });
-	XMFLOAT3 vel;
+	XMFLOAT3 vel = { 0,0,-0.3 };
 
-	// 標的が設定されていないとき
-	if (shotTarget == nullptr) {
-		vel = { 0,0,-0.3 };
-	}
-	else {// 設定されていたら
+	// 設定されていたら
+	if (shotTarget != nullptr) {
 		// 速度を計算
-		// 自分か標的までのベクトル
+		// 自分から標的までのベクトル
 		vel = {
 			shotTarget->GetPos().x - obj->GetPosition().x,
 			shotTarget->GetPos().y - obj->GetPosition().y,
@@ -96,7 +155,7 @@ void Enemy::Shot(ObjModel* model, float scale)
 		// 標的に向ける
 		float rotx = atan2f(vel.y, vel.z);
 		float roty = atan2f(vel.x, vel.z);
-		bullet.back().SetRotation(XMFLOAT3(XMConvertToDegrees(rotx), XMConvertToDegrees(roty),0));
+		bullet.back().SetRotation(XMFLOAT3(XMConvertToDegrees(rotx), XMConvertToDegrees(roty), 0));
 	}
 
 	bullet.back().SetVel(vel);
@@ -113,18 +172,18 @@ void Enemy::approach()
 	obj->SetPosition(pos);
 	obj->Update();
 
-	
-
-	// 撃つ
+	// 0になったら撃つ
 	if (nowShotFrame-- == 0) {
 		Shot(bulletModel.get(), 1);
+		// 初期化
 		nowShotFrame = shotInterval;
 	}
+
+
 }
 
 void Enemy::leave()
 {
-
 	XMFLOAT3 pos = obj->GetPosition();
 	pos.x += vel.x;
 	pos.y += vel.y;
@@ -132,7 +191,6 @@ void Enemy::leave()
 
 	obj->SetPosition(pos);
 	obj->Update();
-
 }
 
 void Enemy::leaveChange(XMFLOAT3 vel) {
@@ -140,6 +198,4 @@ void Enemy::leaveChange(XMFLOAT3 vel) {
 
 	// leaveに変える
 	phase = std::bind(&Enemy::leave, this);
-
-
 }

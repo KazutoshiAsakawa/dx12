@@ -102,7 +102,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 			else if (y[0] == "POPTIME") {
 				// w’èŠÔ
 				nowframe += std::stof(y[1]);
-				enemyFrame.emplace_back(nowframe, nowframe + 60);
+				enemyFrame.emplace_back(nowframe, nowframe + 60 * 40);// (“G‚ªo‚éŠÔ,“G‚ªÁ‚¦‚éŠÔ)
 			}
 		}
 	}

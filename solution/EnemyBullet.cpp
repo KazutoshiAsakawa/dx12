@@ -1,5 +1,7 @@
 #include "EnemyBullet.h"
 
+using namespace DirectX;
+
 void EnemyBullet::Update()
 {
 	if (++numFrame > life) {
