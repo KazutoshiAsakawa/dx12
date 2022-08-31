@@ -58,6 +58,7 @@ public:
 private:
 	// 背景
 	std::unique_ptr<Sprite> sprite;
+	std::unique_ptr<Sprite> aim;
 
 	// スカイドーム
 	std::unique_ptr<ObjModel> skyDomeModel;

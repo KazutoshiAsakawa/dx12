@@ -18,6 +18,14 @@ Camera::Camera(int window_width, int window_height)
 
 	// ビュープロジェクションの合成
 	matViewProjection = matView * matProjection;
+
+	matViewPort = XMMatrixIdentity();
+	matViewPort.r[0].m128_f32[0] = (float)window_width / 2.0f;
+	matViewPort.r[1].m128_f32[1] = -1.0f - ((float)window_height / 2.0f);
+	matViewPort.r[2].m128_f32[2] = 1.0f;
+	matViewPort.r[3].m128_f32[0] = (float)window_width / 2.0f;
+	matViewPort.r[3].m128_f32[1] = (float)window_height / 2.0f;
+	matViewPort.r[3].m128_f32[3] = 1.0f;
 }
 
 void Camera::Update()

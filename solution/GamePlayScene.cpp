@@ -18,9 +18,11 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 {
 	// スプライト共通テクスチャ読み込み
 	SpriteCommon::GetInstance()->LoadTexture(1, L"Resources/gameplay.png");
+	SpriteCommon::GetInstance()->LoadTexture(2, L"Resources/aim.png");
 
 	// スプライトの生成
 	sprite.reset(Sprite::Create(1, { 0,0 }, false, false));
+	aim.reset(Sprite::Create(2));
 
 	// カメラの初期化
 	camera.reset(new TrackingCamera());
@@ -134,6 +136,9 @@ void GamePlayScene::Update()
 
 	// スプライト更新
 	sprite->Update();
+
+	aim->SetPosition({player->GetScreenAimPos().x,player->GetScreenAimPos().y,0});
+	aim->Update();
 }
 
 // シーン遷移
@@ -365,6 +370,7 @@ void GamePlayScene::Draw(DirectXCommon* dxcommon)
 
 void GamePlayScene::DrawFrontSprite(DirectXCommon* dxcommon) {
 	SpriteCommon::GetInstance()->PreDraw();
+	aim->Draw();
 }
 
 XMVECTOR GamePlayScene::splinePosition(const std::vector<XMVECTOR>& posints, size_t startIndex, float t)

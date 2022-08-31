@@ -15,7 +15,7 @@ Player::Player()
 	aim->Initialize();
 	aim->SetModel(ObjModel::LoadFromObj("sphere"));
 	constexpr float aimLength = 10;
-	aim->SetPosition({0,0,aimLength });
+	aim->SetPosition({ 0,0,aimLength });
 	aim->SetScale({ 0.5,0.5,1 });
 	aim->SetParent(obj.get());
 }
@@ -24,8 +24,19 @@ void Player::Update()
 {
 	// à⁄ìÆèàóù
 	Move();
-	
-	
+
+	{
+		XMMATRIX mat =
+			obj->GetCamera()->GetViewMatrix() *
+			obj->GetCamera()->GetProjectionMatrix() *
+			obj->GetCamera()->GetViewPortMatrix();
+
+		XMVECTOR screenAimPos = XMVector3Transform(aim->GetMatWorld().r[3], mat);
+		screenAimPos /= XMVectorGetW(screenAimPos);
+
+		// ïœêîÇ…äiî[
+		float2ScreenAimPos = XMFLOAT2(XMVectorGetX(screenAimPos), XMVectorGetY(screenAimPos));
+	}
 
 	for (auto& i : bullet)
 	{

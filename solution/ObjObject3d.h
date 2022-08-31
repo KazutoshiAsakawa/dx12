@@ -69,6 +69,7 @@ public: // 静的メンバ関数
 	//static Object3d* Create();
 
 	static void SetCamera(Camera* camera) { ObjObject3d::camera = camera; };
+	static inline Camera* GetCamera() { return camera; }
 
 private: // 静的メンバ変数
 	// デバイス
@@ -119,6 +120,7 @@ public: // メンバ関数
 	const XMFLOAT3& GetRotation() { return rotation_; }
 
 	inline const XMMATRIX& GetMatRot() {return matRot;}
+	inline const XMMATRIX& GetMatWorld() {return matWorld_;}
 
 	/// <summary>
 	/// 座標の設定

@@ -24,6 +24,8 @@ public:
 
 	inline auto& GetBullet() { return bullet; }
 
+	inline DirectX::XMFLOAT2 GetScreenAimPos() { return float2ScreenAimPos; }
+
 	// void Bullet();
 
 private:
@@ -34,5 +36,7 @@ private:
 
 	// è∆èÄ
 	std::unique_ptr <ObjObject3d> aim;
+
+	DirectX::XMFLOAT2 float2ScreenAimPos;
 };
 
