@@ -254,10 +254,7 @@ bool ObjObject3d::InitializeGraphicsPipeline()
 void ObjObject3d::CreateModel()
 {
 
-
 }
-
-
 
 bool ObjObject3d::Initialize()
 {

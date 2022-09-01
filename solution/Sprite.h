@@ -60,6 +60,8 @@ public:
 	void SetTexLeftTop(const DirectX::XMFLOAT2& texLeftTop){ texLeftTop_ = texLeftTop;}
 	void SetTexSize(const DirectX::XMFLOAT2& texSize){texSize_ = texSize;}
 
+	inline const DirectX::XMFLOAT2& GetSize() {return size_; };
+
 private:
 	//頂点バッファ;
 	Microsoft::WRL::ComPtr<ID3D12Resource> vertBuff_;

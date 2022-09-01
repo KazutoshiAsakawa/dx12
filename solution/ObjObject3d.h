@@ -122,6 +122,8 @@ public: // メンバ関数
 	inline const XMMATRIX& GetMatRot() {return matRot;}
 	inline const XMMATRIX& GetMatWorld() {return matWorld_;}
 
+
+
 	/// <summary>
 	/// 座標の設定
 	/// </summary>

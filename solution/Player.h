@@ -22,6 +22,8 @@ public:
 
 	void Shot(ObjModel* model, float scale = 1);
 
+	inline void SetShotTarget(GameObject* shotTarget) {this->shotTarget = shotTarget;}
+
 	inline auto& GetBullet() { return bullet; }
 
 	inline DirectX::XMFLOAT2 GetScreenAimPos() { return float2ScreenAimPos; }
@@ -38,5 +40,8 @@ private:
 	std::unique_ptr <ObjObject3d> aim;
 
 	DirectX::XMFLOAT2 float2ScreenAimPos;
+
+	// •W“I
+	GameObject* shotTarget;
 };
 

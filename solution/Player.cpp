@@ -69,6 +69,31 @@ void Player::Shot(ObjModel* model, float scale)
 	bullet.back().SetScale({ scale,scale,scale });
 	XMFLOAT3 vel;
 	XMStoreFloat3(&vel, XMVector3Transform(XMVectorSet(0, 0, 1, 1), obj->GetMatRot()));
+
+
+	if (shotTarget != nullptr) {
+		// 速度を計算
+		// 自分から標的までのベクトル
+		vel = {
+			shotTarget->GetPos().x - obj->GetPosition().x,
+			shotTarget->GetPos().y - obj->GetPosition().y,
+			shotTarget->GetPos().z - obj->GetPosition().z
+		};
+		// XMVECTORに変換
+		XMVECTOR vectorVel = XMLoadFloat3(&vel);
+		// 大きさを1にする
+		vectorVel = XMVector3Normalize(vectorVel);
+		// 大きさを任意の値にする
+		vectorVel = XMVectorScale(vectorVel, 0.3);
+		// FLOAT3に変換
+		XMStoreFloat3(&vel, vectorVel);
+
+		// 標的に向ける
+		float rotx = atan2f(vel.y, vel.z);
+		float roty = atan2f(vel.x, vel.z);
+		bullet.back().SetRotation(XMFLOAT3(XMConvertToDegrees(rotx), XMConvertToDegrees(roty), 0));
+	}
+
 	bullet.back().SetVel(vel);
 }
 

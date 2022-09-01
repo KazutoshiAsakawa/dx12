@@ -55,6 +55,8 @@ public:
 	// ìGÇî≠ê∂Ç≥ÇπÇÈ
 	std::unique_ptr<Enemy>& enemyAdd(DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 vel);
 
+	
+
 private:
 	// îwåi
 	std::unique_ptr<Sprite> sprite;

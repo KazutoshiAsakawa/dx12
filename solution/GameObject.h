@@ -10,6 +10,8 @@ class GameObject {
 protected:
 	std::unique_ptr<ObjObject3d> obj;
 	bool alive = true;
+	
+	DirectX::XMFLOAT2 float2ScreenPos {};
 
 public:
 
@@ -28,6 +30,9 @@ public:
 	inline const DirectX::XMMATRIX& GetMatRotation() const { return obj->GetMatRot(); }
 
 
+	inline const DirectX::XMFLOAT2& GetFloat2ScreenPos() const { return float2ScreenPos; }
+
+
 	GameObject(
 		ObjModel* model,
 		const DirectX::XMFLOAT3& position = { 0,0,0 });
@@ -35,4 +40,6 @@ public:
 	virtual void Update();
 
 	virtual void Draw();
+
+	void Screen();
 };

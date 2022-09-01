@@ -108,7 +108,6 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 			}
 		}
 	}
-
 }
 
 void GamePlayScene::Finalize()
@@ -137,7 +136,9 @@ void GamePlayScene::Update()
 	// スプライト更新
 	sprite->Update();
 
-	aim->SetPosition({player->GetScreenAimPos().x,player->GetScreenAimPos().y,0});
+
+	// aim->SetPosition({player->GetScreenAimPos().x,player->GetScreenAimPos().y,0});
+	aim->SetPosition({ (float)Input::GetInstance()->GetMousePos().x,(float)Input::GetInstance()->GetMousePos().y,0 });
 	aim->Update();
 }
 
@@ -223,8 +224,39 @@ void GamePlayScene::play()
 		}
 
 	}
-
 	enemy.remove_if([&](std::unique_ptr<Enemy>& i) {return i->GetLifeSpan() <= frame; });
+
+	if (!enemy.empty())
+	{
+		// 画像の左上と右下
+		XMFLOAT2 aimLT = { (float)input->GetMousePos().x - aim->GetSize().x / 2,
+		(float)input->GetMousePos().y - aim->GetSize().y / 2 };
+
+		XMFLOAT2 aimRB = { (float)input->GetMousePos().x + aim->GetSize().x / 2,
+		(float)input->GetMousePos().y + aim->GetSize().y / 2 };
+
+		// 敵の場所
+		XMFLOAT2 enemyPos;
+
+		bool flag = false;
+
+		player->SetShotTarget(nullptr);
+		for (auto& i : enemy) {
+			if(!i->GetAlive())continue;
+			enemyPos = { i->GetFloat2ScreenPos().x,i->GetFloat2ScreenPos().y};
+
+			// 当たり判定
+			if (aimLT.x <= enemyPos.x && aimLT.y <= enemyPos.y &&
+				aimRB.x >= enemyPos.x && aimRB.y >= enemyPos.y) {
+				flag = true;
+				player->SetShotTarget(i.get());
+			}
+		}
+
+		if (flag) {
+			DebugText::GetInstance()->Print("aaaa",0,0,5);
+		}
+	}
 
 	// 敵と自機の弾の当たり判定
 	{
