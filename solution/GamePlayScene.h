@@ -66,6 +66,10 @@ private:
 	std::unique_ptr<ObjModel> skyDomeModel;
 	std::unique_ptr<ObjObject3d> skyDomeObj;
 
+	// ’n–Ê
+	std::unique_ptr<ObjModel> groundModel;
+	std::unique_ptr<ObjObject3d> groundObj;
+
 	// ’e
 	std::unique_ptr<ObjModel> pBulletModel = nullptr;
 	// ’e‚Ì‘å‚«‚³

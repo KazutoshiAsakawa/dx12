@@ -76,7 +76,7 @@ private:
 	// ワールド行列
 	DirectX::XMMATRIX matWorld_;
 	// 色(RGBA)
-	DirectX::XMFLOAT4 color_ = { 1, 1, 1, 1 };
+	DirectX::XMFLOAT4 color_ = { 1, 1, 1, 1 };// 1, 1, 1, 1
 	// テクスチャ番号
 	UINT texNumber_ = 0;
 	// 大きさ

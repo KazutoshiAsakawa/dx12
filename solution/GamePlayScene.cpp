@@ -39,6 +39,13 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 	skyDomeObj->SetModel(skyDomeModel.get());
 	skyDomeObj->SetScale({ 5,5,5 });
 
+	// 地面
+	groundModel.reset(ObjModel::LoadFromObj("ground"));
+	groundObj = ObjObject3d::Create();
+	groundObj->SetModel(groundModel.get());
+	groundObj->SetScale({1,1,1});
+	groundObj->SetPosition({0,-5,0});
+
 	// 自機の読み込み
 	pBulletModel.reset(ObjModel::LoadFromObj("playerBullet"));
 	// 敵の読み込み
@@ -131,11 +138,11 @@ void GamePlayScene::Update()
 		i->Update();
 	}
 
+	groundObj->Update();
 	skyDomeObj->Update();
 
 	// スプライト更新
 	sprite->Update();
-
 
 	// aim->SetPosition({player->GetScreenAimPos().x,player->GetScreenAimPos().y,0});
 	aim->SetPosition({ (float)Input::GetInstance()->GetMousePos().x,(float)Input::GetInstance()->GetMousePos().y,0 });
@@ -195,8 +202,6 @@ void GamePlayScene::play()
 		}
 		player->SetRotation(playerRot);
 	}
-
-
 
 	// 0を押したら
 	if (input->TriggerKey(DIK_0)) {
@@ -378,6 +383,9 @@ void GamePlayScene::Draw(DirectXCommon* dxcommon)
 
 	// 3Dオブジェクト描画前処理
 	ObjObject3d::PreDraw();
+
+	// 地面
+	groundObj->Draw();
 
 	//スカイドームの描画
 	skyDomeObj->Draw();
