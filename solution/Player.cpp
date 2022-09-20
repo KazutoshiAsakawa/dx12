@@ -18,6 +18,8 @@ Player::Player()
 	aim->SetPosition({ 0,0,aimLength });
 	aim->SetScale({ 0.5,0.5,1 });
 	aim->SetParent(obj.get());
+
+	shotTarget = nullptr;
 }
 
 void Player::Update()
@@ -69,8 +71,9 @@ void Player::Shot(ObjModel* model, float scale)
 	bullet.back().SetScale({ scale,scale,scale });
 	bullet.back().SetParent(obj->GetParent());
 	XMFLOAT3 vel;
-	XMStoreFloat3(&vel, XMVector3Transform(XMVectorSet(0, 0, 1, 1), obj->GetMatRot()));
+	constexpr float velScale = 2.f;
 
+	XMStoreFloat3(&vel, XMVector3Transform(XMVectorSet(0, 0, velScale, 1), obj->GetMatRot()));
 
 	if (shotTarget != nullptr) {
 		// ‘¬“x‚ðŒvŽZ
@@ -85,7 +88,7 @@ void Player::Shot(ObjModel* model, float scale)
 		// ‘å‚«‚³‚ð1‚É‚·‚é
 		vectorVel = XMVector3Normalize(vectorVel);
 		// ‘å‚«‚³‚ð”CˆÓ‚Ì’l‚É‚·‚é
-		vectorVel = XMVectorScale(vectorVel, 0.3);
+		vectorVel = XMVectorScale(vectorVel, velScale);
 		// FLOAT3‚É•ÏŠ·
 		XMStoreFloat3(&vel, vectorVel);
 

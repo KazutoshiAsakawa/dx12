@@ -37,7 +37,7 @@ Enemy::Enemy(ObjModel* model, const DirectX::XMFLOAT3& position)
 	:GameObject(model, position), phase(std::bind(&Enemy::approach, this)) {
 	// Shot(ObjModel::LoadFromObj("rat"),1);
 	bulletModel.reset(ObjModel::LoadFromObj("enemyBullet"));
-	nowShotFrame = shotInterval;
+	nowShotFrame = 0;
 }
 
 // CSVì«Ç›çûÇ›

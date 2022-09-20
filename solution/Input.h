@@ -34,6 +34,24 @@ public://メンバー関数
 
 	inline POINT GetMousePos() { return mousePos; };
 
+	enum MouseButton
+	{
+		LEFT = 0,
+		RIGHT = 1
+	};
+
+	/// <param name="mouseNumber">0で左クリック,1で右クリック</param>
+	inline bool PushMouse(_In_ BYTE mouseNumber)
+	{
+		return (bool)mouse.rgbButtons[mouseNumber];
+	}
+
+	/// <param name="mouseNumber">0で左クリック,1で右クリック</param>
+	inline bool TriggerMouse(_In_ BYTE mouseNumber)
+	{
+		return PushMouse(mouseNumber) && !(bool)mousePre.rgbButtons[mouseNumber];
+	}
+
 private://メンバー変数
 	//キーボードのデバイス
 	ComPtr<IDirectInputDevice8> devkeyboard;
@@ -44,6 +62,10 @@ private://メンバー変数
 	BYTE keyPre[256] = {};
 
 	POINT mousePos;
+
+	DIMOUSESTATE2 mouse{};
+	DIMOUSESTATE2 mousePre{};
+	ComPtr<IDirectInputDevice8> devmouse;
 
 private:
 	// WindowsAPI

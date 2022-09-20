@@ -34,6 +34,8 @@ void TitleScene::Update()
 		SceneManager::GetInstance()->ChangeScene("GAMEPLAY");
 	}
 
+	DebugText::GetInstance()->Print("Press Enter",0,0,3);
+
 	// スプライト更新
 	sprite->Update();
 }

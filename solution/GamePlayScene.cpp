@@ -46,8 +46,8 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 	groundModel.reset(ObjModel::LoadFromObj("ground"));
 	groundObj = ObjObject3d::Create();
 	groundObj->SetModel(groundModel.get());
-	groundObj->SetScale({1,1,1});
-	groundObj->SetPosition({0,-5,0});
+	groundObj->SetScale({ 100,100,100 });
+	groundObj->SetPosition({ 0,-5,0 });
 
 	// 自機の読み込み
 	pBulletModel.reset(ObjModel::LoadFromObj("playerBullet"));
@@ -197,10 +197,13 @@ void GamePlayScene::play()
 		DebugText::GetInstance()->Print(tmp, 0, 50);
 	}
 
+	// レーンの位置
 	{
 		auto pos = lane->GetPos();
-		pos.z += 0.1;
+		pos.y += 0.1;
 		lane->SetPos(pos);
+
+		skyDomeObj->SetPosition(pos);
 	}
 
 	// 座標操作
@@ -225,8 +228,8 @@ void GamePlayScene::play()
 		player->SetRotation(playerRot);
 	}
 
-	// 0を押したら
-	if (input->TriggerKey(DIK_0)) {
+	// 左クリック
+	if (input->TriggerMouse(Input::LEFT)) {
 		// 自機の弾の発射
 		player->Shot(pBulletModel.get(), pBulletScale);
 
@@ -273,10 +276,11 @@ void GamePlayScene::play()
 
 		bool flag = false;
 
+		// 照準と敵のスクリーン座標の当たり判定
 		player->SetShotTarget(nullptr);
 		for (auto& i : enemy) {
-			if(!i->GetAlive())continue;
-			enemyPos = { i->GetFloat2ScreenPos().x,i->GetFloat2ScreenPos().y};
+			if (!i->GetAlive())continue;
+			enemyPos = { i->GetFloat2ScreenPos().x,i->GetFloat2ScreenPos().y };
 
 			// 当たり判定
 			if (aimLT.x <= enemyPos.x && aimLT.y <= enemyPos.y &&
@@ -287,7 +291,10 @@ void GamePlayScene::play()
 		}
 
 		if (flag) {
-			DebugText::GetInstance()->Print("aaaa",0,0,5);
+			aim->SetColor({ 1,0,0,1 });
+		}
+		else {
+			aim->SetColor({ 1,1,1,1 });
 		}
 	}
 
@@ -473,7 +480,7 @@ std::unique_ptr<Enemy>& GamePlayScene::enemyAdd(XMFLOAT3 pos, XMFLOAT3 vel)
 	e->SetVel(vel);
 	// 敵の標的
 	e->SetShotTarget(player.get());
-	
+
 	e->SetParent(lane->GetObj());
 
 	return e;

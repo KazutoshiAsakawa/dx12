@@ -21,12 +21,22 @@ void Input::Initialize(WinApp* winApp)
 
 	result = devkeyboard->SetCooperativeLevel(winApp->GetHwnd(), DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
 
+	result = dinput->CreateDevice(GUID_SysMouse, &devmouse, NULL);
+
+	result = devmouse->SetDataFormat(&c_dfDIMouse2); // 標準形式
+
+	result = devmouse->SetCooperativeLevel(WinApp::GetInstance()->GetHwnd(), DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
+
 	this->winApp = winApp;
 }
 
 void Input::Update()
 {
 	HRESULT result;
+
+	result = devmouse->Acquire();	// マウス動作開始
+	mousePre = mouse;
+	result = devmouse->GetDeviceState(sizeof(mouse), &mouse);
 
 	// スクリーン上での座標を取る
 	GetCursorPos(&mousePos);
