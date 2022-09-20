@@ -82,6 +82,9 @@ private:
 	// カメラ
 	std::unique_ptr<TrackingCamera> camera;
 
+	// レーンの真ん中
+	std::unique_ptr<GameObject> lane;
+
 	// プレイヤー
 	std::unique_ptr<Player> player;
 	std::list<std::unique_ptr<Enemy>> enemy;

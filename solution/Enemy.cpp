@@ -133,6 +133,7 @@ void Enemy::Shot(ObjModel* model, float scale)
 {
 	bullet.emplace_back(model, obj->GetPosition());
 	bullet.back().SetScale({ scale / 3,scale / 3 ,scale });
+	bullet.back().SetParent(obj->GetParent());
 	XMFLOAT3 vel = { 0,0,-0.3 };
 
 	// İ’è‚³‚ê‚Ä‚¢‚½‚ç

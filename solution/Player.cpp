@@ -67,6 +67,7 @@ void Player::Shot(ObjModel* model, float scale)
 {
 	bullet.emplace_back(model, obj->GetPosition());
 	bullet.back().SetScale({ scale,scale,scale });
+	bullet.back().SetParent(obj->GetParent());
 	XMFLOAT3 vel;
 	XMStoreFloat3(&vel, XMVector3Transform(XMVectorSet(0, 0, 1, 1), obj->GetMatRot()));
 

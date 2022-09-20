@@ -31,6 +31,9 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 
 	ObjObject3d::SetCamera(camera.get());
 
+	// レーン
+	lane.reset(new GameObject(nullptr));
+
 	// OBJからモデルデータを読み込む
 
 	// スカイドーム
@@ -60,10 +63,21 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 	// プレイヤー初期化
 	player = std::make_unique<Player>();
 
+	// プレイヤーの親を設定
+	player->SetParent(lane->GetObj());
+
 	// カメラをプレイヤーの位置にセット
-	camera->SetTrackingTarget(player.get());
+	/*camera->SetTrackingTarget(player.get());
 	camera->SetTarget(player->GetPos());
 	XMFLOAT3 eye = player->GetPos();
+	eye.z -= 50;
+	eye.y += 10;
+	camera->SetEye(eye);*/
+
+	// カメラをレーンの位置にセット
+	camera->SetTrackingTarget(lane.get());
+	camera->SetTarget(lane->GetPos());
+	XMFLOAT3 eye = lane->GetPos();
 	eye.z -= 50;
 	eye.y += 10;
 	camera->SetEye(eye);
@@ -131,6 +145,8 @@ void GamePlayScene::Update()
 	ParticleManager::GetInstance()->Update();
 
 	camera->Update();
+	lane->Update();
+
 	//fbxObj->Update();
 	player->Update();
 	//}
@@ -181,6 +197,12 @@ void GamePlayScene::play()
 		DebugText::GetInstance()->Print(tmp, 0, 50);
 	}
 
+	{
+		auto pos = lane->GetPos();
+		pos.z += 0.1;
+		lane->SetPos(pos);
+	}
+
 	// 座標操作
 	if (input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN) || input->PushKey(DIK_RIGHT) || input->PushKey(DIK_LEFT))
 	{
@@ -207,8 +229,14 @@ void GamePlayScene::play()
 	if (input->TriggerKey(DIK_0)) {
 		// 自機の弾の発射
 		player->Shot(pBulletModel.get(), pBulletScale);
+
+		XMFLOAT3 pos = lane->GetPos();
+		pos.x += player->GetPos().x;
+		pos.y += player->GetPos().y;
+		pos.z += player->GetPos().z;
+
 		// パーティクルの発生
-		ParticleManager::GetInstance()->CreateParticle(player->GetPos(), 100, 1, 1);
+		ParticleManager::GetInstance()->CreateParticle(pos, 100, 1, 1);
 	}
 
 	// 敵を発生
@@ -445,6 +473,8 @@ std::unique_ptr<Enemy>& GamePlayScene::enemyAdd(XMFLOAT3 pos, XMFLOAT3 vel)
 	e->SetVel(vel);
 	// 敵の標的
 	e->SetShotTarget(player.get());
+	
+	e->SetParent(lane->GetObj());
 
 	return e;
 }

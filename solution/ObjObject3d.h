@@ -122,6 +122,7 @@ public: // メンバ関数
 	inline const XMMATRIX& GetMatRot() {return matRot;}
 	inline const XMMATRIX& GetMatWorld() {return matWorld_;}
 
+	inline ObjObject3d* GetParent() {return parent_;}
 
 
 	/// <summary>
@@ -136,7 +137,7 @@ public: // メンバ関数
 
 	// inline void SetScale(const XMFLOAT3& scale) { this->scale = scale; }
 
-	void SetParent(ObjObject3d* parent) {this-> parent_ = parent;};
+	void SetParent(ObjObject3d* parent) {this-> parent_ = parent;}
 
 	/// <summary>
 	/// setter

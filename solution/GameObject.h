@@ -10,8 +10,8 @@ class GameObject {
 protected:
 	std::unique_ptr<ObjObject3d> obj;
 	bool alive = true;
-	
-	DirectX::XMFLOAT2 float2ScreenPos {};
+
+	DirectX::XMFLOAT2 float2ScreenPos{};
 
 public:
 
@@ -29,6 +29,9 @@ public:
 
 	inline const DirectX::XMMATRIX& GetMatRotation() const { return obj->GetMatRot(); }
 
+	inline void SetParent(ObjObject3d* parent) { obj->SetParent(parent); }
+
+	inline ObjObject3d* GetObj() { return obj.get(); }
 
 	inline const DirectX::XMFLOAT2& GetFloat2ScreenPos() const { return float2ScreenPos; }
 
