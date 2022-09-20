@@ -228,19 +228,7 @@ void GamePlayScene::play()
 		player->SetRotation(playerRot);
 	}
 
-	// 左クリック
-	if (input->TriggerMouse(Input::LEFT)) {
-		// 自機の弾の発射
-		player->Shot(pBulletModel.get(), pBulletScale);
-
-		XMFLOAT3 pos = lane->GetPos();
-		pos.x += player->GetPos().x;
-		pos.y += player->GetPos().y;
-		pos.z += player->GetPos().z;
-
-		// パーティクルの発生
-		ParticleManager::GetInstance()->CreateParticle(pos, 100, 1, 1);
-	}
+	
 
 	// 敵を発生
 	for (auto& i : enemyFrame) {
@@ -292,6 +280,19 @@ void GamePlayScene::play()
 
 		if (flag) {
 			aim->SetColor({ 1,0,0,1 });
+			// 照準が合っていたら左クリック
+			if (input->TriggerMouse(Input::LEFT)) {
+				// 自機の弾の発射
+				player->Shot(pBulletModel.get(), pBulletScale);
+
+				XMFLOAT3 pos = lane->GetPos();
+				pos.x += player->GetPos().x;
+				pos.y += player->GetPos().y;
+				pos.z += player->GetPos().z;
+
+				// パーティクルの発生
+				ParticleManager::GetInstance()->CreateParticle(pos, 100, 1, 1);
+			}
 		}
 		else {
 			aim->SetColor({ 1,1,1,1 });
