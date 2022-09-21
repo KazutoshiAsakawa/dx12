@@ -195,6 +195,10 @@ void GamePlayScene::play()
 		char tmp[32]{};
 		sprintf_s(tmp, 32, "%u", frame);
 		DebugText::GetInstance()->Print(tmp, 0, 50);
+
+
+		sprintf_s(tmp, 32, "%.2f,%.2f,%.2f",player->GetPos().x, player->GetPos().y, player->GetPos().z);
+		DebugText::GetInstance()->Print(tmp, 0, 100);
 	}
 
 	// レーンの位置
@@ -206,10 +210,9 @@ void GamePlayScene::play()
 		skyDomeObj->SetPosition(pos);
 	}
 
-	// 座標操作
+	// プレイヤーの回転
 	if (input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN) || input->PushKey(DIK_RIGHT) || input->PushKey(DIK_LEFT))
 	{
-		// プレイヤーの回転
 		XMFLOAT3 playerRot = player->GetRotation();
 		constexpr float rotSpeed = 1.f;
 
