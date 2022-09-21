@@ -347,5 +347,6 @@ bool DirectXCommon::InitializeImgui() {
 	}
 
 	ImGui::GetIO().IniFilename = NULL;
+	ImGui::GetIO().Fonts->AddFontFromFileTTF("Resources/ume-pgo4.ttf",12.f,nullptr,ImGui::GetIO().Fonts->GetGlyphRangesJapanese());
 	return true;
 }

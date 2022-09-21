@@ -112,7 +112,7 @@ void Player::Move(float speed) {
 	if (hitW || hitS || hitA || hitD || hitZ || hitX) {
 		auto pos = obj->GetPosition();
 
-		if (hitW && pos.y < 15.f) {
+		if (hitW && pos.y < 8.f) {
 			pos.y += speed;
 		}
 		else if (hitS && pos.y > -4.f) {

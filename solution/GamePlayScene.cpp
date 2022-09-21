@@ -454,9 +454,12 @@ void GamePlayScene::DrawFrontSprite(DirectXCommon* dxcommon) {
 	SpriteCommon::GetInstance()->PreDraw();
 	aim->Draw();
 
+	ImGui::SetNextWindowSize(ImVec2(100, 100));
+	ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_WindowBg,ImVec4(1.f,0.f,1.f,0.5f));
 	ImGui::Begin("aaa", nullptr, ImGuiWindowFlags_NoSavedSettings);
-	ImGui::Text("JP %u",frame);
+	ImGui::Text(u8"ÉtÉåÅ[ÉÄ %u",frame);
 	ImGui::End();
+	ImGui::PopStyleColor();
 }
 
 XMVECTOR GamePlayScene::splinePosition(const std::vector<XMVECTOR>& posints, size_t startIndex, float t)
