@@ -18,13 +18,10 @@ public:
 private:
 	GameObject* trackingTarget;
 
-	// トラッキングターゲットからのカメラの高さ
-	float trackingTargetToCameraTargetHeight = 5;
-
-	XMFLOAT3 trackingTargetToCameraTarget = { 0,5,0 };
+	XMFLOAT3 trackingTargetToCameraTarget = { 0.f,2.5f,0.f };
 
 	// カメラの視点から注視点までの距離
-	float eyeToCameraTargetLength = 20;
+	float eyeToCameraTargetLength = 10;
 
 
 };

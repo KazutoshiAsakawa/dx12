@@ -29,6 +29,7 @@ public:	// サブクラス
 		float pad2; // パディング
 		DirectX::XMFLOAT3 specular; // スペキュラー係数
 		float alpha;	// アルファ
+		DirectX::XMFLOAT2 tiling; // タイリング
 	};
 
 	// マテリアル
@@ -75,8 +76,10 @@ public:	// 静的メンバ関数
 	/// <param name="rootParamIndexMaterial">マテリアルのルートパラメータ番号指定</param>
 	void Draw(ID3D12GraphicsCommandList* cmdList, UINT rootParamIndexMaterial);
 
-	static void SetDevice(ID3D12Device* device) {ObjModel::device = device;}
+	static void SetDevice(ID3D12Device* device) { ObjModel::device = device; }
 
+	inline void SetTiling(const DirectX::XMFLOAT2& tiling) { this->tiling = tiling; materialDirty = true;}
+	inline const DirectX::XMFLOAT2& GetTiling() const {return this->tiling;}
 private: // メンバ変数
 	// デバイス(借りてくる)
 	static ID3D12Device* device;
@@ -107,6 +110,10 @@ private: // メンバ変数
 	D3D12_INDEX_BUFFER_VIEW ibView_;
 	// マテリアル用定数バッファ
 	Microsoft::WRL::ComPtr<ID3D12Resource> constBuffB1_;
+
+	DirectX::XMFLOAT2 tiling{ 1,1 }; // タイリング
+
+	bool materialDirty = false;
 private:
 	void LoadFromOBJInternal(const std::string& modelname);
 
@@ -115,5 +122,7 @@ private:
 
 	// 各種バッファの生成
 	void CreateBuffers();
+
+	void TransfarConstBuffersB1();
 };
 

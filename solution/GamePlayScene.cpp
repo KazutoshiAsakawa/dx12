@@ -44,6 +44,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 
 	// 地面
 	groundModel.reset(ObjModel::LoadFromObj("ground"));
+	groundModel->SetTiling({10.f,10.f});
 	groundObj = ObjObject3d::Create();
 	groundObj->SetModel(groundModel.get());
 	groundObj->SetScale({ 100,100,100 });
@@ -196,7 +197,6 @@ void GamePlayScene::play()
 		sprintf_s(tmp, 32, "%u", frame);
 		DebugText::GetInstance()->Print(tmp, 0, 50);
 
-
 		sprintf_s(tmp, 32, "%.2f,%.2f,%.2f",player->GetPos().x, player->GetPos().y, player->GetPos().z);
 		DebugText::GetInstance()->Print(tmp, 0, 100);
 	}
@@ -204,7 +204,7 @@ void GamePlayScene::play()
 	// レーンの位置
 	{
 		auto pos = lane->GetPos();
-		pos.z += 0.1;
+		pos.z += 0.2;
 		lane->SetPos(pos);
 
 		skyDomeObj->SetPosition(pos);
@@ -230,8 +230,6 @@ void GamePlayScene::play()
 		}
 		player->SetRotation(playerRot);
 	}
-
-	
 
 	// 敵を発生
 	for (auto& i : enemyFrame) {
@@ -292,9 +290,6 @@ void GamePlayScene::play()
 				pos.x += player->GetPos().x;
 				pos.y += player->GetPos().y;
 				pos.z += player->GetPos().z;
-
-				// パーティクルの発生
-				ParticleManager::GetInstance()->CreateParticle(pos, 100, 1, 1);
 			}
 		}
 		else {
@@ -322,6 +317,14 @@ void GamePlayScene::play()
 				if (Collision::CheckSphere2Sphere(pBulletShape, enemyShape)) {
 					e->SetAlive(false);
 					pb.SetAlive(false);
+
+					XMFLOAT3 pos = lane->GetPos();
+					pos.x += e->GetPos().x;
+					pos.y += e->GetPos().y;
+					pos.z += e->GetPos().z;
+
+					// パーティクルの発生
+					ParticleManager::GetInstance()->CreateParticle(pos, 100, 10, 10);
 					break;
 				}
 			}

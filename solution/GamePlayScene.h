@@ -73,7 +73,7 @@ private:
 	// ’e
 	std::unique_ptr<ObjModel> pBulletModel = nullptr;
 	// ’e‚Ì‘å‚«‚³
-	float pBulletScale = 2;
+	float pBulletScale = 1;
 
 	// “G
 	std::unique_ptr<ObjModel> enemyModel = nullptr;

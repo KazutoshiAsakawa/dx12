@@ -27,8 +27,6 @@ ObjModel* ObjModel::LoadFromObj(const std::string& modelname)
 	model->CreateBuffers();
 
 	return model;
-
-
 }
 
 void ObjModel::LoadMaterial(const std::string& directoryPath, const std::string& filename)
@@ -176,6 +174,10 @@ bool ObjModel::LoadTexture(const std::string& directoryPath, const std::string& 
 
 void ObjModel::Draw(ID3D12GraphicsCommandList* cmdList, UINT rootParamIndexMaterial)
 {
+	if (materialDirty) {
+		TransfarConstBuffersB1();
+		materialDirty = false;
+	}
 	// 頂点バッファの設定
 	cmdList->IASetVertexBuffers(0, 1, &vbView_);
 	// インデックスバッファの設定
@@ -383,13 +385,18 @@ void ObjModel::CreateBuffers()
 		IID_PPV_ARGS(&constBuffB1_));
 	assert(SUCCEEDED(result));
 
+	TransfarConstBuffersB1();
+}
+
+void ObjModel::TransfarConstBuffersB1() {
 	// マテリアル用定数バッファへデータ転送
 	ConstBufferDataB1* constMap1 = nullptr;
-	result = constBuffB1_->Map(0, nullptr, (void**)&constMap1);
+	HRESULT result = constBuffB1_->Map(0, nullptr, (void**)&constMap1);
 	assert(SUCCEEDED(result));
 	constMap1->ambient = material_.ambient;
 	constMap1->diffuse = material_.diffuse;
 	constMap1->specular = material_.specular;
 	constMap1->alpha = material_.alpha;
+	constMap1->tiling = tiling;
 	constBuffB1_->Unmap(0, nullptr);
 }
