@@ -3,6 +3,7 @@
 #include<d3dx12.h>
 #include<dxgi1_6.h>
 #include<wrl.h>
+#include <imgui.h>
 #include"WinApp.h"
 
 class DirectXCommon
@@ -51,6 +52,8 @@ private:
 
 	void InitializeFence();
 
+	bool InitializeImgui();
+
 	//デバイス
 	Microsoft::WRL::ComPtr<ID3D12Device> dev;
 	//DXGIファクトリオ
@@ -73,6 +76,8 @@ private:
 	std::vector<Microsoft::WRL::ComPtr<ID3D12Resource>> backBuffers;
 
 	Microsoft::WRL::ComPtr<ID3D12Fence> fence;
+
+	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> imguiHeap;
 
 	//WindowsAPI
 	WinApp* winApp = nullptr;

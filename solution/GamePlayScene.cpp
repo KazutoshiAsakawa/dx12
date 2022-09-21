@@ -453,6 +453,10 @@ void GamePlayScene::Draw(DirectXCommon* dxcommon)
 void GamePlayScene::DrawFrontSprite(DirectXCommon* dxcommon) {
 	SpriteCommon::GetInstance()->PreDraw();
 	aim->Draw();
+
+	ImGui::Begin("aaa", nullptr, ImGuiWindowFlags_NoSavedSettings);
+	ImGui::Text("JP %u",frame);
+	ImGui::End();
 }
 
 XMVECTOR GamePlayScene::splinePosition(const std::vector<XMVECTOR>& posints, size_t startIndex, float t)
