@@ -75,6 +75,7 @@ void Enemy::Update()
 	{
 		XMVECTOR vel, vec;
 		XMFLOAT3 floatVel;
+		XMVECTOR angleVec;
 
 		for (auto& i : bullet) {
 			vel = XMVectorSet(i.GetVel().x, i.GetVel().y, i.GetVel().z, 1);
@@ -88,9 +89,13 @@ void Enemy::Update()
 			);
 			vec = XMVector3Normalize(vec);
 
+			// 一定の角度に行ったら追わない
+			angleVec = XMVector3AngleBetweenNormals(vel,vec );
+			if(XMVectorGetX(angleVec) > XM_PI/3.f) continue;
+
 			vel = SLerp(vel, vec, 0.03f);
 			// 速度の大きさを指定
-			vel *= 0.1f;
+			vel *= 0.8f;
 
 			// XMStoreFloat3(&XMFLOAT3の変数, XMVECTORの変数);
 			XMStoreFloat3(&floatVel, vel);
@@ -134,7 +139,7 @@ void Enemy::Shot(ObjModel* model, float scale)
 	bullet.emplace_back(model, obj->GetPosition());
 	bullet.back().SetScale({ scale / 3,scale / 3 ,scale });
 	bullet.back().SetParent(obj->GetParent());
-	XMFLOAT3 vel = { 0.f,0.f,-0.3f };
+	XMFLOAT3 vel = { 0.f,0.f,-0.8f };
 
 	// 設定されていたら
 	if (shotTarget != nullptr) {
@@ -150,7 +155,7 @@ void Enemy::Shot(ObjModel* model, float scale)
 		// 大きさを1にする
 		vectorVel = XMVector3Normalize(vectorVel);
 		// 大きさを任意の値にする
-		vectorVel = XMVectorScale(vectorVel, 0.3f);
+		vectorVel = XMVectorScale(vectorVel, 0.8f);
 		// FLOAT3に変換
 		XMStoreFloat3(&vel, vectorVel);
 

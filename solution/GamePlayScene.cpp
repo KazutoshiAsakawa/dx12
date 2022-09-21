@@ -200,7 +200,7 @@ void GamePlayScene::play()
 	// ƒŒ[ƒ“‚ÌˆÊ’u
 	{
 		auto pos = lane->GetPos();
-		pos.y += 0.1;
+		pos.z += 0.1;
 		lane->SetPos(pos);
 
 		skyDomeObj->SetPosition(pos);
