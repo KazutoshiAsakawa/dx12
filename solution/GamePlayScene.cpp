@@ -139,31 +139,37 @@ void GamePlayScene::Finalize()
 
 void GamePlayScene::Update()
 {
-	// シーン遷移
-	updateProcess();
-
-	// パーティクル更新
-	ParticleManager::GetInstance()->Update();
-
-	camera->Update();
-	lane->Update();
-
-	//fbxObj->Update();
-	player->Update();
-	//}
-	for (auto& i : enemy) {
-		i->Update();
+	if (Input::GetInstance()->TriggerKey(DIK_ESCAPE)) {
+		pause = !pause;
 	}
 
-	groundObj->Update();
-	skyDomeObj->Update();
+	if (!pause) {
+		// シーン遷移
+		updateProcess();
 
-	// スプライト更新
-	sprite->Update();
+		// パーティクル更新
+		ParticleManager::GetInstance()->Update();
 
-	// aim->SetPosition({player->GetScreenAimPos().x,player->GetScreenAimPos().y,0});
-	aim->SetPosition({ (float)Input::GetInstance()->GetMousePos().x,(float)Input::GetInstance()->GetMousePos().y,0 });
-	aim->Update();
+		camera->Update();
+		lane->Update();
+
+		//fbxObj->Update();
+		player->Update();
+		//}
+		for (auto& i : enemy) {
+			i->Update();
+		}
+
+		groundObj->Update();
+		skyDomeObj->Update();
+
+		// スプライト更新
+		sprite->Update();
+
+		// aim->SetPosition({player->GetScreenAimPos().x,player->GetScreenAimPos().y,0});
+		aim->SetPosition({ (float)Input::GetInstance()->GetMousePos().x,(float)Input::GetInstance()->GetMousePos().y,0 });
+		aim->Update();
+	}
 }
 
 // シーン遷移
@@ -460,36 +466,38 @@ void GamePlayScene::play()
 
 void GamePlayScene::Draw(DirectXCommon* dxcommon)
 {
-	// スプライト共通コマンド
-	SpriteCommon::GetInstance()->PreDraw();
-	// スプライト描画
-	sprite->Draw();
+	if (!pause) {
+		// スプライト共通コマンド
+		SpriteCommon::GetInstance()->PreDraw();
+		// スプライト描画
+		sprite->Draw();
 
-	// 3Dオブジェクト描画前処理
-	ObjObject3d::PreDraw();
+		// 3Dオブジェクト描画前処理
+		ObjObject3d::PreDraw();
 
-	// 地面
-	groundObj->Draw();
+		// 地面
+		groundObj->Draw();
 
-	//スカイドームの描画
-	skyDomeObj->Draw();
+		//スカイドームの描画
+		skyDomeObj->Draw();
 
-	// プレイヤーの描画
-	player->Draw();
-	// 敵の複数描画
-	for (auto& i : enemy) {
-		i->Draw();
+		// プレイヤーの描画
+		player->Draw();
+		// 敵の複数描画
+		for (auto& i : enemy) {
+			i->Draw();
+		}
+		/// <summary>
+		/// ここに3Dオブジェクトの描画処理を追加できる
+		/// </summary>
+
+		// 3Dオブジェクト描画後処理
+		ObjObject3d::PostDraw();
+		// パーティクル描画
+		ParticleManager::GetInstance()->Draw(dxcommon->GetCmdList());
+		// スプライト共通コマンド
+		SpriteCommon::GetInstance()->PreDraw();
 	}
-	/// <summary>
-	/// ここに3Dオブジェクトの描画処理を追加できる
-	/// </summary>
-
-	// 3Dオブジェクト描画後処理
-	ObjObject3d::PostDraw();
-	// パーティクル描画
-	ParticleManager::GetInstance()->Draw(dxcommon->GetCmdList());
-	// スプライト共通コマンド
-	SpriteCommon::GetInstance()->PreDraw();
 }
 
 void GamePlayScene::DrawFrontSprite(DirectXCommon* dxcommon) {
@@ -501,7 +509,16 @@ void GamePlayScene::DrawFrontSprite(DirectXCommon* dxcommon) {
 	ImGui::Begin("aaa", nullptr, ImGuiWindowFlags_NoSavedSettings);
 	ImGui::Text(u8"フレーム %u", frame);
 	ImGui::Text(u8"体力 %u", player->GetHp());
+	ImGui::SetNextWindowPos(ImVec2(ImGui::GetWindowPos().x,
+		ImGui::GetWindowPos().y + ImGui::GetWindowSize().y));
 	ImGui::End();
+
+	if (pause) {
+		// ImGui::SetNextWindowPos(ImVec2(100,200));
+		ImGui::Begin("bbb", nullptr, ImGuiWindowFlags_NoSavedSettings);
+		ImGui::Text("pause");
+		ImGui::End();
+	}
 	ImGui::PopStyleColor();
 }
 

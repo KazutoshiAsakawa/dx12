@@ -163,7 +163,7 @@
     <ClCompile Include="CollisionShape.cpp" />
     <ClCompile Include="DebugCamera.cpp" />
     <ClCompile Include="DebugText.cpp" />
-    <ClCompile Include="DirectCommon.cpp" />
+    <ClCompile Include="DirectXCommon.cpp" />
     <ClCompile Include="EndScene.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="EnemyBullet.cpp" />

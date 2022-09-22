@@ -115,4 +115,6 @@ private:
 	std::vector<DirectX::XMFLOAT3> enemyPos;
 
 	UINT addedEnemyNum = 0;
+
+	bool pause = false;
 };

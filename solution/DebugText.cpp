@@ -53,7 +53,7 @@ void DebugText::Print(const std::string& text, float x, float y, float scale)
 		int fontIndexX = fontIndex % fontLineCount;
 
 		// À•WŒvŽZ
-		//sprites[spriteIndex]->position_ = { x + fontWidth * scale * i, y, 0 };
+		//sprites[spriteIndex]->position = { x + fontWidth * scale * i, y, 0 };
 		sprites[spriteIndex]->SetPosition({ x + fontWidth * scale * i, y, 0 });
 		sprites[spriteIndex]->SetTexLeftTop({ (float)fontIndexX * fontWidth, (float)fontIndexY * fontHeight });
 		sprites[spriteIndex]->SetTexSize({ fontWidth, fontHeight });
