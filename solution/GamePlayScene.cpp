@@ -210,6 +210,7 @@ void GamePlayScene::play()
 		skyDomeObj->SetPosition(pos);
 	}
 
+	// ƒvƒŒƒCƒ„[‚ÌˆÚ“®‚Æ‰ñ”ð
 	{
 		const bool hitW = Input::GetInstance()->PushKey(DIK_W);
 		const bool hitS = Input::GetInstance()->PushKey(DIK_S);
@@ -220,11 +221,16 @@ void GamePlayScene::play()
 
 		const bool hitSpace = Input::GetInstance()->TriggerKey(DIK_SPACE);
 
+		if (avoidFrame >= 1) {
+			avoidFrame--;
+		}
+
 		if (hitW || hitS || hitA || hitD || hitZ || hitX) {
 			auto pos = player->GetPos();
 			float moveSpeed = 0.2f;
-			if (hitSpace) {
+			if (hitSpace && avoidFrame == 0) {
 				moveSpeed *= 10;
+				avoidFrame = avoidFrameMax;
 			}
 
 			if (hitW && pos.y < 8.f) {

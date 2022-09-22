@@ -87,6 +87,11 @@ private:
 
 	// プレイヤー
 	std::unique_ptr<Player> player;
+	// 回避のクールタイム
+	UINT avoidFrame = 0;
+	UINT avoidFrameMax = 60;
+
+	// 敵
 	std::list<std::unique_ptr<Enemy>> enemy;
 
 	std::function<void()> updateProcess;
