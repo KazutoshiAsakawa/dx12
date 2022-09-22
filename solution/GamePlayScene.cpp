@@ -400,8 +400,11 @@ void GamePlayScene::play()
 
 					// 当たったら消える
 					if (Collision::CheckSphere2Sphere(playerShape, eBulletShape)) {
-						eb.SetAlive(false);
-						// player->SetAlive(false);
+						eb.SetAlive(false);				// 敵の弾を消す
+						player->Damage(1);				// プレイヤーにダメージ
+						if (player->GetHp() == 0) {		// 体力が0になったら
+							player->SetAlive(false);
+						}
 						break;
 					}
 				}
@@ -497,6 +500,7 @@ void GamePlayScene::DrawFrontSprite(DirectXCommon* dxcommon) {
 	ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_WindowBg, ImVec4(1.f, 0.f, 1.f, 0.5f));
 	ImGui::Begin("aaa", nullptr, ImGuiWindowFlags_NoSavedSettings);
 	ImGui::Text(u8"フレーム %u", frame);
+	ImGui::Text(u8"体力 %u", player->GetHp());
 	ImGui::End();
 	ImGui::PopStyleColor();
 }

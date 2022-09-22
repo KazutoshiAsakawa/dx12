@@ -19,6 +19,8 @@ Player::Player()
 	aim->SetScale({ 0.5,0.5,1 });
 	aim->SetParent(obj.get());
 
+	hp = 3;
+
 	shotTarget = nullptr;
 }
 

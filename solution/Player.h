@@ -20,11 +20,14 @@ public:
 
 	void Shot(ObjModel* model, float scale = 1);
 
-	inline void SetShotTarget(GameObject* shotTarget) {this->shotTarget = shotTarget;}
+	inline void SetShotTarget(GameObject* shotTarget) { this->shotTarget = shotTarget; }
 
 	inline auto& GetBullet() { return bullet; }
 
 	inline DirectX::XMFLOAT2 GetScreenAimPos() { return float2ScreenAimPos; }
+
+	inline void Damage(UINT damage) { if (hp >= damage)hp -= damage; }
+	inline UINT GetHp() { return hp; }
 
 private:
 
@@ -39,5 +42,7 @@ private:
 
 	// •W“I
 	GameObject* shotTarget;
+
+	UINT hp;
 };
 
