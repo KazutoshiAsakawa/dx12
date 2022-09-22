@@ -44,7 +44,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 
 	// 地面
 	groundModel.reset(ObjModel::LoadFromObj("ground"));
-	groundModel->SetTiling({10.f,10.f});
+	groundModel->SetTiling({ 10.f,10.f });
 	groundObj = ObjObject3d::Create();
 	groundObj->SetModel(groundModel.get());
 	groundObj->SetScale({ 100,100,100 });
@@ -197,7 +197,7 @@ void GamePlayScene::play()
 		sprintf_s(tmp, 32, "%u", frame);
 		DebugText::GetInstance()->Print(tmp, 0, 50);
 
-		sprintf_s(tmp, 32, "%.2f,%.2f,%.2f",player->GetPos().x, player->GetPos().y, player->GetPos().z);
+		sprintf_s(tmp, 32, "%.2f,%.2f,%.2f", player->GetPos().x, player->GetPos().y, player->GetPos().z);
 		DebugText::GetInstance()->Print(tmp, 0, 100);
 	}
 
@@ -208,6 +208,41 @@ void GamePlayScene::play()
 		lane->SetPos(pos);
 
 		skyDomeObj->SetPosition(pos);
+	}
+
+	{
+		const bool hitW = Input::GetInstance()->PushKey(DIK_W);
+		const bool hitS = Input::GetInstance()->PushKey(DIK_S);
+		const bool hitA = Input::GetInstance()->PushKey(DIK_A);
+		const bool hitD = Input::GetInstance()->PushKey(DIK_D);
+		const bool hitZ = Input::GetInstance()->PushKey(DIK_Z);
+		const bool hitX = Input::GetInstance()->PushKey(DIK_X);
+
+		const bool hitSpace = Input::GetInstance()->TriggerKey(DIK_SPACE);
+
+		if (hitW || hitS || hitA || hitD || hitZ || hitX) {
+			auto pos = player->GetPos();
+			float moveSpeed = 0.2f;
+			if (hitSpace) {
+				moveSpeed *= 10;
+			}
+
+			if (hitW && pos.y < 8.f) {
+				pos.y += moveSpeed;
+			}
+			else if (hitS && pos.y > -4.f) {
+				pos.y -= moveSpeed;
+			}
+
+			if (hitD && pos.x < 20.f) {
+				pos.x += moveSpeed;
+			}
+			else if (hitA && pos.x > -20.f) {
+				pos.x -= moveSpeed;
+			}
+
+			player->SetPos(pos);
+		}
 	}
 
 	// プレイヤーの回転
@@ -241,6 +276,13 @@ void GamePlayScene::play()
 	}
 
 	enemyFrame.remove_if([&](std::pair<UINT, UINT>& i) {return i.first <= frame; });
+
+	// 敵が全部居なくなったらエンドシーンに行く
+	{
+		if (enemyFrame.empty() && enemy.empty()) {
+			SceneManager::GetInstance()->ChangeScene("END");
+		}
+	}
 
 	// 敵がZ軸0に行ったら行動パターンをleaveに変える
 	for (auto& i : enemy) {
@@ -365,7 +407,6 @@ void GamePlayScene::play()
 	//{
 	//	frame++;
 	//	float timeRate = (float)frame / 120.f;
-
 	//	if (timeRate >= 1.0f)
 	//	{
 	//		if (splineStartIndex < points.size() - 3) {
@@ -378,19 +419,11 @@ void GamePlayScene::play()
 	//			timeRate = 1.0f;
 	//		}
 	//	}
-
 	//	// ベクターをフロートに変換
 	//	XMFLOAT3 splineFloat;
 	//	XMStoreFloat3(&splineFloat, splinePosition(points, splineStartIndex, timeRate));
-
 	//	player->SetPos(splineFloat);
 	//}
-
-	// シーン切り替え
-	if (input->TriggerKey(DIK_SPACE))
-	{
-		SceneManager::GetInstance()->ChangeScene("END");
-	}
 
 	// モザイク切り替え
 	{
@@ -455,9 +488,9 @@ void GamePlayScene::DrawFrontSprite(DirectXCommon* dxcommon) {
 	aim->Draw();
 
 	ImGui::SetNextWindowSize(ImVec2(100, 100));
-	ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_WindowBg,ImVec4(1.f,0.f,1.f,0.5f));
+	ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_WindowBg, ImVec4(1.f, 0.f, 1.f, 0.5f));
 	ImGui::Begin("aaa", nullptr, ImGuiWindowFlags_NoSavedSettings);
-	ImGui::Text(u8"フレーム %u",frame);
+	ImGui::Text(u8"フレーム %u", frame);
 	ImGui::End();
 	ImGui::PopStyleColor();
 }

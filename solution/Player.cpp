@@ -24,9 +24,6 @@ Player::Player()
 
 void Player::Update()
 {
-	// ˆÚ“®ˆ—
-	Move();
-
 	{
 		XMMATRIX mat =
 			obj->GetCamera()->GetViewMatrix() *
@@ -100,48 +97,3 @@ void Player::Shot(ObjModel* model, float scale)
 
 	bullet.back().SetVel(vel);
 }
-
-void Player::Move(float speed) {
-	const bool hitW = Input::GetInstance()->PushKey(DIK_W);
-	const bool hitS = Input::GetInstance()->PushKey(DIK_S);
-	const bool hitA = Input::GetInstance()->PushKey(DIK_A);
-	const bool hitD = Input::GetInstance()->PushKey(DIK_D);
-	const bool hitZ = Input::GetInstance()->PushKey(DIK_Z);
-	const bool hitX = Input::GetInstance()->PushKey(DIK_X);
-
-	if (hitW || hitS || hitA || hitD || hitZ || hitX) {
-		auto pos = obj->GetPosition();
-
-		if (hitW && pos.y < 8.f) {
-			pos.y += speed;
-		}
-		else if (hitS && pos.y > -4.f) {
-			pos.y -= speed;
-		}
-
-		if (hitD && pos.x < 20.f) {
-			pos.x += speed;
-		}
-		else if (hitA && pos.x > -20.f) {
-			pos.x -= speed;
-		}
-
-		if (hitZ) {
-			pos.z += speed;
-		}
-		else if (hitX) {
-			pos.z -= speed;
-		}
-
-		obj->SetPosition(pos);
-	}
-}
-
-//void Player::Bullet()
-//{
-//	const bool hitSpace = Input::GetInstance()->PushKey(DIK_SPACE);
-//
-//	if (hitSpace) {
-//
-//	}
-//}

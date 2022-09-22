@@ -12,7 +12,7 @@ public:
 	inline void SetVel(const DirectX::XMFLOAT3& vel) { this->vel = vel; }
 
 	// ’e‚ÌÁ‚¦‚éŠÔ
-	UINT life = 60 * 50;
+	UINT life = 60 * 10;
 
 	UINT numFrame = 0;
 
