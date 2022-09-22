@@ -32,15 +32,15 @@ public:
 	/// <param name="sceneName">シーン名</param>
 	void ChangeScene(const std::string& sceneName);
 
-	void SetSceneFactory(AbstractSceneFactory* sceneFactory){ sceneFactory_  = sceneFactory;}
+	void SetSceneFactory(AbstractSceneFactory* sceneFactory){ this->sceneFactory  = sceneFactory;}
 private:
 
 	// シーン
-	BaseScene* scene_ = nullptr;
+	BaseScene* scene = nullptr;
 	// 次のシーン
-	BaseScene* nextScene_ = nullptr;
+	BaseScene* nextScene = nullptr;
 	// シーンファクトリー(借りてくる)
-	AbstractSceneFactory* sceneFactory_ = nullptr;
+	AbstractSceneFactory* sceneFactory = nullptr;
 	
 	SceneManager() = default;
 	~SceneManager();

@@ -43,10 +43,10 @@ public:
 	/// </summary>
 	virtual void Draw();
 
-	virtual bool IsEndRequest() { return endRequest_; }
+	virtual bool IsEndRequest() { return endRequest; }
 
 protected:
-	bool endRequest_ = false;
+	bool endRequest = false;
 	WinApp* winApp = nullptr;
 	DirectXCommon* dxCommon = nullptr;
 	DebugText* debugText = nullptr;
@@ -54,7 +54,7 @@ protected:
 	Input* input = nullptr;
 	SpriteCommon* spriteCommon = nullptr;
 	// èäóLé“(ä«óùé“)
-	std::unique_ptr<AbstractSceneFactory> sceneFactory_ = nullptr;
+	std::unique_ptr<AbstractSceneFactory> sceneFactory = nullptr;
 
 	UINT shaderNum = 0u;
 };

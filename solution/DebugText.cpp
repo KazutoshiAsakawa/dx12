@@ -12,20 +12,20 @@ void DebugText::Initialize(SpriteCommon* spriteCommon, UINT texnumber)
 	// nullptrチェック
 	assert(spriteCommon);
 	// 引数をメンバ変数に格納
-	spriteCommon_ = spriteCommon;
+	spriteCommon = spriteCommon;
 
 	// 全てのスプライトデータについて
-	for (int i = 0; i < _countof(sprites_); i++)
+	for (int i = 0; i < _countof(sprites); i++)
 	{
 		// スプライトを生成する
-		sprites_[i] = Sprite::Create(texnumber, { 0,0 });
+		sprites[i] = Sprite::Create(texnumber, { 0,0 });
 	}
 }
 
 void DebugText::Finalize()
 {
 	// スプライト個別解放
-	for (auto& sprite : sprites_) {
+	for (auto& sprite : sprites) {
 		delete sprite;
 	}
 }
@@ -36,7 +36,7 @@ void DebugText::Print(const std::string& text, float x, float y, float scale)
 	for (int i = 0; i < text.size(); i++)
 	{
 		// 最大文字数超過
-		if (spriteIndex_ >= maxCharCount) {
+		if (spriteIndex >= maxCharCount) {
 			break;
 		}
 
@@ -54,17 +54,17 @@ void DebugText::Print(const std::string& text, float x, float y, float scale)
 
 		// 座標計算
 		//sprites[spriteIndex]->position_ = { x + fontWidth * scale * i, y, 0 };
-		sprites_[spriteIndex_]->SetPosition({ x + fontWidth * scale * i, y, 0 });
-		sprites_[spriteIndex_]->SetTexLeftTop({ (float)fontIndexX * fontWidth, (float)fontIndexY * fontHeight });
-		sprites_[spriteIndex_]->SetTexSize({ fontWidth, fontHeight });
-		sprites_[spriteIndex_]->SetSize({ fontWidth * scale, fontHeight * scale });
+		sprites[spriteIndex]->SetPosition({ x + fontWidth * scale * i, y, 0 });
+		sprites[spriteIndex]->SetTexLeftTop({ (float)fontIndexX * fontWidth, (float)fontIndexY * fontHeight });
+		sprites[spriteIndex]->SetTexSize({ fontWidth, fontHeight });
+		sprites[spriteIndex]->SetSize({ fontWidth * scale, fontHeight * scale });
 		// 頂点バッファ転送
-		sprites_[spriteIndex_]->TransferVertexBuffer();
+		sprites[spriteIndex]->TransferVertexBuffer();
 		// 更新
-		sprites_[spriteIndex_]->Update();
+		sprites[spriteIndex]->Update();
 
 		// 文字を１つ進める
-		spriteIndex_++;
+		spriteIndex++;
 	}
 }
 
@@ -72,10 +72,10 @@ void DebugText::Print(const std::string& text, float x, float y, float scale)
 void DebugText::DrawAll()
 {
 	// 全ての文字のスプライトについて
-	for (int i = 0; i < spriteIndex_; i++)
+	for (int i = 0; i < spriteIndex; i++)
 	{
 		// スプライト描画
-		sprites_[i]->Draw();
+		sprites[i]->Draw();
 	}
-	spriteIndex_ = 0;
+	spriteIndex = 0;
 }

@@ -61,7 +61,7 @@ public:
 	static void SetDevice(ID3D12Device* device);
 
 private: // メンバ変数
-	static ID3D12Device* device_;
+	static ID3D12Device* device;
 
 	// テクスチャバッファ
 	ComPtr<ID3D12Resource> texBuff[2];

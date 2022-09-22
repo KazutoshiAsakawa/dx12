@@ -85,31 +85,31 @@ private: // メンバ変数
 	static ID3D12Device* device;
 
 	// 頂点データ配列
-	std::vector<VertexPosNormalUv> vertices_;
+	std::vector<VertexPosNormalUv> vertices;
 	// 頂点インデックス配列
-	std::vector<unsigned short> indices_;
+	std::vector<unsigned short> indices;
 	// マテリアル
-	Material material_;
+	Material material;
 	// テクスチャバッファ
-	Microsoft::WRL::ComPtr<ID3D12Resource> texbuff_;
+	Microsoft::WRL::ComPtr<ID3D12Resource> texbuff;
 	// デスクリプタヒープ
-	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> descHeap_;
+	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> descHeap;
 	// シェーダリソースビューのハンドル(CPU)
-	CD3DX12_CPU_DESCRIPTOR_HANDLE cpuDescHandleSRV_;
+	CD3DX12_CPU_DESCRIPTOR_HANDLE cpuDescHandleSRV;
 	// シェーダリソースビューのハンドル(CPU)
-	CD3DX12_GPU_DESCRIPTOR_HANDLE gpuDescHandleSRV_;
+	CD3DX12_GPU_DESCRIPTOR_HANDLE gpuDescHandleSRV;
 	// デスクリプタサイズ
-	UINT descriptorHandleIncrementSize_;
+	UINT descriptorHandleIncrementSize;
 	// 頂点バッファ
-	Microsoft::WRL::ComPtr<ID3D12Resource> vertBuff_;
+	Microsoft::WRL::ComPtr<ID3D12Resource> vertBuff;
 	// インデックスバッファ
-	Microsoft::WRL::ComPtr<ID3D12Resource> indexBuff_;
+	Microsoft::WRL::ComPtr<ID3D12Resource> indexBuff;
 	// 頂点バッファビュー
-	D3D12_VERTEX_BUFFER_VIEW vbView_;
+	D3D12_VERTEX_BUFFER_VIEW vbView;
 	// インデックスバッファビュー
-	D3D12_INDEX_BUFFER_VIEW ibView_;
+	D3D12_INDEX_BUFFER_VIEW ibView;
 	// マテリアル用定数バッファ
-	Microsoft::WRL::ComPtr<ID3D12Resource> constBuffB1_;
+	Microsoft::WRL::ComPtr<ID3D12Resource> constBuffB1;
 
 	DirectX::XMFLOAT2 tiling{ 1,1 }; // タイリング
 

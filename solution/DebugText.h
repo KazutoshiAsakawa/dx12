@@ -29,9 +29,9 @@ public: // メンバ関数
 
 private: // メンバ変数
 	// スプライト共通部分(借りてくる)
-	SpriteCommon* spriteCommon_ = nullptr;
+	SpriteCommon* spriteCommon = nullptr;
 	// スプライトデータの配列
-	Sprite* sprites_[maxCharCount];
+	Sprite* sprites[maxCharCount];
 	// スプライトデータ配列の添え字番号
-	int spriteIndex_ = 0;
+	int spriteIndex = 0;
 };

@@ -79,7 +79,7 @@ void Framework::Update()
 	if (winApp->ProcessMessage())
 	{
 		//ƒQ[ƒ€ƒ‹[ƒv‚ğ”²‚¯‚é
-		endRequest_ = true;
+		endRequest = true;
 		return;
 	}
 

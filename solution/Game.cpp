@@ -9,8 +9,8 @@ void Game::Initialize()
 #pragma region シーン初期化処理
 	// シーンファクトリ生成し、マネージャにセット
 	//sceneFactory_ = new SceneFactory();
-	sceneFactory_ = std::make_unique<SceneFactory>();
-	SceneManager::GetInstance()->SetSceneFactory(sceneFactory_.get());
+	sceneFactory = std::make_unique<SceneFactory>();
+	SceneManager::GetInstance()->SetSceneFactory(sceneFactory.get());
 
 	// シーンマネージャーに最初のシーンをセット
 	SceneManager::GetInstance()->ChangeScene("TITLE");

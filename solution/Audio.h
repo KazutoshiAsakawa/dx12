@@ -77,10 +77,10 @@ public:
 
 private:
 	// XAudio2のインスタンス
-	Microsoft::WRL::ComPtr<IXAudio2> xAudio2_;
+	Microsoft::WRL::ComPtr<IXAudio2> xAudio2;
 	// サウンドデータの連想配列
-	std::map<std::string,SoundData> soundDatas_;
+	std::map<std::string,SoundData> soundDatas;
 	// サウンド格納ディレクトリ
-	std::string directoryPath_;
+	std::string directoryPath;
 };
 

@@ -54,45 +54,45 @@ public:
 	/// </summary>
 	void Draw();
 
-	void SetPosition(const DirectX::XMFLOAT3& position) { position_ = position; }
-	void SetRotation(float rotation) { rotation_ = rotation; }
-	void SetSize(const DirectX::XMFLOAT2& size) { size_ = size; }
-	void SetTexLeftTop(const DirectX::XMFLOAT2& texLeftTop){ texLeftTop_ = texLeftTop;}
-	void SetTexSize(const DirectX::XMFLOAT2& texSize){texSize_ = texSize;}
-	void SetColor(const DirectX::XMFLOAT4& color){color_ = color;}
+	void SetPosition(const DirectX::XMFLOAT3& position) { this->position = position; }
+	void SetRotation(float rotation) { this->rotation = rotation; }
+	void SetSize(const DirectX::XMFLOAT2& size) { this->size = size; }
+	void SetTexLeftTop(const DirectX::XMFLOAT2& texLeftTop){ this->texLeftTop = texLeftTop;}
+	void SetTexSize(const DirectX::XMFLOAT2& texSize){ this->texSize = texSize;}
+	void SetColor(const DirectX::XMFLOAT4& color){ this->color = color;}
 
-	inline const DirectX::XMFLOAT2& GetSize() {return size_; };
+	inline const DirectX::XMFLOAT2& GetSize() {return size; };
 
 private:
 	//頂点バッファ;
-	Microsoft::WRL::ComPtr<ID3D12Resource> vertBuff_;
+	Microsoft::WRL::ComPtr<ID3D12Resource> vertBuff;
 	//頂点バッファビュー;
-	D3D12_VERTEX_BUFFER_VIEW vbView_{};
+	D3D12_VERTEX_BUFFER_VIEW vbView{};
 	//定数バッファ;
-	Microsoft::WRL::ComPtr<ID3D12Resource> constBuff_;
+	Microsoft::WRL::ComPtr<ID3D12Resource> constBuff;
 	// Z軸回りの回転角
-	float rotation_ = 0.0f;
+	float rotation = 0.0f;
 	// 座標
-	DirectX::XMFLOAT3 position_ = { 0,0,0 };
+	DirectX::XMFLOAT3 position = { 0,0,0 };
 	// ワールド行列
-	DirectX::XMMATRIX matWorld_;
+	DirectX::XMMATRIX matWorld;
 	// 色(RGBA)
-	DirectX::XMFLOAT4 color_ = { 1, 1, 1, 1 };// 1, 1, 1, 1
+	DirectX::XMFLOAT4 color = { 1, 1, 1, 1 };// 1, 1, 1, 1
 	// テクスチャ番号
-	UINT texNumber_ = 0;
+	UINT texNumber = 0;
 	// 大きさ
-	DirectX::XMFLOAT2 size_ = { 100, 100 };
+	DirectX::XMFLOAT2 size = { 100, 100 };
 	// アンカーポイント
-	DirectX::XMFLOAT2 anchorpoint_ = { 0.5f, 0.5f };
+	DirectX::XMFLOAT2 anchorpoint = { 0.5f, 0.5f };
 	// 左右反転
-	bool isFlipX_ = false;
+	bool isFlipX = false;
 	// 上下反転
-	bool isFlipY_ = false;
+	bool isFlipY = false;
 	// テクスチャ左上座標
-	DirectX::XMFLOAT2 texLeftTop_ = { 0, 0 };
+	DirectX::XMFLOAT2 texLeftTop = { 0, 0 };
 	// テクスチャ切り出しサイズ
-	DirectX::XMFLOAT2 texSize_ = { 100, 100 };
+	DirectX::XMFLOAT2 texSize = { 100, 100 };
 	// 非表示
-	bool isInvisible_ = false;
+	bool isInvisible = false;
 };
 

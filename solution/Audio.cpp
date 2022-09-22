@@ -13,43 +13,43 @@ Audio* Audio::GetInstance()
 
 void Audio::Initialize(const std::string& directoryPath)
 {
-	directoryPath_ = directoryPath;
+	this->directoryPath = directoryPath;
 	
 	HRESULT result;
 	IXAudio2MasteringVoice* masterVoice;
 
 	// XAudioエンジンのインスタンスを生成
-	result = XAudio2Create(&xAudio2_, 0, XAUDIO2_DEFAULT_PROCESSOR);
+	result = XAudio2Create(&xAudio2, 0, XAUDIO2_DEFAULT_PROCESSOR);
 	assert(SUCCEEDED(result));
 
 	// マスターボイスを生成
-	result = xAudio2_->CreateMasteringVoice(&masterVoice);
+	result = xAudio2->CreateMasteringVoice(&masterVoice);
 	assert(SUCCEEDED(result));
 }
 
 void Audio::Finalize()
 {
 	// XAudio2解放
-	xAudio2_.Reset();
+	xAudio2.Reset();
 	// 音声データ解放
-	std::map<std::string,SoundData>::iterator it = soundDatas_.begin();
+	std::map<std::string,SoundData>::iterator it = soundDatas.begin();
 
 
-	for (;it != soundDatas_.end(); ++it) {
+	for (;it != soundDatas.end(); ++it) {
 		
 		Unload(&it->second);
 	}
-	soundDatas_.clear();
+	soundDatas.clear();
 }
 
 void Audio::LoadWave(const std::string filename)
 {
-	if (soundDatas_.find(filename) != soundDatas_.end()) {
+	if (soundDatas.find(filename) != soundDatas.end()) {
 		// 重複読み込みなので、何もせず抜ける
 		return;
 	}
 	// ディレクトリパスとファイル名を連結してフルパスを得る
-	std::string fullpath = directoryPath_ + filename;
+	std::string fullpath = directoryPath + filename;
 
 	// ファイル入力ストリームのインスタンス
 	std::ifstream file;
@@ -111,7 +111,7 @@ void Audio::LoadWave(const std::string filename)
 	soundData.bufferSize = data.size;
 
 	// サウンドデータを連想配列に格納
-	soundDatas_.insert(std::make_pair(filename, soundData));
+	soundDatas.insert(std::make_pair(filename, soundData));
 }
 
 void Audio::Unload(SoundData* soundData)
@@ -128,15 +128,15 @@ void Audio::PlayWave(const std::string filename, float volume)
 {
 	HRESULT result;
 
-	std::map<std::string,SoundData>::iterator it = soundDatas_.find(filename);
+	std::map<std::string,SoundData>::iterator it = soundDatas.find(filename);
 	// 未読み込みの検出
-	assert(it != soundDatas_.end());
+	assert(it != soundDatas.end());
 	// サウンドデータの参照を取得
 	SoundData& soundData = it->second;
 
 	// 波形フォーマットを元にSourceVoiceの生成
 	IXAudio2SourceVoice* pSourceVoice = nullptr;
-	result = xAudio2_->CreateSourceVoice(&pSourceVoice, &soundData.wfex);
+	result = xAudio2->CreateSourceVoice(&pSourceVoice, &soundData.wfex);
 	assert(SUCCEEDED(result));
 
 	// 再生する波形データの設定

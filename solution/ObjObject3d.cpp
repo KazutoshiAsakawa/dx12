@@ -269,7 +269,7 @@ bool ObjObject3d::Initialize()
 		&CD3DX12_RESOURCE_DESC::Buffer((sizeof(ConstBufferDataB0) + 0xff) & ~0xff),
 		D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr,
-		IID_PPV_ARGS(&constBuffB0_));
+		IID_PPV_ARGS(&constBuffB0));
 
 	return true;
 }
@@ -288,11 +288,11 @@ void ObjObject3d::Update()
 
 	// 定数バッファへデータ転送
 	ConstBufferDataB0* constMap = nullptr;
-	result = constBuffB0_->Map(0, nullptr, (void**)&constMap);
+	result = constBuffB0->Map(0, nullptr, (void**)&constMap);
 	constMap->matViewProjection = matViewProjection;
-	constMap->world = matWorld_;
+	constMap->world = matWorld;
 	constMap->cameraPos = cameraPos;
-	constBuffB0_->Unmap(0, nullptr);
+	constBuffB0->Unmap(0, nullptr);
 }
 
 void ObjObject3d::Draw()
@@ -301,14 +301,14 @@ void ObjObject3d::Draw()
 	assert(device);
 	assert(ObjObject3d::cmdList);
 	// モデルのひもづけがない場合は、描画しない
-	if (model_ == nullptr) {
+	if (model == nullptr) {
 		return;
 	}
 
 	// 定数バッファビューをセット
-	cmdList->SetGraphicsRootConstantBufferView(0, constBuffB0_->GetGPUVirtualAddress());
+	cmdList->SetGraphicsRootConstantBufferView(0, constBuffB0->GetGPUVirtualAddress());
 
-	model_->Draw(cmdList, 1);
+	model->Draw(cmdList, 1);
 }
 
 void ObjObject3d::UpdateWorldMatrix()
@@ -316,22 +316,22 @@ void ObjObject3d::UpdateWorldMatrix()
 	XMMATRIX matScale,  matTrans;
 
 	// スケール、回転、平行移動行列の計算
-	matScale = XMMatrixScaling(scale_.x, scale_.y, scale_.z);
+	matScale = XMMatrixScaling(scale.x, scale.y, scale.z);
 	matRot = XMMatrixIdentity();
-	matRot *= XMMatrixRotationZ(XMConvertToRadians(rotation_.z));
-	matRot *= XMMatrixRotationX(XMConvertToRadians(rotation_.x));
-	matRot *= XMMatrixRotationY(XMConvertToRadians(rotation_.y));
-	matTrans = XMMatrixTranslation(position_.x, position_.y, position_.z);
+	matRot *= XMMatrixRotationZ(XMConvertToRadians(rotation.z));
+	matRot *= XMMatrixRotationX(XMConvertToRadians(rotation.x));
+	matRot *= XMMatrixRotationY(XMConvertToRadians(rotation.y));
+	matTrans = XMMatrixTranslation(position.x, position.y, position.z);
 
 	// ワールド行列の合成
-	matWorld_ = XMMatrixIdentity(); // 変形をリセット
-	matWorld_ *= matScale; // ワールド行列にスケーリングを反映
-	matWorld_ *= matRot; // ワールド行列に回転を反映
-	matWorld_ *= matTrans; // ワールド行列に平行移動を反映
+	matWorld = XMMatrixIdentity(); // 変形をリセット
+	matWorld *= matScale; // ワールド行列にスケーリングを反映
+	matWorld *= matRot; // ワールド行列に回転を反映
+	matWorld *= matTrans; // ワールド行列に平行移動を反映
 
 	// 親オブジェクトがあれば
-	if (parent_ != nullptr) {
+	if (parent != nullptr) {
 		// 親オブジェクトのワールド行列を掛ける
-		matWorld_ *= parent_->matWorld_;
+		matWorld *= parent->matWorld;
 	}
 }

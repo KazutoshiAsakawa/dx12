@@ -46,25 +46,25 @@ public:
 	/// <returns>テクスチャリソース</returns>
 	ID3D12Resource* GetTexBuff(int texNumber);
 
-	const DirectX::XMMATRIX& GetMatProjection() { return matProjection_; }
-	ID3D12Device* GetDevice() { return device_; }
-	ID3D12GraphicsCommandList* GetCommandList() { return commandList_; }
+	const DirectX::XMMATRIX& GetMatProjection() { return matProjection; }
+	ID3D12Device* GetDevice() { return device; }
+	ID3D12GraphicsCommandList* GetCommandList() { return commandList; }
 
 
 
 private:
 	// パイプラインセット
-	PipelineSet pipelineSet_;
+	PipelineSet pipelineSet;
 	// 射影行列
-	DirectX::XMMATRIX matProjection_{};
+	DirectX::XMMATRIX matProjection{};
 	// テクスチャ用デスクリプタヒープの生成
-	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> descHeap_;
+	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> descHeap;
 	// テクスチャリソース（テクスチャバッファ）の配列
-	Microsoft::WRL::ComPtr<ID3D12Resource> texBuff_[kSpriteSRVCount];
+	Microsoft::WRL::ComPtr<ID3D12Resource> texBuff[kSpriteSRVCount];
 	// デバイス(借りてくる)
-	ID3D12Device* device_ = nullptr;
+	ID3D12Device* device = nullptr;
 	// コマンドリスト(借りてくる)
-	ID3D12GraphicsCommandList* commandList_ = nullptr;
+	ID3D12GraphicsCommandList* commandList = nullptr;
 private:
 	// パイプライン生成
 	void CreateGraphicsPipeline();

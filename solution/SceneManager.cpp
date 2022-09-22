@@ -4,8 +4,8 @@
 SceneManager::~SceneManager()
 {
 	// 最後のシーンの終了と解放
-	scene_->Finalize();
-	delete scene_;
+	scene->Finalize();
+	delete scene;
 }
 
 SceneManager* SceneManager::GetInstance()
@@ -17,37 +17,37 @@ SceneManager* SceneManager::GetInstance()
 void SceneManager::Update(DirectXCommon* dxcommon)
 {
 	// シーン切り替えがあるなら
-	if (nextScene_) {
-		if (scene_) {
+	if (nextScene) {
+		if (scene) {
 			// 旧シーンの終了
-			scene_->Finalize();
-			delete scene_;
+			scene->Finalize();
+			delete scene;
 		}
 		// シーン切り替え
-		scene_ = nextScene_;
-		nextScene_ = nullptr;
+		scene = nextScene;
+		nextScene = nullptr;
 
 		// 新シーンの初期化
-		scene_->Initialize(dxcommon);
+		scene->Initialize(dxcommon);
 	}
-	scene_->Update();
+	scene->Update();
 }
 
 void SceneManager::Draw(DirectXCommon* dxcommon)
 {
-	scene_->Draw(dxcommon);
+	scene->Draw(dxcommon);
 }
 
 void SceneManager::DrawFrontSprite(DirectXCommon* dxcommon)
 {
-	scene_->DrawFrontSprite(dxcommon);
+	scene->DrawFrontSprite(dxcommon);
 }
 
 void SceneManager::ChangeScene(const std::string& sceneName)
 {
-	assert(sceneFactory_);
-	assert(nextScene_ == nullptr);
+	assert(sceneFactory);
+	assert(nextScene == nullptr);
 
 	// 次シーンを生成
-	nextScene_ = sceneFactory_->CreateScene(sceneName);
+	nextScene = sceneFactory->CreateScene(sceneName);
 }

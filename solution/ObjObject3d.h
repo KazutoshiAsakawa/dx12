@@ -113,36 +113,36 @@ public: // メンバ関数
 	/// 座標の取得
 	/// </summary>
 	/// <returns>座標</returns>
-	const XMFLOAT3& GetPosition() { return position_; }
+	const XMFLOAT3& GetPosition() { return position; }
 
-	const XMFLOAT3& GetScale() { return scale_; }
+	const XMFLOAT3& GetScale() { return scale; }
 
-	const XMFLOAT3& GetRotation() { return rotation_; }
+	const XMFLOAT3& GetRotation() { return rotation; }
 
 	inline const XMMATRIX& GetMatRot() {return matRot;}
-	inline const XMMATRIX& GetMatWorld() {return matWorld_;}
+	inline const XMMATRIX& GetMatWorld() {return matWorld;}
 
-	inline ObjObject3d* GetParent() {return parent_;}
+	inline ObjObject3d* GetParent() {return parent;}
 
 
 	/// <summary>
 	/// 座標の設定
 	/// </summary>
 	/// <param name="position">座標</param>
-	void SetPosition(XMFLOAT3 position) { this->position_ = position; }
+	void SetPosition(XMFLOAT3 position) { this->position = position; }
 
-	void SetScale(XMFLOAT3 scale) { this->scale_ = scale; }
+	void SetScale(XMFLOAT3 scale) { this->scale = scale; }
 
-	void SetRotation(XMFLOAT3 rotation) { this->rotation_ = rotation; }
+	void SetRotation(XMFLOAT3 rotation) { this->rotation = rotation; }
 
 	// inline void SetScale(const XMFLOAT3& scale) { this->scale = scale; }
 
-	void SetParent(ObjObject3d* parent) {this-> parent_ = parent;}
+	void SetParent(ObjObject3d* parent) {this->parent = parent;}
 
 	/// <summary>
 	/// setter
 	/// </summary>
-	void SetModel(ObjModel* model) { model_ = model; }
+	void SetModel(ObjModel* model) { this->model = model; }
 
 	/// <summary>
 	/// ワールド変換
@@ -151,19 +151,19 @@ public: // メンバ関数
 
 private: // メンバ変数
 	// 3Dモデル(借りてくる)
-	ObjModel* model_ = nullptr;
+	ObjModel* model = nullptr;
 	// 行列用定数バッファ
-	ComPtr<ID3D12Resource> constBuffB0_;
+	ComPtr<ID3D12Resource> constBuffB0;
 	// ローカルスケール
-	XMFLOAT3 scale_ = { 1,1,1 };
+	XMFLOAT3 scale = { 1,1,1 };
 	// X,Y,Z軸回りのローカル回転角
-	XMFLOAT3 rotation_ = { 0,0,0 };
+	XMFLOAT3 rotation = { 0,0,0 };
 	// ローカル座標
-	XMFLOAT3 position_ = { 0,0,0 };
+	XMFLOAT3 position = { 0,0,0 };
 	// ローカルワールド変換行列
-	XMMATRIX matWorld_;
+	XMMATRIX matWorld;
 	// 親オブジェクト
-	ObjObject3d* parent_ = nullptr;
+	ObjObject3d* parent = nullptr;
 
 	XMMATRIX matRot;
 };
