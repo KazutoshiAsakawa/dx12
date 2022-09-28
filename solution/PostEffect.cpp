@@ -364,6 +364,10 @@ void PostEffect::Draw(ID3D12GraphicsCommandList* cmdList,UINT shaderNum)
 		HRESULT result = this->constBuff->Map(0, nullptr, (void**)&constMap);
 		if (SUCCEEDED(result)) {
 			constMap->mosaicNum = mosaicNum;
+
+			constMap->shiftR = shiftR;
+			constMap->shiftG = shiftG;
+			constMap->shiftB = shiftB;
 			this->constBuff->Unmap(0, nullptr);
 		}
 

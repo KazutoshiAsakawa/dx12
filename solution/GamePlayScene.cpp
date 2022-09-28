@@ -134,7 +134,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 
 void GamePlayScene::Finalize()
 {
-
+	DamageEffect(1, 1);
 }
 
 void GamePlayScene::Update()
@@ -278,7 +278,7 @@ void GamePlayScene::play()
 	// 敵を発生
 	for (auto& i : enemyFrame) {
 		if (i.first <= frame) {
-			auto& a = enemyAdd(enemyPos[addedEnemyNum], { 0, 0, -0.1 });
+			auto& a = EnemyAdd(enemyPos[addedEnemyNum], { 0, 0, -0.1 });
 			addedEnemyNum++;
 			a->SetLifeSpan(i.second);
 		}
@@ -405,6 +405,8 @@ void GamePlayScene::play()
 					if (Collision::CheckSphere2Sphere(playerShape, eBulletShape)) {
 						eb.SetAlive(false);				// 敵の弾を消す
 						player->Damage(1);				// プレイヤーにダメージ
+						shiftFlag = true;				// RGBずらしをする
+						nowFrame = 0;
 						if (player->GetHp() == 0) {		// 体力が0になったら
 							player->SetAlive(false);
 
@@ -414,6 +416,16 @@ void GamePlayScene::play()
 					}
 				}
 			}
+		}
+	}
+
+	if (shiftFlag) {
+
+		DamageEffect(maxFrame, nowFrame);
+		nowFrame++;
+		if (maxFrame < nowFrame) {
+			shiftFlag = false;
+			nowFrame = 0;
 		}
 	}
 
@@ -465,36 +477,36 @@ void GamePlayScene::play()
 
 void GamePlayScene::Draw(DirectXCommon* dxcommon)
 {
-		// スプライト共通コマンド
-		SpriteCommon::GetInstance()->PreDraw();
-		// スプライト描画
-		sprite->Draw();
+	// スプライト共通コマンド
+	SpriteCommon::GetInstance()->PreDraw();
+	// スプライト描画
+	sprite->Draw();
 
-		// 3Dオブジェクト描画前処理
-		ObjObject3d::PreDraw();
+	// 3Dオブジェクト描画前処理
+	ObjObject3d::PreDraw();
 
-		// 地面
-		groundObj->Draw();
+	// 地面
+	groundObj->Draw();
 
-		//スカイドームの描画
-		skyDomeObj->Draw();
+	//スカイドームの描画
+	skyDomeObj->Draw();
 
-		// プレイヤーの描画
-		player->Draw();
-		// 敵の複数描画
-		for (auto& i : enemy) {
-			i->Draw();
-		}
-		/// <summary>
-		/// ここに3Dオブジェクトの描画処理を追加できる
-		/// </summary>
+	// プレイヤーの描画
+	player->Draw();
+	// 敵の複数描画
+	for (auto& i : enemy) {
+		i->Draw();
+	}
+	/// <summary>
+	/// ここに3Dオブジェクトの描画処理を追加できる
+	/// </summary>
 
-		// 3Dオブジェクト描画後処理
-		ObjObject3d::PostDraw();
-		// パーティクル描画
-		ParticleManager::GetInstance()->Draw(dxcommon->GetCmdList());
-		// スプライト共通コマンド
-		SpriteCommon::GetInstance()->PreDraw();
+	// 3Dオブジェクト描画後処理
+	ObjObject3d::PostDraw();
+	// パーティクル描画
+	ParticleManager::GetInstance()->Draw(dxcommon->GetCmdList());
+	// スプライト共通コマンド
+	SpriteCommon::GetInstance()->PreDraw();
 }
 
 void GamePlayScene::DrawFrontSprite(DirectXCommon* dxcommon) {
@@ -503,7 +515,7 @@ void GamePlayScene::DrawFrontSprite(DirectXCommon* dxcommon) {
 	ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_WindowBg, ImVec4(1.f, 0.f, 1.f, 0.5f));
 
 	if (pause) {
-		ImGui::SetNextWindowPos(ImVec2(10.f,10.f));
+		ImGui::SetNextWindowPos(ImVec2(10.f, 10.f));
 		ImGui::SetNextWindowSize(ImVec2(WinApp::window_width - 20, WinApp::window_height - 20));
 		ImGui::Begin("pause", nullptr, ImGuiWindowFlags_NoSavedSettings);
 		ImGui::Text(u8"ESCで戻る");
@@ -527,7 +539,7 @@ void GamePlayScene::DrawFrontSprite(DirectXCommon* dxcommon) {
 	ImGui::PopStyleColor();
 }
 
-XMVECTOR GamePlayScene::splinePosition(const std::vector<XMVECTOR>& posints, size_t startIndex, float t)
+XMVECTOR GamePlayScene::SplinePosition(const std::vector<XMVECTOR>& posints, size_t startIndex, float t)
 {
 	size_t n = posints.size() - 2;
 
@@ -546,7 +558,7 @@ XMVECTOR GamePlayScene::splinePosition(const std::vector<XMVECTOR>& posints, siz
 	return position;
 }
 
-std::unique_ptr<Enemy>& GamePlayScene::enemyAdd(XMFLOAT3 pos, XMFLOAT3 vel)
+std::unique_ptr<Enemy>& GamePlayScene::EnemyAdd(XMFLOAT3 pos, XMFLOAT3 vel)
 {
 	enemy.emplace_back();
 	auto& e = enemy.back();
@@ -563,4 +575,16 @@ std::unique_ptr<Enemy>& GamePlayScene::enemyAdd(XMFLOAT3 pos, XMFLOAT3 vel)
 	e->SetParent(lane->GetObj());
 
 	return e;
+}
+
+void GamePlayScene::DamageEffect(UINT maxFrame, UINT nowFrame) {
+	float rate = (float)nowFrame / (float)maxFrame;
+
+	rate = 1 - rate;
+	constexpr float  c4 = 2.f * XM_PI / 3.f;
+	float easeRate = -powf(2, 10.f * rate - 10.f) * sin((rate * 10.f - 10.75f) * c4);
+
+	float shiftNum = easeRate * 0.1f;
+
+	PostEffect::GetInstance()->SetShiftG({ shiftNum,0.f });
 }

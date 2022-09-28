@@ -50,12 +50,12 @@ public:
 	void DrawFrontSprite(DirectXCommon* dxcommon) override;
 
 
-	DirectX::XMVECTOR splinePosition(const std::vector<DirectX::XMVECTOR>& posints, size_t startIndex, float t);
+	DirectX::XMVECTOR SplinePosition(const std::vector<DirectX::XMVECTOR>& posints, size_t startIndex, float t);
 
 	// ìGÇî≠ê∂Ç≥ÇπÇÈ
-	std::unique_ptr<Enemy>& enemyAdd(DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 vel);
+	std::unique_ptr<Enemy>& EnemyAdd(DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 vel);
 
-	
+	void DamageEffect(UINT maxFrame,UINT nowFrame);
 
 private:
 	// îwåi
@@ -99,6 +99,11 @@ private:
 	// ÉÇÉUÉCÉN
 	bool mosaicFlag = false;
 	UINT mosaicFrame = 0;
+
+	// RGBÇ∏ÇÁÇµ
+	UINT nowFrame = 0;
+	UINT maxFrame = 15;
+	bool shiftFlag = false;
 
 	std::vector<DirectX::XMVECTOR> points;
 	size_t splineStartIndex;

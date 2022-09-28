@@ -26,6 +26,10 @@ public:
 	struct ConstBufferData
 	{
 		DirectX::XMFLOAT2 mosaicNum{};
+
+		DirectX::XMFLOAT2 shiftR{};
+		DirectX::XMFLOAT2 shiftG{};
+		DirectX::XMFLOAT2 shiftB{};
 	};
 
 	static const float clearColor[4];
@@ -57,6 +61,10 @@ public:
 	void CreateGraphicsPipelineState(UINT shaderNum = 0, const wchar_t* PSpath = L"Resources/shaders/PostEffectTestPS.hlsl");
 
 	inline void SetMosaicNum(DirectX::XMFLOAT2 mosaicnum) { this->mosaicNum = mosaicnum, constBuffDirty = true; }
+
+	inline void SetShiftR(const DirectX::XMFLOAT2& shiftR) { this->shiftR = shiftR, constBuffDirty = true; }
+	inline void SetShiftG(const DirectX::XMFLOAT2& shiftG) { this->shiftG = shiftG, constBuffDirty = true; }
+	inline void SetShiftB(const DirectX::XMFLOAT2& shiftB) { this->shiftB = shiftB, constBuffDirty = true; }
 
 	static void SetDevice(ID3D12Device* device);
 
@@ -90,5 +98,10 @@ private: // メンバ変数
 	bool constBuffDirty = true;
 	// モザイクの細かさ
 	DirectX::XMFLOAT2 mosaicNum{};
+
+	// RGBずらし
+	DirectX::XMFLOAT2 shiftR{};
+	DirectX::XMFLOAT2 shiftG{};
+	DirectX::XMFLOAT2 shiftB{};
 };
 

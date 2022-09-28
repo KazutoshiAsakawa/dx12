@@ -67,11 +67,7 @@ float4 main(VSOutput input) : SV_TARGET
 	float2 mosaicUv = floor(input.uv * mosaicNum) / mosaicNum;
 
 	// RgbShift
-	float4 rgbShiftColor = RgbShift(tex0,
-									mosaicUv,
-									float2(0.000f, 0.0000f),
-									float2(0.000f, 0.0000f),
-									float2(0.000f, 0.0000f));
+	float4 rgbShiftColor = RgbShift(tex0,mosaicUv,shiftR,shiftG,shiftB);
 
 	float4 retColor = rgbShiftColor;
 	float4 colortex1 = tex0.Sample(smp, mosaicUv);
