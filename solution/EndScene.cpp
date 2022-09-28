@@ -34,6 +34,8 @@ void EndScene::Update()
 		SceneManager::GetInstance()->ChangeScene("TITLE");
 	}
 
+	DebugText::GetInstance()->Print("Press Enter", 0, 0, 3);
+
 	// スプライト更新
 	sprite->Update();
 }

@@ -200,9 +200,6 @@ void GamePlayScene::play()
 
 	{
 		char tmp[32]{};
-		sprintf_s(tmp, 32, "%u", frame);
-		DebugText::GetInstance()->Print(tmp, 0, 50);
-
 		sprintf_s(tmp, 32, "%.2f,%.2f,%.2f", player->GetPos().x, player->GetPos().y, player->GetPos().z);
 		DebugText::GetInstance()->Print(tmp, 0, 100);
 	}
@@ -246,10 +243,10 @@ void GamePlayScene::play()
 				pos.y -= moveSpeed;
 			}
 
-			if (hitD && pos.x < 20.f) {
+			if (hitD && pos.x < 10.f) {
 				pos.x += moveSpeed;
 			}
-			else if (hitA && pos.x > -20.f) {
+			else if (hitA && pos.x > -10.f) {
 				pos.x -= moveSpeed;
 			}
 
@@ -410,6 +407,8 @@ void GamePlayScene::play()
 						player->Damage(1);				// プレイヤーにダメージ
 						if (player->GetHp() == 0) {		// 体力が0になったら
 							player->SetAlive(false);
+
+							SceneManager::GetInstance()->ChangeScene("END");
 						}
 						break;
 					}
@@ -466,7 +465,6 @@ void GamePlayScene::play()
 
 void GamePlayScene::Draw(DirectXCommon* dxcommon)
 {
-	if (!pause) {
 		// スプライト共通コマンド
 		SpriteCommon::GetInstance()->PreDraw();
 		// スプライト描画
@@ -497,28 +495,35 @@ void GamePlayScene::Draw(DirectXCommon* dxcommon)
 		ParticleManager::GetInstance()->Draw(dxcommon->GetCmdList());
 		// スプライト共通コマンド
 		SpriteCommon::GetInstance()->PreDraw();
-	}
 }
 
 void GamePlayScene::DrawFrontSprite(DirectXCommon* dxcommon) {
 	SpriteCommon::GetInstance()->PreDraw();
 	aim->Draw();
-
-	ImGui::SetNextWindowSize(ImVec2(100, 100));
 	ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_WindowBg, ImVec4(1.f, 0.f, 1.f, 0.5f));
-	ImGui::Begin("aaa", nullptr, ImGuiWindowFlags_NoSavedSettings);
-	ImGui::Text(u8"フレーム %u", frame);
-	ImGui::Text(u8"体力 %u", player->GetHp());
-	ImGui::SetNextWindowPos(ImVec2(ImGui::GetWindowPos().x,
-		ImGui::GetWindowPos().y + ImGui::GetWindowSize().y));
-	ImGui::End();
 
 	if (pause) {
-		// ImGui::SetNextWindowPos(ImVec2(100,200));
-		ImGui::Begin("bbb", nullptr, ImGuiWindowFlags_NoSavedSettings);
-		ImGui::Text("pause");
+		ImGui::SetNextWindowPos(ImVec2(10.f,10.f));
+		ImGui::SetNextWindowSize(ImVec2(WinApp::window_width - 20, WinApp::window_height - 20));
+		ImGui::Begin("pause", nullptr, ImGuiWindowFlags_NoSavedSettings);
+		ImGui::Text(u8"ESCで戻る");
+		ImGui::SetNextWindowPos(ImVec2(ImGui::GetWindowPos().x,
+			ImGui::GetWindowPos().y + ImGui::GetWindowSize().y));
 		ImGui::End();
 	}
+	else {
+		ImGui::SetNextWindowSize(ImVec2(100, 100));
+		ImGui::Begin("aaa", nullptr, ImGuiWindowFlags_NoSavedSettings);
+		ImGui::Text(u8"フレーム %u", frame);
+		ImGui::Text(u8"体力 %u", player->GetHp());
+		ImGui::Text(u8"WASD:移動");
+		ImGui::Text(u8"左クリック:撃つ");
+
+		ImGui::SetNextWindowPos(ImVec2(ImGui::GetWindowPos().x,
+			ImGui::GetWindowPos().y + ImGui::GetWindowSize().y));
+		ImGui::End();
+	}
+
 	ImGui::PopStyleColor();
 }
 
