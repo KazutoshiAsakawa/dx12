@@ -5,7 +5,7 @@
 
 Input* Input::GetInstance()
 {
-static Input instance;
+	static Input instance;
 	return &instance;
 }
 
@@ -38,9 +38,13 @@ void Input::Update()
 	mousePre = mouse;
 	result = devmouse->GetDeviceState(sizeof(mouse), &mouse);
 
-	// スクリーン上での座標を取る
+	// スクリーン上での「座標を取る」
+	// &がついているのでポインタ渡し
+	// (予想)ポインタ渡しなので値を書き換えてそう
 	GetCursorPos(&mousePos);
-	// スクリーン座標をクライアント座標(ウィンドウ内での座標)に変換
+	// スクリーン座標を
+	// クライアント座標(ウィンドウ内での座標)
+	// に「変換」
 	ScreenToClient(WinApp::GetInstance()->GetHwnd(), &mousePos);
 
 	//前回のキー入力を保存

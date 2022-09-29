@@ -33,6 +33,14 @@ public://メンバー関数
 	bool TriggerKey(BYTE keyNumber);
 
 	inline POINT GetMousePos() { return mousePos; };
+	inline void SetMousePos(const POINT& pos) {
+		mousePos = pos;
+		// クライアント座標(ゲームウィンドウの座標)からスクリーン座標(パソコンの画面)に変換
+		ClientToScreen(WinApp::GetInstance()->GetHwnd(), &mousePos);
+		// 変換後の座標の位置にマウスカーソルの位置をセット
+		SetCursorPos(mousePos.x, mousePos.y);
+		mousePos = pos;
+	}
 
 	enum MouseButton
 	{

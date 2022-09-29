@@ -1,4 +1,4 @@
-#include "GamePlayScene.h"
+#include "BossScene.h"
 #include "SceneManager.h"
 #include "Audio.h"
 #include "Input.h"
@@ -14,7 +14,7 @@
 
 using namespace DirectX;
 
-void GamePlayScene::Initialize(DirectXCommon* dxcommon)
+void BossScene::Initialize(DirectXCommon* dxcommon)
 {
 	// スプライト共通テクスチャ読み込み
 	SpriteCommon::GetInstance()->LoadTexture(1, L"Resources/gameplay.png");
@@ -23,6 +23,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 	// スプライトの生成
 	sprite.reset(Sprite::Create(1, { 0,0 }, false, false));
 	aim.reset(Sprite::Create(2));
+	aim->SetPosition({ WinApp::window_width / 2.0f ,WinApp::window_height / 2.0f,0.f });
 
 	// カメラの初期化
 	camera.reset(new TrackingCamera());
@@ -30,9 +31,6 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 	// camera->SetTarget({ 0, 0, 50 });
 
 	ObjObject3d::SetCamera(camera.get());
-
-	// レーン
-	lane.reset(new GameObject(nullptr));
 
 	// OBJからモデルデータを読み込む
 
@@ -64,21 +62,10 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 	// プレイヤー初期化
 	player = std::make_unique<Player>();
 
-	// プレイヤーの親を設定
-	player->SetParent(lane->GetObj());
-
 	// カメラをプレイヤーの位置にセット
-	/*camera->SetTrackingTarget(player.get());
+	camera->SetTrackingTarget(player.get());
 	camera->SetTarget(player->GetPos());
 	XMFLOAT3 eye = player->GetPos();
-	eye.z -= 50;
-	eye.y += 10;
-	camera->SetEye(eye);*/
-
-	// カメラをレーンの位置にセット
-	camera->SetTrackingTarget(lane.get());
-	camera->SetTarget(lane->GetPos());
-	XMFLOAT3 eye = lane->GetPos();
 	eye.z -= 50;
 	eye.y += 10;
 	camera->SetEye(eye);
@@ -90,24 +77,13 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 	ParticleManager::GetInstance()->SetCamera(camera.get());
 
 	// 更新処理の関数を入れる
-	updateProcess = std::bind(&GamePlayScene::start, this);
+	updateProcess = std::bind(&BossScene::start, this);
 
 	// 音声読み込み
 	Audio::GetInstance()->LoadWave("Alarm01.wav");
 
 	// 音声再生
 	// audio->PlayWave("Alarm01.wav");
-
-	// スプライン曲線
-	// posints = { start, start, p2, p3, end, end }
-	points.emplace_back(XMVectorSet(0, 0, 0, 0));
-	points.emplace_back(XMVectorSet(0, 0, 0, 0));
-	points.emplace_back(XMVectorSet(0, 0, 20, 0));
-	points.emplace_back(XMVectorSet(0, 20, 40, 0));
-	points.emplace_back(XMVectorSet(0, 0, 0, 0));
-	points.emplace_back(XMVectorSet(0, 0, 0, 0));
-
-	splineStartIndex = 1;
 
 	// CSV読み込み
 	csv = Enemy::LoadCsv("Resources/enemy.csv");
@@ -132,18 +108,30 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 	}
 }
 
-void GamePlayScene::Finalize()
+void BossScene::Finalize()
 {
 	DamageEffect(1, 1);
 }
 
-void GamePlayScene::Update()
+void BossScene::Update()
 {
 	if (Input::GetInstance()->TriggerKey(DIK_ESCAPE)) {
 		pause = !pause;
 	}
 
 	if (!pause) {
+
+		// マウスの固定
+		{
+			POINT oldMousePos = Input::GetInstance()->GetMousePos();
+
+			Input::GetInstance()->SetMousePos({ long(WinApp::window_width / 2.f),long(WinApp::window_height / 2.f) });
+			// 前座標との差分
+			mousePosDiff = Input::GetInstance()->GetMousePos();
+			mousePosDiff.x -= oldMousePos.x;
+			mousePosDiff.y -= oldMousePos.y;
+		}
+
 		// シーン遷移
 		updateProcess();
 
@@ -151,7 +139,6 @@ void GamePlayScene::Update()
 		ParticleManager::GetInstance()->Update();
 
 		camera->Update();
-		lane->Update();
 
 		//fbxObj->Update();
 		player->Update();
@@ -167,13 +154,13 @@ void GamePlayScene::Update()
 		sprite->Update();
 
 		// aim->SetPosition({player->GetScreenAimPos().x,player->GetScreenAimPos().y,0});
-		aim->SetPosition({ (float)Input::GetInstance()->GetMousePos().x,(float)Input::GetInstance()->GetMousePos().y,0 });
+		// aim->SetPosition({ (float)Input::GetInstance()->GetMousePos().x,(float)Input::GetInstance()->GetMousePos().y,0 });
 		aim->Update();
 	}
 }
 
 // シーン遷移
-void GamePlayScene::start()
+void BossScene::start()
 {
 	Input* input = Input::GetInstance();
 	// モザイクをかける時間
@@ -183,7 +170,7 @@ void GamePlayScene::start()
 	if (++mosaicFrame > mosaicFrameMax) {
 		PostEffect::GetInstance()->SetMosaicNum({ WinApp::window_width ,WinApp::window_height });
 		// updateProcessにplay関数をセット
-		updateProcess = std::bind(&GamePlayScene::play, this);
+		updateProcess = std::bind(&BossScene::play, this);
 	}
 	else {
 		XMFLOAT2 mosaicLevel = {};
@@ -194,7 +181,7 @@ void GamePlayScene::start()
 	}
 }
 
-void GamePlayScene::play()
+void BossScene::play()
 {
 	Input* input = Input::GetInstance();
 
@@ -204,13 +191,11 @@ void GamePlayScene::play()
 		DebugText::GetInstance()->Print(tmp, 0, 100);
 	}
 
+
+
 	// レーンの位置
 	{
-		auto pos = lane->GetPos();
-		pos.z += 0.2;
-		lane->SetPos(pos);
-
-		skyDomeObj->SetPosition(pos);
+		skyDomeObj->SetPosition(player->GetPos());
 	}
 
 	// プレイヤーの移動と回避
@@ -236,18 +221,49 @@ void GamePlayScene::play()
 				avoidFrame = avoidFrameMax;
 			}
 
-			if (hitW && pos.y < 8.f) {
-				pos.y += moveSpeed;
+			// 前方向と右方向の単位ベクトルを作る
+			XMVECTOR forwardVec = XMVectorSet(0, 0, 1, 1);
+			XMVECTOR rightVec = XMVectorSet(1, 0, 0, 1);
+			// プレイヤーの回転に合わせて回転させる
+			forwardVec = XMVector3Rotate(forwardVec, XMQuaternionRotationRollPitchYaw(
+				XMConvertToRadians(player->GetRotation().x),
+				XMConvertToRadians(player->GetRotation().y),
+				XMConvertToRadians(player->GetRotation().z)));
+
+			rightVec = XMVector3Rotate(rightVec, XMQuaternionRotationRollPitchYaw(
+				XMConvertToRadians(player->GetRotation().x),
+				XMConvertToRadians(player->GetRotation().y),
+				XMConvertToRadians(player->GetRotation().z)));
+			// 大きさをmoveSpeedにする
+			forwardVec = XMVectorScale(forwardVec, moveSpeed);
+			rightVec = XMVectorScale(rightVec, moveSpeed);
+
+			XMFLOAT3 forward;
+			XMStoreFloat3(&forward, forwardVec);
+
+			XMFLOAT3 right;
+			XMStoreFloat3(&right, rightVec);
+
+			if (hitW) {
+				pos.x += forward.x;
+				pos.y += forward.y;
+				pos.z += forward.z;
 			}
-			else if (hitS && pos.y > -4.f) {
-				pos.y -= moveSpeed;
+			else if (hitS) {
+				pos.x -= forward.x;
+				pos.y -= forward.y;
+				pos.z -= forward.z;
 			}
 
-			if (hitD && pos.x < 10.f) {
-				pos.x += moveSpeed;
+			if (hitD) {
+				pos.x += right.x;
+				pos.y += right.y;
+				pos.z += right.z;
 			}
-			else if (hitA && pos.x > -10.f) {
-				pos.x -= moveSpeed;
+			else if (hitA) {
+				pos.x -= right.x;
+				pos.y -= right.y;
+				pos.z -= right.z;
 			}
 
 			player->SetPos(pos);
@@ -255,23 +271,12 @@ void GamePlayScene::play()
 	}
 
 	// プレイヤーの回転
-	if (input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN) || input->PushKey(DIK_RIGHT) || input->PushKey(DIK_LEFT))
 	{
 		XMFLOAT3 playerRot = player->GetRotation();
-		constexpr float rotSpeed = 1.f;
+		constexpr float rotSpeed = 0.1f;
 
-		if (input->PushKey(DIK_RIGHT)) {
-			playerRot.y += rotSpeed;
-		}
-		if (input->PushKey(DIK_LEFT)) {
-			playerRot.y -= rotSpeed;
-		}
-		if (input->PushKey(DIK_UP)) {
-			playerRot.x -= rotSpeed;
-		}
-		if (input->PushKey(DIK_DOWN)) {
-			playerRot.x += rotSpeed;
-		}
+		playerRot.y -= rotSpeed * mousePosDiff.x;
+		playerRot.x -= rotSpeed * mousePosDiff.y;
 		player->SetRotation(playerRot);
 	}
 
@@ -302,14 +307,15 @@ void GamePlayScene::play()
 	}
 	enemy.remove_if([&](std::unique_ptr<Enemy>& i) {return i->GetLifeSpan() <= frame; });
 
+
 	if (!enemy.empty())
 	{
 		// 画像の左上と右下
-		XMFLOAT2 aimLT = { (float)input->GetMousePos().x - aim->GetSize().x / 2,
-		(float)input->GetMousePos().y - aim->GetSize().y / 2 };
+		XMFLOAT2 aimLT = { aim->GetPosition().x - aim->GetSize().x / 2,
+		 aim->GetPosition().y - aim->GetSize().y / 2 };
 
-		XMFLOAT2 aimRB = { (float)input->GetMousePos().x + aim->GetSize().x / 2,
-		(float)input->GetMousePos().y + aim->GetSize().y / 2 };
+		XMFLOAT2 aimRB = { aim->GetPosition().x + aim->GetSize().x / 2,
+		 aim->GetPosition().y + aim->GetSize().y / 2 };
 
 		// 敵の場所
 		XMFLOAT2 enemyPos;
@@ -336,11 +342,6 @@ void GamePlayScene::play()
 			if (input->TriggerMouse(Input::LEFT)) {
 				// 自機の弾の発射
 				player->Shot(pBulletModel.get(), pBulletScale);
-
-				XMFLOAT3 pos = lane->GetPos();
-				pos.x += player->GetPos().x;
-				pos.y += player->GetPos().y;
-				pos.z += player->GetPos().z;
 			}
 		}
 		else {
@@ -369,13 +370,8 @@ void GamePlayScene::play()
 					e->SetAlive(false);
 					pb.SetAlive(false);
 
-					XMFLOAT3 pos = lane->GetPos();
-					pos.x += e->GetPos().x;
-					pos.y += e->GetPos().y;
-					pos.z += e->GetPos().z;
-
 					// パーティクルの発生
-					ParticleManager::GetInstance()->CreateParticle(pos, 100, 10, 10);
+					ParticleManager::GetInstance()->CreateParticle(e->GetPos(), 100, 10, 10);
 					break;
 				}
 			}
@@ -404,7 +400,7 @@ void GamePlayScene::play()
 					// 当たったら消える
 					if (Collision::CheckSphere2Sphere(playerShape, eBulletShape)) {
 						eb.SetAlive(false);				// 敵の弾を消す
-						player->Damage(1);				// プレイヤーにダメージ
+						// player->Damage(1);				// プレイヤーにダメージ
 						shiftFlag = true;				// RGBずらしをする
 						nowFrame = 0;
 						if (player->GetHp() == 0) {		// 体力が0になったら
@@ -419,11 +415,6 @@ void GamePlayScene::play()
 		}
 	}
 
-	// ボスシーンに行く
-	if (input->TriggerKey(DIK_F)) {
-		SceneManager::GetInstance()->ChangeScene("BOSSPLAY");
-	}
-
 	if (shiftFlag) {
 
 		DamageEffect(maxFrame, nowFrame);
@@ -433,28 +424,6 @@ void GamePlayScene::play()
 			nowFrame = 0;
 		}
 	}
-
-	// スプライン曲線で移動
-	//{
-	//	frame++;
-	//	float timeRate = (float)frame / 120.f;
-	//	if (timeRate >= 1.0f)
-	//	{
-	//		if (splineStartIndex < points.size() - 3) {
-	//			splineStartIndex++;
-	//			timeRate -= 1.0f;
-	//			frame = 0;
-	//		}
-	//		else
-	//		{
-	//			timeRate = 1.0f;
-	//		}
-	//	}
-	//	// ベクターをフロートに変換
-	//	XMFLOAT3 splineFloat;
-	//	XMStoreFloat3(&splineFloat, splinePosition(points, splineStartIndex, timeRate));
-	//	player->SetPos(splineFloat);
-	//}
 
 	// モザイク切り替え
 	{
@@ -480,7 +449,7 @@ void GamePlayScene::play()
 	frame++;
 }
 
-void GamePlayScene::Draw(DirectXCommon* dxcommon)
+void BossScene::Draw(DirectXCommon* dxcommon)
 {
 	// スプライト共通コマンド
 	SpriteCommon::GetInstance()->PreDraw();
@@ -514,7 +483,7 @@ void GamePlayScene::Draw(DirectXCommon* dxcommon)
 	SpriteCommon::GetInstance()->PreDraw();
 }
 
-void GamePlayScene::DrawFrontSprite(DirectXCommon* dxcommon) {
+void BossScene::DrawFrontSprite(DirectXCommon* dxcommon) {
 	SpriteCommon::GetInstance()->PreDraw();
 	aim->Draw();
 	ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_WindowBg, ImVec4(1.f, 0.f, 1.f, 0.5f));
@@ -529,12 +498,14 @@ void GamePlayScene::DrawFrontSprite(DirectXCommon* dxcommon) {
 		ImGui::End();
 	}
 	else {
-		ImGui::SetNextWindowSize(ImVec2(100, 100));
+		ImGui::SetNextWindowSize(ImVec2(200, 200));
 		ImGui::Begin("aaa", nullptr, ImGuiWindowFlags_NoSavedSettings);
 		ImGui::Text(u8"フレーム %u", frame);
 		ImGui::Text(u8"体力 %u", player->GetHp());
 		ImGui::Text(u8"WASD:移動");
 		ImGui::Text(u8"左クリック:撃つ");
+		ImGui::Text(u8"マウス差分 %d,%d", mousePosDiff.x, mousePosDiff.y);
+		ImGui::Text(u8"マウス %d,%d", Input::GetInstance()->GetMousePos().x, Input::GetInstance()->GetMousePos().y);
 
 		ImGui::SetNextWindowPos(ImVec2(ImGui::GetWindowPos().x,
 			ImGui::GetWindowPos().y + ImGui::GetWindowSize().y));
@@ -544,7 +515,7 @@ void GamePlayScene::DrawFrontSprite(DirectXCommon* dxcommon) {
 	ImGui::PopStyleColor();
 }
 
-XMVECTOR GamePlayScene::SplinePosition(const std::vector<XMVECTOR>& posints, size_t startIndex, float t)
+XMVECTOR BossScene::SplinePosition(const std::vector<XMVECTOR>& posints, size_t startIndex, float t)
 {
 	size_t n = posints.size() - 2;
 
@@ -563,7 +534,7 @@ XMVECTOR GamePlayScene::SplinePosition(const std::vector<XMVECTOR>& posints, siz
 	return position;
 }
 
-std::unique_ptr<Enemy>& GamePlayScene::EnemyAdd(XMFLOAT3 pos, XMFLOAT3 vel)
+std::unique_ptr<Enemy>& BossScene::EnemyAdd(XMFLOAT3 pos, XMFLOAT3 vel)
 {
 	enemy.emplace_back();
 	auto& e = enemy.back();
@@ -577,12 +548,10 @@ std::unique_ptr<Enemy>& GamePlayScene::EnemyAdd(XMFLOAT3 pos, XMFLOAT3 vel)
 	// 敵の標的
 	e->SetShotTarget(player.get());
 
-	e->SetParent(lane->GetObj());
-
 	return e;
 }
 
-void GamePlayScene::DamageEffect(UINT maxFrame, UINT nowFrame) {
+void BossScene::DamageEffect(UINT maxFrame, UINT nowFrame) {
 	float rate = (float)nowFrame / (float)maxFrame;
 
 	rate = 1 - rate;
