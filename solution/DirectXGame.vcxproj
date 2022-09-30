@@ -158,6 +158,7 @@
   <ItemGroup>
     <ClCompile Include="AbstractSceneFactory.cpp" />
     <ClCompile Include="Audio.cpp" />
+    <ClCompile Include="Boss.cpp" />
     <ClCompile Include="BossScene.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Collision.cpp" />
@@ -292,6 +293,7 @@
   <ItemGroup>
     <ClInclude Include="AbstractSceneFactory.h" />
     <ClInclude Include="Audio.h" />
+    <ClInclude Include="Boss.h" />
     <ClInclude Include="BossScene.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Collision.h" />

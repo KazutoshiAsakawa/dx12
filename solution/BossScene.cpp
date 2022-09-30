@@ -70,8 +70,8 @@ void BossScene::Initialize(DirectXCommon* dxcommon)
 	eye.y += 10;
 	camera->SetEye(eye);
 
-	// 敵
-	enemy.resize(0);
+	// ボス
+	boss.reset(new Boss(enemyModel.get(), { 0.f,0.f,20.f }));
 
 	// パーティクル初期化
 	ParticleManager::GetInstance()->SetCamera(camera.get());
@@ -82,30 +82,7 @@ void BossScene::Initialize(DirectXCommon* dxcommon)
 	// 音声読み込み
 	Audio::GetInstance()->LoadWave("Alarm01.wav");
 
-	// 音声再生
-	// audio->PlayWave("Alarm01.wav");
 
-	// CSV読み込み
-	csv = Enemy::LoadCsv("Resources/enemy.csv");
-
-	{
-		UINT nowframe = 0;
-
-		for (auto& y : csv) {
-			if (y[0].find("//") == 0) {
-				continue;
-			}
-			if (y[0] == "POPPOSITION") {
-				// 敵を出す
-				enemyPos.emplace_back(std::stof(y[1]), std::stof(y[2]), std::stof(y[3]));
-			}
-			else if (y[0] == "POPTIME") {
-				// 指定時間
-				nowframe += std::stof(y[1]);
-				enemyFrame.emplace_back(nowframe, nowframe + 60 * 40);// (敵が出る時間,敵が消える時間)
-			}
-		}
-	}
 }
 
 void BossScene::Finalize()
@@ -143,9 +120,8 @@ void BossScene::Update()
 		//fbxObj->Update();
 		player->Update();
 		//}
-		for (auto& i : enemy) {
-			i->Update();
-		}
+
+		boss->Update();
 
 		groundObj->Update();
 		skyDomeObj->Update();
@@ -279,36 +255,10 @@ void BossScene::play()
 		playerRot.x -= rotSpeed * mousePosDiff.y;
 		player->SetRotation(playerRot);
 	}
+	
+	// aim->SetPosition({0,0,0});
 
-	// 敵を発生
-	for (auto& i : enemyFrame) {
-		if (i.first <= frame) {
-			auto& a = EnemyAdd(enemyPos[addedEnemyNum], { 0, 0, -0.1 });
-			addedEnemyNum++;
-			a->SetLifeSpan(i.second);
-		}
-	}
-
-	enemyFrame.remove_if([&](std::pair<UINT, UINT>& i) {return i.first <= frame; });
-
-	// 敵が全部居なくなったらエンドシーンに行く
-	{
-		if (enemyFrame.empty() && enemy.empty()) {
-			SceneManager::GetInstance()->ChangeScene("END");
-		}
-	}
-
-	// 敵がZ軸0に行ったら行動パターンをleaveに変える
-	for (auto& i : enemy) {
-		if (i->GetPos().z < 0) {
-			i->leaveChange(XMFLOAT3(0.5, 0.5, 0));
-		}
-
-	}
-	enemy.remove_if([&](std::unique_ptr<Enemy>& i) {return i->GetLifeSpan() <= frame; });
-
-
-	if (!enemy.empty())
+	if (boss->GetAlive())
 	{
 		// 画像の左上と右下
 		XMFLOAT2 aimLT = { aim->GetPosition().x - aim->GetSize().x / 2,
@@ -324,16 +274,22 @@ void BossScene::play()
 
 		// 照準と敵のスクリーン座標の当たり判定
 		player->SetShotTarget(nullptr);
-		for (auto& i : enemy) {
-			if (!i->GetAlive())continue;
-			enemyPos = { i->GetFloat2ScreenPos().x,i->GetFloat2ScreenPos().y };
 
-			// 当たり判定
-			if (aimLT.x <= enemyPos.x && aimLT.y <= enemyPos.y &&
-				aimRB.x >= enemyPos.x && aimRB.y >= enemyPos.y) {
-				flag = true;
-				player->SetShotTarget(i.get());
-			}
+		enemyPos = { boss->GetFloat2ScreenPos().x,boss->GetFloat2ScreenPos().y };
+
+		// 当たり判定
+		if (aimLT.x <= enemyPos.x && aimLT.y <= enemyPos.y &&
+			aimRB.x >= enemyPos.x && aimRB.y >= enemyPos.y) {
+			flag = true;
+			player->SetShotTarget(boss.get());
+		}
+
+		{
+			char tmp[128];
+			sprintf_s(tmp, 128, "boss : %.2f,%.2f", enemyPos.x, enemyPos.y);
+			DebugText::GetInstance()->Print(tmp, 0, 0);
+			sprintf_s(tmp, 128, "mouse : %.2f,%.2f", aim->GetPosition().x, aim->GetPosition().y);
+			DebugText::GetInstance()->Print(tmp, 0, 20);
 		}
 
 		if (flag) {
@@ -359,26 +315,22 @@ void BossScene::play()
 			pBulletShape.radius = pb.GetScale().x;
 
 			// 衝突判定をする
-			for (auto& e : enemy) {
-				if (!e->GetAlive())continue;
-				Sphere enemyShape;
-				enemyShape.center = XMLoadFloat3(&e->GetPos());
-				enemyShape.radius = e->GetScale().x;
+			Sphere enemyShape;
+			enemyShape.center = XMLoadFloat3(&boss->GetPos());
+			enemyShape.radius = boss->GetScale().x;
 
-				// 当たったら消える
-				if (Collision::CheckSphere2Sphere(pBulletShape, enemyShape)) {
-					e->SetAlive(false);
-					pb.SetAlive(false);
+			if (!boss->GetAlive()) break;
 
-					// パーティクルの発生
-					ParticleManager::GetInstance()->CreateParticle(e->GetPos(), 100, 10, 10);
-					break;
-				}
+			// 当たったら消える
+			if (Collision::CheckSphere2Sphere(pBulletShape, enemyShape)) {
+				boss->SetAlive(false);
+				pb.SetAlive(false);
+				aim->SetColor({ 1,1,1,1 });
+
+				// パーティクルの発生
+				ParticleManager::GetInstance()->CreateParticle(boss->GetPos(), 100, 10, 10);
 			}
 		}
-		// 敵を消す
-		enemy.erase(std::remove_if(enemy.begin(), enemy.end(),
-			[](const std::unique_ptr <Enemy>& i) {return !i->GetAlive() && i->GetBullet().empty(); }), enemy.end());
 	}
 
 	// 敵の弾と自機
@@ -390,29 +342,26 @@ void BossScene::play()
 
 		// 衝突判定をする
 		if (player->GetAlive()) {
-			for (auto& e : enemy) {
-				if (!e->GetAlive())continue;
-				for (auto& eb : e->GetBullet()) {
-					Sphere eBulletShape;
-					eBulletShape.center = XMLoadFloat3(&eb.GetPos());
-					eBulletShape.radius = eb.GetScale().z;
+			for (auto& eb : boss->GetBullet()) {
+				Sphere eBulletShape;
+				eBulletShape.center = XMLoadFloat3(&eb.GetPos());
+				eBulletShape.radius = eb.GetScale().z;
 
-					// 当たったら消える
-					if (Collision::CheckSphere2Sphere(playerShape, eBulletShape)) {
-						eb.SetAlive(false);				// 敵の弾を消す
-						// player->Damage(1);				// プレイヤーにダメージ
-						shiftFlag = true;				// RGBずらしをする
-						nowFrame = 0;
-						if (player->GetHp() == 0) {		// 体力が0になったら
-							player->SetAlive(false);
+				// 当たったら消える
+				if (Collision::CheckSphere2Sphere(playerShape, eBulletShape)) {
+					eb.SetAlive(false);				// 敵の弾を消す
+					// player->Damage(1);				// プレイヤーにダメージ
+					shiftFlag = true;				// RGBずらしをする
+					nowFrame = 0;
+					if (player->GetHp() == 0) {		// 体力が0になったら
+						player->SetAlive(false);
 
-							SceneManager::GetInstance()->ChangeScene("END");
-						}
-						break;
+						SceneManager::GetInstance()->ChangeScene("END");
 					}
 				}
 			}
 		}
+
 	}
 
 	if (shiftFlag) {
@@ -467,10 +416,9 @@ void BossScene::Draw(DirectXCommon* dxcommon)
 
 	// プレイヤーの描画
 	player->Draw();
-	// 敵の複数描画
-	for (auto& i : enemy) {
-		i->Draw();
-	}
+
+	boss->Draw();
+
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
@@ -532,23 +480,6 @@ XMVECTOR BossScene::SplinePosition(const std::vector<XMVECTOR>& posints, size_t 
 		(-p0 + 3 * p1 - 3 * p2 + p3) * t * t * t);
 
 	return position;
-}
-
-std::unique_ptr<Enemy>& BossScene::EnemyAdd(XMFLOAT3 pos, XMFLOAT3 vel)
-{
-	enemy.emplace_back();
-	auto& e = enemy.back();
-
-	// 敵の初期座標
-	e = std::make_unique<Enemy>(enemyModel.get(), pos);
-	// 敵の大きさ
-	e->SetScale(XMFLOAT3(enemyScale, enemyScale, enemyScale));
-	// 敵の速度
-	e->SetVel(vel);
-	// 敵の標的
-	e->SetShotTarget(player.get());
-
-	return e;
 }
 
 void BossScene::DamageEffect(UINT maxFrame, UINT nowFrame) {

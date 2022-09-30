@@ -10,6 +10,7 @@
 #include "PlayerBullet.h"
 #include "Enemy.h"
 #include "TrackingCamera.h"
+#include "Boss.h"
 
 #include <Vector>
 #include <memory>
@@ -53,7 +54,7 @@ public:
 	DirectX::XMVECTOR SplinePosition(const std::vector<DirectX::XMVECTOR>& posints, size_t startIndex, float t);
 
 	// ìGÇî≠ê∂Ç≥ÇπÇÈ
-	std::unique_ptr<Enemy>& EnemyAdd(DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 vel);
+	// std::unique_ptr<Enemy>& EnemyAdd(DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 vel);
 
 	void DamageEffect(UINT maxFrame, UINT nowFrame);
 
@@ -92,7 +93,10 @@ private:
 	UINT avoidFrameMax = 60;
 
 	// ìG
-	std::list<std::unique_ptr<Enemy>> enemy;
+	// std::list<std::unique_ptr<Enemy>> enemy;
+
+	// É{ÉX
+	std::unique_ptr<Boss> boss;
 
 	std::function<void()> updateProcess;
 
@@ -112,13 +116,10 @@ private:
 
 	// ìGÇî≠ê∂
 	// énÇ‹ÇË,èIÇÌÇË
-	std::list<std::pair<UINT, UINT>> enemyFrame;
-
-	std::vector< std::vector<std::string>> csv;
-
-	std::vector<DirectX::XMFLOAT3> enemyPos;
-
-	UINT addedEnemyNum = 0;
+	// std::list<std::pair<UINT, UINT>> enemyFrame;
+	// std::vector< std::vector<std::string>> csv;
+	// std::vector<DirectX::XMFLOAT3> enemyPos;
+	// UINT addedEnemyNum = 0;
 
 	bool pause = false;
 };
