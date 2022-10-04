@@ -44,6 +44,9 @@ public:
 	inline void SetLifeSpan(UINT lifeSpan) { this->lifeSpan = lifeSpan; }
 	inline UINT GetLifeSpan() { return lifeSpan; }
 
+	inline void Damage(UINT damage) { if (hp >= damage)hp -= damage; }
+	inline UINT GetHp() { return hp; }
+
 private:
 	// 敵の行動パターン
 	std::function<void()> phase;
@@ -67,5 +70,8 @@ private:
 
 	// 寿命
 	UINT lifeSpan;
+
+	// 体力
+	UINT hp;
 };
 

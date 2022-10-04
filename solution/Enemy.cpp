@@ -38,6 +38,8 @@ Enemy::Enemy(ObjModel* model, const DirectX::XMFLOAT3& position)
 	// Shot(ObjModel::LoadFromObj("rat"),1);
 	bulletModel.reset(ObjModel::LoadFromObj("enemyBullet"));
 	nowShotFrame = shotInterval;
+
+	hp = 2;
 }
 
 // CSVì«Ç›çûÇ›

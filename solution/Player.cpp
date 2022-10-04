@@ -59,7 +59,6 @@ void Player::Draw()
 
 	if (alive) {
 		obj->Draw();
-		aim->Draw();
 	}
 
 }

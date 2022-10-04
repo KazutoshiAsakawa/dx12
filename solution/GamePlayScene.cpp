@@ -318,15 +318,16 @@ void GamePlayScene::play()
 
 		// 照準と敵のスクリーン座標の当たり判定
 		player->SetShotTarget(nullptr);
-		for (auto& i : enemy) {
-			if (!i->GetAlive())continue;
-			enemyPos = { i->GetFloat2ScreenPos().x,i->GetFloat2ScreenPos().y };
+		for (auto& enemyobject : enemy) {
+			if (!enemyobject->GetAlive())continue;
+			enemyPos = { enemyobject->GetFloat2ScreenPos().x,enemyobject->GetFloat2ScreenPos().y };
 
 			// 当たり判定
 			if (aimLT.x <= enemyPos.x && aimLT.y <= enemyPos.y &&
 				aimRB.x >= enemyPos.x && aimRB.y >= enemyPos.y) {
 				flag = true;
-				player->SetShotTarget(i.get());
+				
+				player->SetShotTarget(enemyobject.get());
 			}
 		}
 
@@ -364,10 +365,23 @@ void GamePlayScene::play()
 				enemyShape.center = XMLoadFloat3(&e->GetPos());
 				enemyShape.radius = e->GetScale().x;
 
-				// 当たったら消える
+				// 当たったら
 				if (Collision::CheckSphere2Sphere(pBulletShape, enemyShape)) {
-					e->SetAlive(false);
+					// e->SetAlive(false);
 					pb.SetAlive(false);
+
+					e->Damage(1);				// 敵にダメージ
+					if (e->GetHp() == 0) {		// 体力が0になったら
+						e->SetAlive(false);
+
+						XMFLOAT3 pos = lane->GetPos();
+						pos.x += e->GetPos().x;
+						pos.y += e->GetPos().y;
+						pos.z += e->GetPos().z;
+
+						// パーティクルの発生
+						ParticleManager::GetInstance()->CreateParticle(pos, 100, 4, 10);
+					}
 
 					XMFLOAT3 pos = lane->GetPos();
 					pos.x += e->GetPos().x;
@@ -375,7 +389,7 @@ void GamePlayScene::play()
 					pos.z += e->GetPos().z;
 
 					// パーティクルの発生
-					ParticleManager::GetInstance()->CreateParticle(pos, 100, 10, 10);
+					ParticleManager::GetInstance()->CreateParticle(pos, 10, 4, 5);
 					break;
 				}
 			}
