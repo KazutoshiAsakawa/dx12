@@ -62,10 +62,26 @@ public:
 
 	inline void SetMosaicNum(DirectX::XMFLOAT2 mosaicnum) { this->mosaicNum = mosaicnum, constBuffDirty = true; }
 
+	/// <summary>
+	/// 赤をずらす設定
+	/// </summary>
+	/// <param name="shiftR">赤</param>
 	inline void SetShiftR(const DirectX::XMFLOAT2& shiftR) { this->shiftR = shiftR, constBuffDirty = true; }
+	/// <summary>
+	/// 緑をずらす設定
+	/// </summary>
+	/// <param name="shiftR">緑</param>
 	inline void SetShiftG(const DirectX::XMFLOAT2& shiftG) { this->shiftG = shiftG, constBuffDirty = true; }
+	/// <summary>
+	/// 青をずらす設定
+	/// </summary>
+	/// <param name="shiftR">青</param>
 	inline void SetShiftB(const DirectX::XMFLOAT2& shiftB) { this->shiftB = shiftB, constBuffDirty = true; }
 
+	/// <summary>
+	/// デバイスの設定
+	/// </summary>
+	/// <param name="device">デバイス</param>
 	static void SetDevice(ID3D12Device* device);
 
 private: // メンバ変数

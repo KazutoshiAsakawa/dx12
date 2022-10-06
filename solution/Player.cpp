@@ -47,7 +47,7 @@ void Player::Update()
 	bullet.erase(std::remove_if(bullet.begin(), bullet.end(), [](PlayerBullet& i) {return !i.GetAlive(); }), bullet.end());
 
 	obj->Update();
-	aim->Update();
+	aim->Update(); // プレイヤーの目の前にあるただのモデル
 }
 
 void Player::Draw()
@@ -59,6 +59,7 @@ void Player::Draw()
 
 	if (alive) {
 		obj->Draw();
+		// aim->Draw();
 	}
 
 }
@@ -77,9 +78,9 @@ void Player::Shot(ObjModel* model, float scale)
 		// 速度を計算
 		// 自分から標的までのベクトル
 		vel = {
-			shotTarget->GetPos().x - obj->GetPosition().x,
-			shotTarget->GetPos().y - obj->GetPosition().y,
-			shotTarget->GetPos().z - obj->GetPosition().z
+			shotTarget->GetPosition().x - obj->GetPosition().x,
+			shotTarget->GetPosition().y - obj->GetPosition().y,
+			shotTarget->GetPosition().z - obj->GetPosition().z
 		};
 		// XMVECTORに変換
 		XMVECTOR vectorVel = XMLoadFloat3(&vel);

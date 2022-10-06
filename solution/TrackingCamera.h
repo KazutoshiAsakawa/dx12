@@ -16,6 +16,7 @@ public:
 	void startUpdate()override;
 
 private:
+	// トラッキングする標的
 	GameObject* trackingTarget;
 
 	XMFLOAT3 trackingTargetToCameraTarget = { 0.f,2.5f,0.f };

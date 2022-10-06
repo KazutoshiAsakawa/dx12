@@ -29,9 +29,9 @@ public: // サブクラス
 	// 定数バッファ用データ構造体（座標変換行列用）
 	struct ConstBufferDataTransform
 	{
-		XMMATRIX viewproj;    // ビュープロジェクション行列
-		XMMATRIX world; // ワールド行列
-		XMFLOAT3 cameraPos; // カメラ座標（ワールド座標）
+		XMMATRIX viewproj;	// ビュープロジェクション行列
+		XMMATRIX world;		// ワールド行列
+		XMFLOAT3 cameraPos;	// カメラ座標（ワールド座標）
 	};
 
 	// 定数バッファ用データ構造体 (スキニング)
@@ -83,9 +83,21 @@ public: // メンバ関数
 	/// <param name="model">モデル</param>
 	void SetModel(FbxModel* model) { this->model = model; }
 
+	/// <summary>
+	/// 回転の設定
+	/// </summary>
+	/// <param name="rotation">回転</param>
 	inline void SetRotation(const XMFLOAT3& rotation) { this->rotation = rotation; }
 
+	/// <summary>
+	/// 座標の設定
+	/// </summary>
+	/// <param name="position">座標</param>
 	inline void SetPosition(const XMFLOAT3& position) { this->position = position; }
+	/// <summary>
+	/// 座標の取得
+	/// </summary>
+	/// <returns>座標</returns>
 	inline const XMFLOAT3& GetPosition() { return position; }
 
 protected: // メンバ変数

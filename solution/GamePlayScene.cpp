@@ -23,6 +23,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 	// スプライトの生成
 	sprite.reset(Sprite::Create(1, { 0,0 }, false, false));
 	aim.reset(Sprite::Create(2));
+	
 
 	// カメラの初期化
 	camera.reset(new TrackingCamera());
@@ -33,6 +34,8 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 
 	// レーン
 	lane.reset(new GameObject(nullptr));
+	// ターゲットが無い時
+	nullTarget.reset(new GameObject(nullptr));
 
 	// OBJからモデルデータを読み込む
 
@@ -74,11 +77,11 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 	eye.z -= 50;
 	eye.y += 10;
 	camera->SetEye(eye);*/
-
+	
 	// カメラをレーンの位置にセット
 	camera->SetTrackingTarget(lane.get());
-	camera->SetTarget(lane->GetPos());
-	XMFLOAT3 eye = lane->GetPos();
+	camera->SetTarget(lane->GetPosition());
+	XMFLOAT3 eye = lane->GetPosition();
 	eye.z -= 50;
 	eye.y += 10;
 	camera->SetEye(eye);
@@ -146,6 +149,11 @@ void GamePlayScene::Update()
 	if (!pause) {
 		// シーン遷移
 		updateProcess();
+		{
+		char tmp[128];
+		sprintf_s(tmp, 128, "mouse : %.2f,%.2f", aim->GetPosition().x, aim->GetPosition().y);
+		DebugText::GetInstance()->Print(tmp, 0, 20);
+		}
 
 		// パーティクル更新
 		ParticleManager::GetInstance()->Update();
@@ -177,7 +185,7 @@ void GamePlayScene::start()
 {
 	Input* input = Input::GetInstance();
 	// モザイクをかける時間
-	constexpr UINT mosaicFrameMax = 40;
+	constexpr UINT mosaicFrameMax = 50;
 
 	// モザイクの時間が最大までいったらplay関数に変える
 	if (++mosaicFrame > mosaicFrameMax) {
@@ -200,15 +208,15 @@ void GamePlayScene::play()
 
 	{
 		char tmp[32]{};
-		sprintf_s(tmp, 32, "%.2f,%.2f,%.2f", player->GetPos().x, player->GetPos().y, player->GetPos().z);
+		sprintf_s(tmp, 32, "%.2f,%.2f,%.2f", player->GetPosition().x, player->GetPosition().y, player->GetPosition().z);
 		DebugText::GetInstance()->Print(tmp, 0, 100);
 	}
 
 	// レーンの位置
 	{
-		auto pos = lane->GetPos();
+		auto pos = lane->GetPosition();
 		pos.z += 0.2;
-		lane->SetPos(pos);
+		lane->SetPosition(pos);
 
 		skyDomeObj->SetPosition(pos);
 	}
@@ -229,7 +237,7 @@ void GamePlayScene::play()
 		}
 
 		if (hitW || hitS || hitA || hitD || hitZ || hitX) {
-			auto pos = player->GetPos();
+			auto pos = player->GetPosition();
 			float moveSpeed = 0.2f;
 			if (hitSpace && avoidFrame == 0) {
 				moveSpeed *= 10;
@@ -250,7 +258,7 @@ void GamePlayScene::play()
 				pos.x -= moveSpeed;
 			}
 
-			player->SetPos(pos);
+			player->SetPosition(pos);
 		}
 	}
 
@@ -295,7 +303,7 @@ void GamePlayScene::play()
 
 	// 敵がZ軸0に行ったら行動パターンをleaveに変える
 	for (auto& i : enemy) {
-		if (i->GetPos().z < 0) {
+		if (i->GetPosition().z < 0) {
 			i->leaveChange(XMFLOAT3(0.5, 0.5, 0));
 		}
 
@@ -338,16 +346,29 @@ void GamePlayScene::play()
 				// 自機の弾の発射
 				player->Shot(pBulletModel.get(), pBulletScale);
 
+				XMFLOAT3 pos = lane->GetPosition();
+				pos.x += player->GetPosition().x;
+				pos.y += player->GetPosition().y;
+				pos.z += player->GetPosition().z;
+			}
+		}
+		else {
+			/*nullTarget->SetPos({ aim->GetPosition().x,aim->GetPosition().y,aim->GetPosition().z + 20});
+
+			player->SetShotTarget(nullTarget.get());
+			if (input->TriggerMouse(Input::LEFT)) {
+				player->Shot(pBulletModel.get(), pBulletScale);
+
 				XMFLOAT3 pos = lane->GetPos();
 				pos.x += player->GetPos().x;
 				pos.y += player->GetPos().y;
 				pos.z += player->GetPos().z;
-			}
-		}
-		else {
+			}*/
+			// 照準が白
 			aim->SetColor({ 1,1,1,1 });
 		}
 	}
+	
 
 	// 敵と自機の弾の当たり判定
 	{
@@ -355,14 +376,14 @@ void GamePlayScene::play()
 
 		for (auto& pb : player->GetBullet()) {
 			if (!pb.GetAlive())continue;
-			pBulletShape.center = XMLoadFloat3(&pb.GetPos());
+			pBulletShape.center = XMLoadFloat3(&pb.GetPosition());
 			pBulletShape.radius = pb.GetScale().x;
 
 			// 衝突判定をする
 			for (auto& e : enemy) {
 				if (!e->GetAlive())continue;
 				Sphere enemyShape;
-				enemyShape.center = XMLoadFloat3(&e->GetPos());
+				enemyShape.center = XMLoadFloat3(&e->GetPosition());
 				enemyShape.radius = e->GetScale().x;
 
 				// 当たったら
@@ -374,19 +395,19 @@ void GamePlayScene::play()
 					if (e->GetHp() == 0) {		// 体力が0になったら
 						e->SetAlive(false);
 
-						XMFLOAT3 pos = lane->GetPos();
-						pos.x += e->GetPos().x;
-						pos.y += e->GetPos().y;
-						pos.z += e->GetPos().z;
+						XMFLOAT3 pos = lane->GetPosition();
+						pos.x += e->GetPosition().x;
+						pos.y += e->GetPosition().y;
+						pos.z += e->GetPosition().z;
 
 						// パーティクルの発生
 						ParticleManager::GetInstance()->CreateParticle(pos, 100, 4, 10);
 					}
 
-					XMFLOAT3 pos = lane->GetPos();
-					pos.x += e->GetPos().x;
-					pos.y += e->GetPos().y;
-					pos.z += e->GetPos().z;
+					XMFLOAT3 pos = lane->GetPosition();
+					pos.x += e->GetPosition().x;
+					pos.y += e->GetPosition().y;
+					pos.z += e->GetPosition().z;
 
 					// パーティクルの発生
 					ParticleManager::GetInstance()->CreateParticle(pos, 10, 4, 5);
@@ -403,16 +424,15 @@ void GamePlayScene::play()
 	{
 		Sphere playerShape;
 
-		playerShape.center = XMLoadFloat3(&player->GetPos());
+		playerShape.center = XMLoadFloat3(&player->GetPosition());
 		playerShape.radius = player->GetScale().z;
 
 		// 衝突判定をする
 		if (player->GetAlive()) {
 			for (auto& e : enemy) {
-				if (!e->GetAlive())continue;
 				for (auto& eb : e->GetBullet()) {
 					Sphere eBulletShape;
-					eBulletShape.center = XMLoadFloat3(&eb.GetPos());
+					eBulletShape.center = XMLoadFloat3(&eb.GetPosition());
 					eBulletShape.radius = eb.GetScale().z;
 
 					// 当たったら消える
@@ -543,12 +563,13 @@ void GamePlayScene::DrawFrontSprite(DirectXCommon* dxcommon) {
 		ImGui::End();
 	}
 	else {
-		ImGui::SetNextWindowSize(ImVec2(100, 100));
+		ImGui::SetNextWindowSize(ImVec2(100, 200));
 		ImGui::Begin("aaa", nullptr, ImGuiWindowFlags_NoSavedSettings);
 		ImGui::Text(u8"フレーム %u", frame);
 		ImGui::Text(u8"体力 %u", player->GetHp());
 		ImGui::Text(u8"WASD:移動");
 		ImGui::Text(u8"左クリック:撃つ");
+		ImGui::Text(u8"スペース:回避");
 
 		ImGui::SetNextWindowPos(ImVec2(ImGui::GetWindowPos().x,
 			ImGui::GetWindowPos().y + ImGui::GetWindowSize().y));

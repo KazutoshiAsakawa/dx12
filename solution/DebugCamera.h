@@ -17,9 +17,15 @@ public:
 	/// <param name="input">入力</param>
 	DebugCamera(int window_width, int window_height);
 
-	// 更新
+	/// <summary>
+	/// 毎フレーム更新
+	/// </summary>
 	void Update() override;
 
+	/// <summary>
+	/// 距離を設定
+	/// </summary>
+	/// <param name="distance">距離</param>
 	void SetDistance(float distance) {
 		this->distance = distance; viewDirty = true;
 	}

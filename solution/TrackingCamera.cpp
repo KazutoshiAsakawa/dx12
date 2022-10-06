@@ -15,7 +15,7 @@ void TrackingCamera::startUpdate()
 
 	// トラッキングターゲットが存在したら
 	if (trackingTarget) {
-		XMFLOAT3 target = trackingTarget->GetPos();
+		XMFLOAT3 target = trackingTarget->GetPosition();
 
 		float sinNum = sinf(XMConvertToRadians(trackingTarget->GetRotation().x + 20));
 		float cosNum = cosf(XMConvertToRadians(trackingTarget->GetRotation().x + 20));

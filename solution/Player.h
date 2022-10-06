@@ -32,17 +32,18 @@ public:
 private:
 
 	std::unique_ptr <ObjModel> model;
-
 	std::vector<PlayerBullet> bullet;
 
 	// 照準
 	std::unique_ptr <ObjObject3d> aim;
 
+	// 照準のスクリーン座標
 	DirectX::XMFLOAT2 float2ScreenAimPos;
 
 	// 標的
 	GameObject* shotTarget;
 
+	// 体力
 	UINT hp;
 };
 

@@ -68,7 +68,7 @@ private://メンバー変数
 	BYTE key[256] = {};
 	//前回の全キーの状態
 	BYTE keyPre[256] = {};
-
+	// マウス座標
 	POINT mousePos;
 
 	DIMOUSESTATE2 mouse{};

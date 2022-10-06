@@ -64,8 +64,8 @@ void BossScene::Initialize(DirectXCommon* dxcommon)
 
 	// カメラをプレイヤーの位置にセット
 	camera->SetTrackingTarget(player.get());
-	camera->SetTarget(player->GetPos());
-	XMFLOAT3 eye = player->GetPos();
+	camera->SetTarget(player->GetPosition());
+	XMFLOAT3 eye = player->GetPosition();
 	eye.z -= 50;
 	eye.y += 10;
 	camera->SetEye(eye);
@@ -163,7 +163,7 @@ void BossScene::play()
 
 	{
 		char tmp[32]{};
-		sprintf_s(tmp, 32, "%.2f,%.2f,%.2f", player->GetPos().x, player->GetPos().y, player->GetPos().z);
+		sprintf_s(tmp, 32, "%.2f,%.2f,%.2f", player->GetPosition().x, player->GetPosition().y, player->GetPosition().z);
 		DebugText::GetInstance()->Print(tmp, 0, 100);
 	}
 
@@ -171,7 +171,7 @@ void BossScene::play()
 
 	// レーンの位置
 	{
-		skyDomeObj->SetPosition(player->GetPos());
+		skyDomeObj->SetPosition(player->GetPosition());
 	}
 
 	// プレイヤーの移動と回避
@@ -190,7 +190,7 @@ void BossScene::play()
 		}
 
 		if (hitW || hitS || hitA || hitD || hitZ || hitX) {
-			auto pos = player->GetPos();
+			auto pos = player->GetPosition();
 			float moveSpeed = 0.2f;
 			if (hitSpace && avoidFrame == 0) {
 				moveSpeed *= 10;
@@ -242,7 +242,7 @@ void BossScene::play()
 				pos.z -= right.z;
 			}
 
-			player->SetPos(pos);
+			player->SetPosition(pos);
 		}
 	}
 
@@ -311,12 +311,12 @@ void BossScene::play()
 
 		for (auto& pb : player->GetBullet()) {
 			if (!pb.GetAlive())continue;
-			pBulletShape.center = XMLoadFloat3(&pb.GetPos());
+			pBulletShape.center = XMLoadFloat3(&pb.GetPosition());
 			pBulletShape.radius = pb.GetScale().x;
 
 			// 衝突判定をする
 			Sphere enemyShape;
-			enemyShape.center = XMLoadFloat3(&boss->GetPos());
+			enemyShape.center = XMLoadFloat3(&boss->GetPosition());
 			enemyShape.radius = boss->GetScale().x;
 
 			if (!boss->GetAlive()) break;
@@ -328,7 +328,7 @@ void BossScene::play()
 				aim->SetColor({ 1,1,1,1 });
 
 				// パーティクルの発生
-				ParticleManager::GetInstance()->CreateParticle(boss->GetPos(), 100, 10, 10);
+				ParticleManager::GetInstance()->CreateParticle(boss->GetPosition(), 100, 10, 10);
 			}
 		}
 	}
@@ -337,14 +337,14 @@ void BossScene::play()
 	{
 		Sphere playerShape;
 
-		playerShape.center = XMLoadFloat3(&player->GetPos());
+		playerShape.center = XMLoadFloat3(&player->GetPosition());
 		playerShape.radius = player->GetScale().z;
 
 		// 衝突判定をする
 		if (player->GetAlive()) {
 			for (auto& eb : boss->GetBullet()) {
 				Sphere eBulletShape;
-				eBulletShape.center = XMLoadFloat3(&eb.GetPos());
+				eBulletShape.center = XMLoadFloat3(&eb.GetPosition());
 				eBulletShape.radius = eb.GetScale().z;
 
 				// 当たったら消える

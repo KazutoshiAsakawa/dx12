@@ -36,7 +36,14 @@ public:
 	/// </summary>
 	void Update() override;
 
+	/// <summary>
+	/// 最初のシーン遷移
+	/// </summary>
 	void start();
+
+	/// <summary>
+	/// プレイ画面
+	/// </summary>
 	void play();
 
 	/// <summary>
@@ -49,18 +56,33 @@ public:
 	/// </summary>
 	void DrawFrontSprite(DirectXCommon* dxcommon) override;
 
-
+	/// <summary>
+	/// スプライン曲線
+	/// </summary>
+	/// <param name="posints">座標</param>
+	/// <param name="startIndex">始点</param>
+	/// <param name="t">時間</param>
+	/// <returns></returns>
 	DirectX::XMVECTOR SplinePosition(const std::vector<DirectX::XMVECTOR>& posints, size_t startIndex, float t);
 
 	// 敵を発生させる
 	std::unique_ptr<Enemy>& EnemyAdd(DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 vel);
 
+	/// <summary>
+	/// ダメージエフェクト
+	/// </summary>
+	/// <param name="maxFrame">最大フレーム</param>
+	/// <param name="nowFrame">現在のフレーム</param>
 	void DamageEffect(UINT maxFrame,UINT nowFrame);
 
 private:
-	// 背景
+	// 背景スプライト
 	std::unique_ptr<Sprite> sprite;
+	// 照準スプライト
 	std::unique_ptr<Sprite> aim;
+
+	// 敵が当たって無い時のターゲット
+	std::unique_ptr<GameObject> nullTarget;
 
 	// スカイドーム
 	std::unique_ptr<ObjModel> skyDomeModel;
@@ -94,6 +116,7 @@ private:
 	// 敵
 	std::list<std::unique_ptr<Enemy>> enemy;
 
+	// シーン遷移
 	std::function<void()> updateProcess;
 
 	// モザイク
@@ -114,12 +137,16 @@ private:
 	// 始まり,終わり
 	std::list<std::pair<UINT, UINT>> enemyFrame;
 
-
 	std::vector< std::vector<std::string>> csv;
 
+	// 敵の座標
 	std::vector<DirectX::XMFLOAT3> enemyPos;
 
+	// 増やした敵の数
 	UINT addedEnemyNum = 0;
 
+	// ポーズ画面管理
 	bool pause = false;
+
+
 };

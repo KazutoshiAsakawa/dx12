@@ -84,9 +84,9 @@ void Enemy::Update()
 			vel = XMVector3Normalize(vel);
 
 			vec = XMVectorSet(
-				shotTarget->GetPos().x - i.GetPos().x,
-				shotTarget->GetPos().y - i.GetPos().y,
-				shotTarget->GetPos().z - i.GetPos().z,
+				shotTarget->GetPosition().x - i.GetPosition().x,
+				shotTarget->GetPosition().y - i.GetPosition().y,
+				shotTarget->GetPosition().z - i.GetPosition().z,
 				1
 			);
 			vec = XMVector3Normalize(vec);
@@ -148,9 +148,9 @@ void Enemy::Shot(ObjModel* model, float scale)
 		// 速度を計算
 		// 自分から標的までのベクトル
 		vel = {
-			shotTarget->GetPos().x - obj->GetPosition().x,
-			shotTarget->GetPos().y - obj->GetPosition().y,
-			shotTarget->GetPos().z - obj->GetPosition().z
+			shotTarget->GetPosition().x - obj->GetPosition().x,
+			shotTarget->GetPosition().y - obj->GetPosition().y,
+			shotTarget->GetPosition().z - obj->GetPosition().z
 		};
 		// XMVECTORに変換
 		XMVECTOR vectorVel = XMLoadFloat3(&vel);
