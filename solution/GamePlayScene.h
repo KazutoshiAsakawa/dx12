@@ -81,6 +81,11 @@ private:
 	// 照準スプライト
 	std::unique_ptr<Sprite> aim;
 
+	// 体力バー
+	std::unique_ptr<Sprite> hp3;
+	std::unique_ptr<Sprite> hp2;
+	std::unique_ptr<Sprite> hp1;
+
 	// 敵が当たって無い時のターゲット
 	std::unique_ptr<GameObject> nullTarget;
 

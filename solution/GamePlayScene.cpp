@@ -19,10 +19,16 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 	// スプライト共通テクスチャ読み込み
 	SpriteCommon::GetInstance()->LoadTexture(1, L"Resources/gameplay.png");
 	SpriteCommon::GetInstance()->LoadTexture(2, L"Resources/aim.png");
+	SpriteCommon::GetInstance()->LoadTexture(3, L"Resources/hp/hp3.png");
+	SpriteCommon::GetInstance()->LoadTexture(4, L"Resources/hp/hp2.png");
+	SpriteCommon::GetInstance()->LoadTexture(5, L"Resources/hp/hp1.png");
 
 	// スプライトの生成
 	sprite.reset(Sprite::Create(1, { 0,0 }, false, false));
 	aim.reset(Sprite::Create(2));
+	hp3.reset(Sprite::Create(3, { 0,0 }, false, false));
+	hp2.reset(Sprite::Create(4, { 0,0 }, false, false));
+	hp1.reset(Sprite::Create(5, { 0,0 }, false, false));
 	
 
 	// カメラの初期化
@@ -177,6 +183,11 @@ void GamePlayScene::Update()
 		// aim->SetPosition({player->GetScreenAimPos().x,player->GetScreenAimPos().y,0});
 		aim->SetPosition({ (float)Input::GetInstance()->GetMousePos().x,(float)Input::GetInstance()->GetMousePos().y,0 });
 		aim->Update();
+
+		// 体力バー
+		hp3->Update();
+		hp2->Update();
+		hp1->Update();
 	}
 }
 
@@ -301,15 +312,16 @@ void GamePlayScene::play()
 		}
 	}
 
-	// 敵がZ軸0に行ったら行動パターンをleaveに変える
+	
 	for (auto& i : enemy) {
+		// 敵がZ軸0に行ったら行動パターンをleaveに変える
 		if (i->GetPosition().z < 0) {
 			i->leaveChange(XMFLOAT3(0.5, 0.5, 0));
 		}
-
 	}
 	enemy.remove_if([&](std::unique_ptr<Enemy>& i) {return i->GetLifeSpan() <= frame; });
 
+	// 敵が居たら照準と敵の当たり判定をする
 	if (!enemy.empty())
 	{
 		// 画像の左上と右下
@@ -388,11 +400,11 @@ void GamePlayScene::play()
 
 				// 当たったら
 				if (Collision::CheckSphere2Sphere(pBulletShape, enemyShape)) {
-					// e->SetAlive(false);
+					// e->SetAlive(false);いらない？
 					pb.SetAlive(false);
 
 					e->Damage(1);				// 敵にダメージ
-					if (e->GetHp() == 0) {		// 体力が0になったら
+					if (e->GetHp() <= 0) {		// 体力が0以下になったら
 						e->SetAlive(false);
 
 						XMFLOAT3 pos = lane->GetPosition();
@@ -438,7 +450,7 @@ void GamePlayScene::play()
 					// 当たったら消える
 					if (Collision::CheckSphere2Sphere(playerShape, eBulletShape)) {
 						eb.SetAlive(false);				// 敵の弾を消す
-						player->Damage(1);				// プレイヤーにダメージ
+						// player->Damage(1);				// プレイヤーにダメージ
 						shiftFlag = true;				// RGBずらしをする
 						nowFrame = 0;
 						if (player->GetHp() == 0) {		// 体力が0になったら
@@ -550,6 +562,17 @@ void GamePlayScene::Draw(DirectXCommon* dxcommon)
 
 void GamePlayScene::DrawFrontSprite(DirectXCommon* dxcommon) {
 	SpriteCommon::GetInstance()->PreDraw();
+
+	if (player->GetHp() == 3) {
+		hp3->Draw();
+	}
+	else if (player->GetHp() == 2) {
+		hp2->Draw();
+	}
+	else if (player->GetHp() == 1) {
+		hp1->Draw();
+	}
+
 	aim->Draw();
 	ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_WindowBg, ImVec4(1.f, 0.f, 1.f, 0.5f));
 
