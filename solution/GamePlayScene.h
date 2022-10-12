@@ -129,8 +129,8 @@ private:
 	UINT mosaicFrame = 0;
 
 	// RGB‚¸‚ç‚µ
-	UINT nowFrame = 0;
-	UINT maxFrame = 15;
+	UINT shiftNowFrame = 0;
+	UINT shiftMaxFrame = 15;
 	bool shiftFlag = false;
 
 	std::vector<DirectX::XMVECTOR> points;

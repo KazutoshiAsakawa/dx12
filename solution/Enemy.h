@@ -30,7 +30,8 @@ public:
 	/// </summary>
 	void Shot(ObjModel* model, float scale = 1);
 
-	void leaveChange(DirectX::XMFLOAT3 vel);
+	void LeaveChange(DirectX::XMFLOAT3 vel);
+	void DirectionChange(DirectX::XMFLOAT3 vel);
 
 	inline const DirectX::XMFLOAT3& GetVel() { return vel; }
 	inline void SetVel(const DirectX::XMFLOAT3& vel) { this->vel = vel; }
@@ -50,8 +51,9 @@ public:
 private:
 	// 敵の行動パターン
 	std::function<void()> phase;
-	void approach();
-	void leave();
+	void Approach();
+	void Leave();
+	void Direction();
 
 	// モデル
 	std::unique_ptr<ObjModel> bulletModel;

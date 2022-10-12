@@ -302,6 +302,11 @@ void BossScene::play()
 		}
 		else {
 			aim->SetColor({ 1,1,1,1 });
+
+			if (input->TriggerMouse(Input::LEFT)) {
+				// Ž©‹@‚Ì’e‚Ì”­ŽË
+				player->Shot(pBulletModel.get(), pBulletScale);
+			}
 		}
 	}
 

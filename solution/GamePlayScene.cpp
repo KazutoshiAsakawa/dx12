@@ -135,7 +135,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 			else if (y[0] == "POPTIME") {
 				// 指定時間
 				nowframe += std::stof(y[1]);
-				enemyFrame.emplace_back(nowframe, nowframe + 60 * 40);// (敵が出る時間,敵が消える時間)
+				enemyFrame.emplace_back(nowframe, nowframe + 60 * 39);// (敵が出る時間,敵が消える時間)
 			}
 		}
 	}
@@ -148,9 +148,9 @@ void GamePlayScene::Finalize()
 
 void GamePlayScene::Update()
 {
-	if (Input::GetInstance()->TriggerKey(DIK_ESCAPE)) {
-		pause = !pause;
-	}
+	//if (Input::GetInstance()->TriggerKey(DIK_ESCAPE)) {
+	//	pause = !pause;
+	//}
 
 	if (!pause) {
 		// シーン遷移
@@ -316,7 +316,22 @@ void GamePlayScene::play()
 	for (auto& i : enemy) {
 		// 敵がZ軸0に行ったら行動パターンをleaveに変える
 		if (i->GetPosition().z < 0) {
-			i->leaveChange(XMFLOAT3(0.5, 0.5, 0));
+			i->LeaveChange(XMFLOAT3(0.5f, 0.5f, 0.f));
+		}
+
+		// z軸が0座標y軸が10以上(画面外)に行ったら消す
+		if (i->GetPosition().z < 0.f && i->GetPosition().y > 10.f) {
+			i->SetAlive(false);
+		}
+
+		// x軸が13以上だったら左に行く
+		if (i->GetPosition().x >= 13.f) {
+			i->DirectionChange(XMFLOAT3(-0.1f,0.f,0.f));
+		}
+
+		// x軸が-13以下だったら右に行く
+		if (i->GetPosition().x <= -13.f) {
+			i->DirectionChange(XMFLOAT3(0.4f, 0.f, 0.f));
 		}
 	}
 	enemy.remove_if([&](std::unique_ptr<Enemy>& i) {return i->GetLifeSpan() <= frame; });
@@ -400,13 +415,13 @@ void GamePlayScene::play()
 
 				// 当たったら
 				if (Collision::CheckSphere2Sphere(pBulletShape, enemyShape)) {
-					// e->SetAlive(false);いらない？
 					pb.SetAlive(false);
 
 					e->Damage(1);				// 敵にダメージ
 					if (e->GetHp() <= 0) {		// 体力が0以下になったら
 						e->SetAlive(false);
 
+						// パーティクルの場所を設定
 						XMFLOAT3 pos = lane->GetPosition();
 						pos.x += e->GetPosition().x;
 						pos.y += e->GetPosition().y;
@@ -416,6 +431,7 @@ void GamePlayScene::play()
 						ParticleManager::GetInstance()->CreateParticle(pos, 100, 4, 10);
 					}
 
+					// パーティクルの場所を設定
 					XMFLOAT3 pos = lane->GetPosition();
 					pos.x += e->GetPosition().x;
 					pos.y += e->GetPosition().y;
@@ -452,7 +468,7 @@ void GamePlayScene::play()
 						eb.SetAlive(false);				// 敵の弾を消す
 						// player->Damage(1);				// プレイヤーにダメージ
 						shiftFlag = true;				// RGBずらしをする
-						nowFrame = 0;
+						shiftNowFrame = 0;
 						if (player->GetHp() == 0) {		// 体力が0になったら
 							player->SetAlive(false);
 
@@ -472,11 +488,11 @@ void GamePlayScene::play()
 
 	if (shiftFlag) {
 
-		DamageEffect(maxFrame, nowFrame);
-		nowFrame++;
-		if (maxFrame < nowFrame) {
+		DamageEffect(shiftMaxFrame, shiftNowFrame);
+		shiftNowFrame++;
+		if (shiftMaxFrame < shiftNowFrame) {
 			shiftFlag = false;
-			nowFrame = 0;
+			shiftNowFrame = 0;
 		}
 	}
 
@@ -521,6 +537,11 @@ void GamePlayScene::play()
 			// フラグを反転
 			mosaicFlag = !mosaicFlag;
 		}
+	}
+	const bool TriggerESC = input->TriggerKey(DIK_ESCAPE);
+	if (TriggerESC) {
+	WM_DESTROY; //ウィンドウが破棄された
+		PostQuitMessage(0); //OSに対して、アプリの終了を伝える
 	}
 
 	frame++;

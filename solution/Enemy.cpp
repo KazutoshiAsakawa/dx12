@@ -34,7 +34,7 @@ namespace {
 }
 
 Enemy::Enemy(ObjModel* model, const DirectX::XMFLOAT3& position)
-	:GameObject(model, position), phase(std::bind(&Enemy::approach, this)) {
+	:GameObject(model, position), phase(std::bind(&Enemy::Approach, this)) {
 	// Shot(ObjModel::LoadFromObj("rat"),1);
 	bulletModel.reset(ObjModel::LoadFromObj("enemyBullet"));
 	nowShotFrame = shotInterval;
@@ -170,7 +170,7 @@ void Enemy::Shot(ObjModel* model, float scale)
 	bullet.back().SetVel(vel);
 }
 
-void Enemy::approach()
+void Enemy::Approach()
 {
 
 	XMFLOAT3 pos = obj->GetPosition();
@@ -187,11 +187,9 @@ void Enemy::approach()
 		// ‰Šú‰»
 		nowShotFrame = shotInterval;
 	}
-
-
 }
 
-void Enemy::leave()
+void Enemy::Leave()
 {
 	XMFLOAT3 pos = obj->GetPosition();
 	pos.x += vel.x;
@@ -202,9 +200,33 @@ void Enemy::leave()
 	obj->Update();
 }
 
-void Enemy::leaveChange(XMFLOAT3 vel) {
+void Enemy::LeaveChange(XMFLOAT3 vel) {
 	SetVel(vel);
 
 	// leave‚É•Ï‚¦‚é
-	phase = std::bind(&Enemy::leave, this);
+	phase = std::bind(&Enemy::Leave, this);
+}
+
+void Enemy::Direction() {
+	XMFLOAT3 pos = obj->GetPosition();
+	pos.x += vel.x;
+	pos.y += vel.y;
+	pos.z += vel.z;
+
+	obj->SetPosition(pos);
+	obj->Update();
+
+	// 0‚É‚È‚Á‚½‚çŒ‚‚Â
+	if (nowShotFrame-- == 0) {
+		Shot(bulletModel.get(), 1);
+		// ‰Šú‰»
+		nowShotFrame = shotInterval;
+	}
+}
+
+void Enemy::DirectionChange(XMFLOAT3 vel) {
+	SetVel(vel);
+
+	// leave‚É•Ï‚¦‚é
+	phase = std::bind(&Enemy::Direction, this);
 }
