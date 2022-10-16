@@ -88,14 +88,14 @@ void Framework::Update()
 	// シーンの更新
 	SceneManager::GetInstance()->Update(dxCommon);
 
-	if (input->TriggerKey(DIK_R)) {
+	/*if (input->TriggerKey(DIK_R)) {
 		if (shaderNum == 0u) {
 			shaderNum = 1u;
 		}
 		else {
 			shaderNum = 0u;
 		}
-	}
+	}*/
 }
 
 void Framework::Draw()

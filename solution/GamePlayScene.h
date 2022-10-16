@@ -82,9 +82,14 @@ private:
 	std::unique_ptr<Sprite> aim;
 
 	// 体力バー
-	std::unique_ptr<Sprite> hp3;
+	/*std::unique_ptr<Sprite> hp3;
 	std::unique_ptr<Sprite> hp2;
-	std::unique_ptr<Sprite> hp1;
+	std::unique_ptr<Sprite> hp1;*/
+
+	// 自機HP最大値
+	UINT playerHpMax = 3;
+	// HP画像の配列
+	std::vector<std::unique_ptr<Sprite>> playerHpSprite;
 
 	// 敵が当たって無い時のターゲット
 	std::unique_ptr<GameObject> nullTarget;

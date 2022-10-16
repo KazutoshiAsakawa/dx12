@@ -19,17 +19,21 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 	// スプライト共通テクスチャ読み込み
 	SpriteCommon::GetInstance()->LoadTexture(1, L"Resources/gameplay.png");
 	SpriteCommon::GetInstance()->LoadTexture(2, L"Resources/aim.png");
-	SpriteCommon::GetInstance()->LoadTexture(3, L"Resources/hp/hp3.png");
+	SpriteCommon::GetInstance()->LoadTexture(3, L"Resources/hp/hp1.png");
 	SpriteCommon::GetInstance()->LoadTexture(4, L"Resources/hp/hp2.png");
-	SpriteCommon::GetInstance()->LoadTexture(5, L"Resources/hp/hp1.png");
+	SpriteCommon::GetInstance()->LoadTexture(5, L"Resources/hp/hp3.png");
 
 	// スプライトの生成
 	sprite.reset(Sprite::Create(1, { 0,0 }, false, false));
 	aim.reset(Sprite::Create(2));
-	hp3.reset(Sprite::Create(3, { 0,0 }, false, false));
-	hp2.reset(Sprite::Create(4, { 0,0 }, false, false));
-	hp1.reset(Sprite::Create(5, { 0,0 }, false, false));
-	
+
+	// HPの数だけ画像を作る
+	playerHpSprite.resize(playerHpMax);
+
+	for (UINT i = 0; i < playerHpMax; i++) {
+		// hp画像のtexNumberの最初が3
+		playerHpSprite[i].reset(Sprite::Create(i + 3, { 0,0 }));
+	}
 
 	// カメラの初期化
 	camera.reset(new TrackingCamera());
@@ -83,7 +87,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 	eye.z -= 50;
 	eye.y += 10;
 	camera->SetEye(eye);*/
-	
+
 	// カメラをレーンの位置にセット
 	camera->SetTrackingTarget(lane.get());
 	camera->SetTarget(lane->GetPosition());
@@ -156,9 +160,9 @@ void GamePlayScene::Update()
 		// シーン遷移
 		updateProcess();
 		{
-		char tmp[128];
-		sprintf_s(tmp, 128, "mouse : %.2f,%.2f", aim->GetPosition().x, aim->GetPosition().y);
-		DebugText::GetInstance()->Print(tmp, 0, 20);
+			char tmp[128];
+			sprintf_s(tmp, 128, "mouse : %.2f,%.2f", aim->GetPosition().x, aim->GetPosition().y);
+			DebugText::GetInstance()->Print(tmp, 0, 20);
 		}
 
 		// パーティクル更新
@@ -184,10 +188,10 @@ void GamePlayScene::Update()
 		aim->SetPosition({ (float)Input::GetInstance()->GetMousePos().x,(float)Input::GetInstance()->GetMousePos().y,0 });
 		aim->Update();
 
-		// 体力バー
-		hp3->Update();
-		hp2->Update();
-		hp1->Update();
+		if (player->GetHp() > 0) {
+			// 体力バー
+			playerHpSprite[player->GetHp() - 1]->Update();
+		}
 	}
 }
 
@@ -312,7 +316,7 @@ void GamePlayScene::play()
 		}
 	}
 
-	
+
 	for (auto& i : enemy) {
 		// 敵がZ軸0に行ったら行動パターンをleaveに変える
 		if (i->GetPosition().z < 0) {
@@ -326,7 +330,7 @@ void GamePlayScene::play()
 
 		// x軸が13以上だったら左に行く
 		if (i->GetPosition().x >= 13.f) {
-			i->DirectionChange(XMFLOAT3(-0.1f,0.f,0.f));
+			i->DirectionChange(XMFLOAT3(-0.1f, 0.f, 0.f));
 		}
 
 		// x軸が-13以下だったら右に行く
@@ -361,7 +365,7 @@ void GamePlayScene::play()
 			if (aimLT.x <= enemyPos.x && aimLT.y <= enemyPos.y &&
 				aimRB.x >= enemyPos.x && aimRB.y >= enemyPos.y) {
 				flag = true;
-				
+
 				player->SetShotTarget(enemyobject.get());
 			}
 		}
@@ -395,7 +399,7 @@ void GamePlayScene::play()
 			aim->SetColor({ 1,1,1,1 });
 		}
 	}
-	
+
 
 	// 敵と自機の弾の当たり判定
 	{
@@ -466,7 +470,7 @@ void GamePlayScene::play()
 					// 当たったら消える
 					if (Collision::CheckSphere2Sphere(playerShape, eBulletShape)) {
 						eb.SetAlive(false);				// 敵の弾を消す
-						// player->Damage(1);				// プレイヤーにダメージ
+						player->Damage(1);				// プレイヤーにダメージ
 						shiftFlag = true;				// RGBずらしをする
 						shiftNowFrame = 0;
 						if (player->GetHp() == 0) {		// 体力が0になったら
@@ -540,7 +544,7 @@ void GamePlayScene::play()
 	}
 	const bool TriggerESC = input->TriggerKey(DIK_ESCAPE);
 	if (TriggerESC) {
-	WM_DESTROY; //ウィンドウが破棄された
+		WM_DESTROY; //ウィンドウが破棄された
 		PostQuitMessage(0); //OSに対して、アプリの終了を伝える
 	}
 
@@ -584,14 +588,8 @@ void GamePlayScene::Draw(DirectXCommon* dxcommon)
 void GamePlayScene::DrawFrontSprite(DirectXCommon* dxcommon) {
 	SpriteCommon::GetInstance()->PreDraw();
 
-	if (player->GetHp() == 3) {
-		hp3->Draw();
-	}
-	else if (player->GetHp() == 2) {
-		hp2->Draw();
-	}
-	else if (player->GetHp() == 1) {
-		hp1->Draw();
+	if (player->GetHp() > 0) {
+		playerHpSprite[player->GetHp() - 1]->Draw();
 	}
 
 	aim->Draw();
