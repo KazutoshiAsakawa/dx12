@@ -486,9 +486,9 @@ void GamePlayScene::play()
 	}
 
 	// ボスシーンに行く
-	if (input->TriggerKey(DIK_F)) {
+	/*if (input->TriggerKey(DIK_F)) {
 		SceneManager::GetInstance()->ChangeScene("BOSSPLAY");
-	}
+	}*/
 
 	if (shiftFlag) {
 
