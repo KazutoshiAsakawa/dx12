@@ -22,6 +22,10 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 	SpriteCommon::GetInstance()->LoadTexture(3, L"Resources/hp/hp1.png");
 	SpriteCommon::GetInstance()->LoadTexture(4, L"Resources/hp/hp2.png");
 	SpriteCommon::GetInstance()->LoadTexture(5, L"Resources/hp/hp3.png");
+	SpriteCommon::GetInstance()->LoadTexture(6, L"Resources/pouse/pouseBack.png");
+	SpriteCommon::GetInstance()->LoadTexture(7, L"Resources/pouse/pouseTitle.png");
+	SpriteCommon::GetInstance()->LoadTexture(8, L"Resources/pouse/pouseClose.png");
+
 
 	// スプライトの生成
 	sprite.reset(Sprite::Create(1, { 0,0 }, false, false));
@@ -33,6 +37,13 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 	for (UINT i = 0; i < playerHpMax; i++) {
 		// hp画像のtexNumberの最初が3
 		playerHpSprite[i].reset(Sprite::Create(i + 3, { 0,0 }));
+	}
+
+	// ポーズ画面の画像を作る
+	pouseSprite.resize(pouseMax);
+	for (UINT i = 0; i < pouseMax; i++) {
+		// hp画像のtexNumberの最初が6
+		pouseSprite[i].reset(Sprite::Create(i + 6, { 0,0 }));
 	}
 
 	// カメラの初期化
@@ -152,8 +163,14 @@ void GamePlayScene::Finalize()
 
 void GamePlayScene::Update()
 {
-	//if (Input::GetInstance()->TriggerKey(DIK_ESCAPE)) {
-	//	pause = !pause;
+	if (Input::GetInstance()->TriggerKey(DIK_ESCAPE)) {
+		pause = !pause;
+	}
+
+	//const bool TriggerESC = Input::GetInstance()->TriggerKey(DIK_ESCAPE);
+	//if (TriggerESC) {
+	//	WM_DESTROY; //ウィンドウが破棄された
+	//	PostQuitMessage(0); //OSに対して、アプリの終了を伝える
 	//}
 
 	if (!pause) {
@@ -191,6 +208,34 @@ void GamePlayScene::Update()
 		if (player->GetHp() > 0) {
 			// 体力バー
 			playerHpSprite[player->GetHp() - 1]->Update();
+		}
+	}// ポーズ画面
+	else {
+		pouseSprite[pouse]->Update();
+		if (Input::GetInstance()->TriggerKey(DIK_W)) {
+			pouse--;
+		}
+		if (Input::GetInstance()->TriggerKey(DIK_S)) {
+			pouse++;
+		}
+		if (pouse >= 3) {
+			pouse = 2;
+		}
+		if (pouse <= -1) {
+			pouse = 0;
+		}
+
+		if (Input::GetInstance()->TriggerKey(DIK_SPACE)) {
+			if (pouse == 0) {
+				pause = !pause;
+			}
+			else if (pouse == 1) {
+				SceneManager::GetInstance()->ChangeScene("TITLE");
+			}
+			else if (pouse == 2) {
+			WM_DESTROY; //ウィンドウが破棄された
+			PostQuitMessage(0); //OSに対して、アプリの終了を伝える
+		}
 		}
 	}
 }
@@ -542,11 +587,7 @@ void GamePlayScene::play()
 			mosaicFlag = !mosaicFlag;
 		}
 	}
-	const bool TriggerESC = input->TriggerKey(DIK_ESCAPE);
-	if (TriggerESC) {
-		WM_DESTROY; //ウィンドウが破棄された
-		PostQuitMessage(0); //OSに対して、アプリの終了を伝える
-	}
+
 
 	frame++;
 }
@@ -596,13 +637,16 @@ void GamePlayScene::DrawFrontSprite(DirectXCommon* dxcommon) {
 	ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_WindowBg, ImVec4(1.f, 0.f, 1.f, 0.5f));
 
 	if (pause) {
-		ImGui::SetNextWindowPos(ImVec2(10.f, 10.f));
+		/*ImGui::SetNextWindowPos(ImVec2(10.f, 10.f));
 		ImGui::SetNextWindowSize(ImVec2(WinApp::window_width - 20, WinApp::window_height - 20));
 		ImGui::Begin("pause", nullptr, ImGuiWindowFlags_NoSavedSettings);
 		ImGui::Text(u8"ESCで戻る");
 		ImGui::SetNextWindowPos(ImVec2(ImGui::GetWindowPos().x,
 			ImGui::GetWindowPos().y + ImGui::GetWindowSize().y));
-		ImGui::End();
+		ImGui::End();*/
+		// ポーズ画面描画
+		pouseSprite[pouse]->Draw();
+
 	}
 	else {
 		ImGui::SetNextWindowSize(ImVec2(100, 200));

@@ -81,10 +81,11 @@ private:
 	// 照準スプライト
 	std::unique_ptr<Sprite> aim;
 
-	// 体力バー
-	/*std::unique_ptr<Sprite> hp3;
-	std::unique_ptr<Sprite> hp2;
-	std::unique_ptr<Sprite> hp1;*/
+	// ポーズ画面の枚数
+	UINT pouseMax = 3;
+	// ポーズ画面の配列
+	std::vector<std::unique_ptr<Sprite>> pouseSprite;
+	int pouse = 0;
 
 	// 自機HP最大値
 	UINT playerHpMax = 3;
