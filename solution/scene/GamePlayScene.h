@@ -138,7 +138,8 @@ private:
 	UINT shiftNowFrame = 0;
 	UINT shiftMaxFrame = 15;
 	bool shiftFlag = false;
-
+	
+	// スプライン曲線の点
 	std::vector<DirectX::XMVECTOR> points;
 	size_t splineStartIndex;
 

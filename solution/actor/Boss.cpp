@@ -4,6 +4,8 @@ void Boss::Update()
 {
 	if (alive) {
 		obj->Update();
+
+		Screen();
 	}
 }
 

@@ -120,7 +120,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)DirectXTex;$(SolutionDir)imgui;$(ProjectDir);$(ProjectDir)2d;$(ProjectDir)3d;$(ProjectDir)audio;$(ProjectDir)base;$(ProjectDir)input;$(ProjectDir)scene;$(ProjectDir)camera;$(ProjectDir)collision;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)DirectXTex;$(SolutionDir)imgui;$(ProjectDir);$(ProjectDir)2d;$(ProjectDir)3d;$(ProjectDir)audio;$(ProjectDir)base;$(ProjectDir)input;$(ProjectDir)scene;$(ProjectDir)camera;$(ProjectDir)collision;$(ProjectDir)actor;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -140,7 +140,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)DirectXTex;$(SolutionDir)imgui;$(ProjectDir);$(ProjectDir)2d;$(ProjectDir)3d;$(ProjectDir)audio;$(ProjectDir)base;$(ProjectDir)input;$(ProjectDir)scene;$(ProjectDir)camera;$(ProjectDir)collision;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)DirectXTex;$(SolutionDir)imgui;$(ProjectDir);$(ProjectDir)2d;$(ProjectDir)3d;$(ProjectDir)audio;$(ProjectDir)base;$(ProjectDir)input;$(ProjectDir)scene;$(ProjectDir)camera;$(ProjectDir)collision;$(ProjectDir)actor;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
@@ -161,8 +161,14 @@
     <ClCompile Include="2d\SpriteCommon.cpp" />
     <ClCompile Include="3d\FbxModel.cpp" />
     <ClCompile Include="3d\FbxObject3d.cpp" />
+    <ClCompile Include="3d\GameObject.cpp" />
     <ClCompile Include="3d\ObjModel.cpp" />
     <ClCompile Include="3d\ObjObject3d.cpp" />
+    <ClCompile Include="actor\Boss.cpp" />
+    <ClCompile Include="actor\Enemy.cpp" />
+    <ClCompile Include="actor\EnemyBullet.cpp" />
+    <ClCompile Include="actor\Player.cpp" />
+    <ClCompile Include="actor\PlayerBullet.cpp" />
     <ClCompile Include="audio\Audio.cpp" />
     <ClCompile Include="base\DirectXCommon.cpp" />
     <ClCompile Include="base\Framework.cpp" />
@@ -170,21 +176,15 @@
     <ClCompile Include="base\SceneFactory.cpp" />
     <ClCompile Include="base\SceneManager.cpp" />
     <ClCompile Include="base\WinApp.cpp" />
-    <ClCompile Include="Boss.cpp" />
     <ClCompile Include="camera\Camera.cpp" />
     <ClCompile Include="camera\DebugCamera.cpp" />
     <ClCompile Include="camera\TrackingCamera.cpp" />
     <ClCompile Include="collision\Collision.cpp" />
     <ClCompile Include="collision\CollisionShape.cpp" />
-    <ClCompile Include="Enemy.cpp" />
-    <ClCompile Include="EnemyBullet.cpp" />
     <ClCompile Include="FbxLoader.cpp" />
-    <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="input\Input.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ParticleManager.cpp" />
-    <ClCompile Include="Player.cpp" />
-    <ClCompile Include="PlayerBullet.cpp" />
     <ClCompile Include="PostEffect.cpp" />
     <ClCompile Include="scene\BossScene.cpp" />
     <ClCompile Include="scene\EndScene.cpp" />
@@ -295,8 +295,14 @@
     <ClInclude Include="2d\SpriteCommon.h" />
     <ClInclude Include="3d\FbxModel.h" />
     <ClInclude Include="3d\FbxObject3d.h" />
+    <ClInclude Include="3d\GameObject.h" />
     <ClInclude Include="3d\ObjModel.h" />
     <ClInclude Include="3d\ObjObject3d.h" />
+    <ClInclude Include="actor\Boss.h" />
+    <ClInclude Include="actor\Enemy.h" />
+    <ClInclude Include="actor\EnemyBullet.h" />
+    <ClInclude Include="actor\Player.h" />
+    <ClInclude Include="actor\PlayerBullet.h" />
     <ClInclude Include="audio\Audio.h" />
     <ClInclude Include="base\AbstractSceneFactory.h" />
     <ClInclude Include="base\BaseScene.h" />
@@ -307,20 +313,14 @@
     <ClInclude Include="base\SceneFactory.h" />
     <ClInclude Include="base\SceneManager.h" />
     <ClInclude Include="base\WinApp.h" />
-    <ClInclude Include="Boss.h" />
     <ClInclude Include="camera\Camera.h" />
     <ClInclude Include="camera\DebugCamera.h" />
     <ClInclude Include="camera\TrackingCamera.h" />
     <ClInclude Include="collision\Collision.h" />
     <ClInclude Include="collision\CollisionShape.h" />
-    <ClInclude Include="Enemy.h" />
-    <ClInclude Include="EnemyBullet.h" />
     <ClInclude Include="FbxLoader.h" />
-    <ClInclude Include="GameObject.h" />
     <ClInclude Include="input\Input.h" />
     <ClInclude Include="ParticleManager.h" />
-    <ClInclude Include="Player.h" />
-    <ClInclude Include="PlayerBullet.h" />
     <ClInclude Include="PostEffect.h" />
     <ClInclude Include="scene\BossScene.h" />
     <ClInclude Include="scene\EndScene.h" />

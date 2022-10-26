@@ -173,14 +173,16 @@ void GamePlayScene::Update()
 	//	PostQuitMessage(0); //OSに対して、アプリの終了を伝える
 	//}
 
+	{
+		char tmp[128];
+		sprintf_s(tmp, 128, "mouse : %.2f,%.2f", aim->GetPosition().x, aim->GetPosition().y);
+		DebugText::GetInstance()->Print(tmp, 0, 20);
+	}
+
 	if (!pause) {
 		// シーン遷移
 		updateProcess();
-		{
-			char tmp[128];
-			sprintf_s(tmp, 128, "mouse : %.2f,%.2f", aim->GetPosition().x, aim->GetPosition().y);
-			DebugText::GetInstance()->Print(tmp, 0, 20);
-		}
+		
 
 		// パーティクル更新
 		ParticleManager::GetInstance()->Update();
@@ -429,17 +431,6 @@ void GamePlayScene::play()
 			}
 		}
 		else {
-			/*nullTarget->SetPos({ aim->GetPosition().x,aim->GetPosition().y,aim->GetPosition().z + 20});
-
-			player->SetShotTarget(nullTarget.get());
-			if (input->TriggerMouse(Input::LEFT)) {
-				player->Shot(pBulletModel.get(), pBulletScale);
-
-				XMFLOAT3 pos = lane->GetPos();
-				pos.x += player->GetPos().x;
-				pos.y += player->GetPos().y;
-				pos.z += player->GetPos().z;
-			}*/
 			// 照準が白
 			aim->SetColor({ 1,1,1,1 });
 		}
@@ -467,6 +458,8 @@ void GamePlayScene::play()
 					pb.SetAlive(false);
 
 					e->Damage(1);				// 敵にダメージ
+
+
 					if (e->GetHp() <= 0) {		// 体力が0以下になったら
 						e->SetAlive(false);
 
@@ -531,9 +524,9 @@ void GamePlayScene::play()
 	}
 
 	// ボスシーンに行く
-	/*if (input->TriggerKey(DIK_F)) {
+	if (input->TriggerKey(DIK_F)) {
 		SceneManager::GetInstance()->ChangeScene("BOSSPLAY");
-	}*/
+	}
 
 	if (shiftFlag) {
 
