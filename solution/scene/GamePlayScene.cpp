@@ -182,7 +182,7 @@ void GamePlayScene::Update()
 	if (!pause) {
 		// シーン遷移
 		updateProcess();
-		
+
 
 		// パーティクル更新
 		ParticleManager::GetInstance()->Update();
@@ -235,9 +235,9 @@ void GamePlayScene::Update()
 				SceneManager::GetInstance()->ChangeScene("TITLE");
 			}
 			else if (pouse == 2) {
-			WM_DESTROY; //ウィンドウが破棄された
-			PostQuitMessage(0); //OSに対して、アプリの終了を伝える
-		}
+				WM_DESTROY; //ウィンドウが破棄された
+				PostQuitMessage(0); //OSに対して、アプリの終了を伝える
+			}
 		}
 	}
 }
@@ -459,7 +459,6 @@ void GamePlayScene::play()
 
 					e->Damage(1);				// 敵にダメージ
 
-
 					if (e->GetHp() <= 0) {		// 体力が0以下になったら
 						e->SetAlive(false);
 
@@ -479,9 +478,11 @@ void GamePlayScene::play()
 					pos.y += e->GetPosition().y;
 					pos.z += e->GetPosition().z;
 
+					e->SetShake(true);
+
 					// パーティクルの発生
 					ParticleManager::GetInstance()->CreateParticle(pos, 10, 4, 5);
-					break;
+					break;				
 				}
 			}
 		}

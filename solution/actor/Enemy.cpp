@@ -73,6 +73,10 @@ void Enemy::Update()
 		phase();
 	}
 
+	if (shakeFlag) {
+		Shake();
+	}
+
 	// —U“±’e
 	{
 		XMVECTOR vel, vec;
@@ -92,8 +96,8 @@ void Enemy::Update()
 			vec = XMVector3Normalize(vec);
 
 			// ˆê’è‚ÌŠp“x‚És‚Á‚½‚ç’Ç‚í‚È‚¢
-			angleVec = XMVector3AngleBetweenNormals(vel,vec );
-			if(XMVectorGetX(angleVec) > XM_PI/3.f) continue;
+			angleVec = XMVector3AngleBetweenNormals(vel, vec);
+			if (XMVectorGetX(angleVec) > XM_PI / 3.f) continue;
 
 			vel = SLerp(vel, vec, 0.03f);
 			// ‘¬“x‚Ì‘å‚«‚³‚ðŽw’è
@@ -168,6 +172,25 @@ void Enemy::Shot(ObjModel* model, float scale)
 	}
 
 	bullet.back().SetVel(vel);
+}
+
+void Enemy::Shake()
+{
+	if (shakeFrame >= 0) {
+		XMFLOAT3 pos = obj->GetPosition();
+		memoryPos = pos;
+
+		pos.x = pos.x + (float)rand() / RAND_MAX * shakeFrame - shakeFrame / 2;
+		pos.y = pos.y + (float)rand() / RAND_MAX * shakeFrame - shakeFrame / 2;
+
+		shakeFrame -= 0.025f;
+		obj->SetPosition(pos);
+	}
+	else {
+		shakeFlag = false;
+		shakeFrame = shakeFrameDef;
+		obj->SetPosition(memoryPos);
+	}
 }
 
 void Enemy::Approach()

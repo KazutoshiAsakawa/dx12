@@ -42,11 +42,16 @@ public:
 
 	inline const DirectX::XMFLOAT3& Getframe() { return vel; }
 
-	inline void SetLifeSpan(UINT lifeSpan) { this->lifeSpan = lifeSpan; }
-	inline UINT GetLifeSpan() { return lifeSpan; }
+	inline void SetLifeSpan(const UINT& lifeSpan) { this->lifeSpan = lifeSpan; }
+	inline const UINT& GetLifeSpan() { return lifeSpan; }
 
 	inline void Damage(UINT damage) { if (hp >= damage)hp -= damage; }
 	inline UINT GetHp() { return hp; }
+
+	inline void SetShake(bool shakeFlag) { this->shakeFlag = shakeFlag; }
+	inline bool GetShake() { return shakeFlag; }
+
+	void Shake();
 
 private:
 	// 敵の行動パターン
@@ -75,5 +80,11 @@ private:
 
 	// 体力
 	UINT hp;
+
+	bool shakeFlag = false;
+
+	const float shakeFrameDef = 0.4f;
+	float shakeFrame = shakeFrameDef;
+	DirectX::XMFLOAT3 memoryPos{};
 };
 

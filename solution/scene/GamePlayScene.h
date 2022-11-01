@@ -159,6 +159,4 @@ private:
 
 	// ƒ|[ƒY‰æ–ÊŠÇ—
 	bool pause = false;
-
-
 };

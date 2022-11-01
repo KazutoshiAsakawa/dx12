@@ -492,7 +492,7 @@ void BossScene::DamageEffect(UINT maxFrame, UINT nowFrame) {
 
 	rate = 1 - rate;
 	constexpr float  c4 = 2.f * XM_PI / 3.f;
-	float easeRate = -powf(2, 10.f * rate - 10.f) * sin((rate * 10.f - 10.75f) * c4);
+	float easeRate = -powf(2.f, 10.f * rate - 10.f) * sin((rate * 10.f - 10.75f) * c4);
 
 	float shiftNum = easeRate * 0.1f;
 
