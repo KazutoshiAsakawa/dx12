@@ -50,8 +50,18 @@ public:
 
 	inline void SetShake(bool shakeFlag) { this->shakeFlag = shakeFlag; }
 	inline bool GetShake() { return shakeFlag; }
-
+	/// <summary>
+	/// 振動
+	/// </summary>
 	void Shake();
+
+
+	inline void SetHitStop(bool hitStopFlag) { this->hitStopFlag = hitStopFlag; };
+	inline bool GetHitStop() { return hitStopFlag; }
+	/// <summary>
+	/// ヒットストップ
+	/// </summary>
+	void hitStop();
 
 private:
 	// 敵の行動パターン
@@ -81,10 +91,15 @@ private:
 	// 体力
 	UINT hp;
 
+	// 振動
 	bool shakeFlag = false;
-
 	const float shakeFrameDef = 0.4f;
 	float shakeFrame = shakeFrameDef;
 	DirectX::XMFLOAT3 memoryPos{};
+
+	// ヒットストップ
+	bool hitStopFlag = false;
+	const float hitStopFrameDef = 12.f;
+	float hitStopFrame = hitStopFrameDef;
 };
 

@@ -478,7 +478,9 @@ void GamePlayScene::play()
 					pos.y += e->GetPosition().y;
 					pos.z += e->GetPosition().z;
 
+					// 振動
 					e->SetShake(true);
+					e->SetHitStop(true);
 
 					// パーティクルの発生
 					ParticleManager::GetInstance()->CreateParticle(pos, 10, 4, 5);
@@ -581,8 +583,6 @@ void GamePlayScene::play()
 			mosaicFlag = !mosaicFlag;
 		}
 	}
-
-
 	frame++;
 }
 

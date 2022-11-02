@@ -73,8 +73,13 @@ void Enemy::Update()
 		phase();
 	}
 
+	// U“®
 	if (shakeFlag) {
 		Shake();
+	}
+
+	if (hitStopFlag) {
+		hitStop();
 	}
 
 	// —U“±’e
@@ -191,6 +196,27 @@ void Enemy::Shake()
 		shakeFrame = shakeFrameDef;
 		obj->SetPosition(memoryPos);
 	}
+}
+
+void Enemy::hitStop()
+{
+	if (hitStopFrame == hitStopFrameDef) {
+		vel.x = vel.x / 2.f;
+		vel.y = vel.y / 2.f;
+		vel.z = vel.z / 2.f;
+	}
+
+	if (hitStopFrame >= 0) {
+		hitStopFrame--;
+	}
+	else {
+		hitStopFrame = hitStopFrameDef;
+		hitStopFlag = false;
+		vel.x = vel.x * 2.f;
+		vel.y = vel.y * 2.f;
+		vel.z = vel.z * 2.f;
+	}
+
 }
 
 void Enemy::Approach()
