@@ -62,6 +62,7 @@ public:
 	void SetColor(const DirectX::XMFLOAT4& color){ this->color = color;}
 
 	inline const DirectX::XMFLOAT2& GetSize() {return size; };
+	inline const DirectX::XMFLOAT2& GetTexSize() {return texSize; };
 	inline const DirectX::XMFLOAT3& GetPosition() {return position;}
 
 private:

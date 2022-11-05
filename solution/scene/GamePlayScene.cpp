@@ -19,7 +19,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 	// スプライト共通テクスチャ読み込み
 	SpriteCommon::GetInstance()->LoadTexture(1, L"Resources/gameplay.png");
 	SpriteCommon::GetInstance()->LoadTexture(2, L"Resources/aim.png");
-	SpriteCommon::GetInstance()->LoadTexture(3, L"Resources/hp/hp1.png");
+	SpriteCommon::GetInstance()->LoadTexture(3, L"Resources/hp/hp.png");
 	SpriteCommon::GetInstance()->LoadTexture(4, L"Resources/hp/hp2.png");
 	SpriteCommon::GetInstance()->LoadTexture(5, L"Resources/hp/hp3.png");
 	SpriteCommon::GetInstance()->LoadTexture(6, L"Resources/pouse/pouseBack.png");
@@ -31,13 +31,10 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 	sprite.reset(Sprite::Create(1, { 0,0 }, false, false));
 	aim.reset(Sprite::Create(2));
 
-	// HPの数だけ画像を作る
-	playerHpSprite.resize(playerHpMax);
 
-	for (UINT i = 0; i < playerHpMax; i++) {
-		// hp画像のtexNumberの最初が3
-		playerHpSprite[i].reset(Sprite::Create(i + 3, { 0,0 }));
-	}
+	// hp画像のtexNumberの最初が3
+	playerHpSprite.reset(Sprite::Create(3, { 0,1 }));
+	playerHpSprite->SetPosition(XMFLOAT3(0,WinApp::window_height,0));
 
 	// ポーズ画面の画像を作る
 	pouseSprite.resize(pouseMax);
@@ -243,9 +240,17 @@ void GamePlayScene::Update()
 		aim->Update();
 
 		if (player->GetHp() > 0) {
+
+			// スプライト横幅 = 最大値 * hpの割合
+			playerHpSprite->SetSize(XMFLOAT2(playerHpSprite->GetTexSize().x * (float)player->GetHp() / playerHpMax,
+				playerHpSprite->GetSize().y));
+
+			playerHpSprite->TransferVertexBuffer();
+
 			// 体力バー
-			playerHpSprite[player->GetHp() - 1]->Update();
+			playerHpSprite->Update();
 		}
+
 	}// ポーズ画面
 	else {
 		pouseSprite[pouse]->Update();
@@ -665,7 +670,7 @@ void GamePlayScene::DrawFrontSprite(DirectXCommon* dxcommon) {
 	SpriteCommon::GetInstance()->PreDraw();
 
 	if (player->GetHp() > 0) {
-		playerHpSprite[player->GetHp() - 1]->Draw();
+		playerHpSprite->Draw();
 	}
 
 	aim->Draw();

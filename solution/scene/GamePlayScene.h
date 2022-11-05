@@ -90,7 +90,7 @@ private:
 	// 自機HP最大値
 	UINT playerHpMax = 3;
 	// HP画像の配列
-	std::vector<std::unique_ptr<Sprite>> playerHpSprite;
+	std::unique_ptr<Sprite> playerHpSprite;
 
 	// 敵が当たって無い時のターゲット
 	std::unique_ptr<GameObject> nullTarget;
