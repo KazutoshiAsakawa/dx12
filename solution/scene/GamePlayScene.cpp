@@ -122,14 +122,34 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 	// 音声再生
 	// audio->PlayWave("Alarm01.wav");
 
+	csv = Enemy::LoadCsv("Resources/spline.csv");
+
+	// スタートは2個必要だから最初の座標をあらかじめ入れておく
+	points.emplace_back(XMVectorSet(std::stof(csv[0][0]),
+		std::stof(csv[0][1]),
+		std::stof(csv[0][2]),
+		1));
+
+	// csvの中身を格納
+	for (auto& i : csv) {
+		points.emplace_back(XMVectorSet(std::stof(i[0]),
+			std::stof(i[1]),
+			std::stof(i[2]),
+			1));
+	}
+
+	// エンドも2個必要
+	points.emplace_back(points.back());
+
+
 	// スプライン曲線
 	// posints = { start, start, p2, p3, end, end }
-	points.emplace_back(XMVectorSet(0, 0, 0, 0));
+	/*points.emplace_back(XMVectorSet(0, 0, 0, 0));
 	points.emplace_back(XMVectorSet(0, 0, 0, 0));
 	points.emplace_back(XMVectorSet(0, 0, 20, 0));
 	points.emplace_back(XMVectorSet(0, 20, 40, 0));
-	points.emplace_back(XMVectorSet(0, 0, 0, 0));
-	points.emplace_back(XMVectorSet(0, 0, 0, 0));
+	points.emplace_back(XMVectorSet(0, 0, 80, 0));
+	points.emplace_back(XMVectorSet(0, 0, 80, 0));*/
 
 	splineStartIndex = 1;
 
@@ -275,13 +295,13 @@ void GamePlayScene::play()
 	}
 
 	// レーンの位置
-	{
+	/*{
 		auto pos = lane->GetPosition();
 		pos.z += 0.2;
 		lane->SetPosition(pos);
 
 		skyDomeObj->SetPosition(pos);
-	}
+	}*/
 
 	// プレイヤーの移動と回避
 	{
@@ -484,7 +504,7 @@ void GamePlayScene::play()
 
 					// パーティクルの発生
 					ParticleManager::GetInstance()->CreateParticle(pos, 10, 4, 5);
-					break;				
+					break;
 				}
 			}
 		}
@@ -542,26 +562,26 @@ void GamePlayScene::play()
 	}
 
 	// スプライン曲線で移動
-	//{
-	//	frame++;
-	//	float timeRate = (float)frame / 120.f;
-	//	if (timeRate >= 1.0f)
-	//	{
-	//		if (splineStartIndex < points.size() - 3) {
-	//			splineStartIndex++;
-	//			timeRate -= 1.0f;
-	//			frame = 0;
-	//		}
-	//		else
-	//		{
-	//			timeRate = 1.0f;
-	//		}
-	//	}
-	//	// ベクターをフロートに変換
-	//	XMFLOAT3 splineFloat;
-	//	XMStoreFloat3(&splineFloat, splinePosition(points, splineStartIndex, timeRate));
-	//	player->SetPos(splineFloat);
-	//}
+	{
+		frame++;
+		float timeRate = (float)frame / 120.f;
+		if (timeRate >= 1.0f)
+		{
+			if (splineStartIndex < points.size() - 3) {
+				splineStartIndex++;
+				timeRate -= 1.0f;
+				frame = 0;
+			}
+			else
+			{
+				timeRate = 1.0f;
+			}
+		}
+		// ベクターをフロートに変換
+		XMFLOAT3 splineFloat;
+		XMStoreFloat3(&splineFloat, SplinePosition(points, splineStartIndex, timeRate));
+		lane->SetPosition(splineFloat);
+	}
 
 	// モザイク切り替え
 	{

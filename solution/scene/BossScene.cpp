@@ -73,6 +73,13 @@ void BossScene::Initialize(DirectXCommon* dxcommon)
 	// ボス
 	boss.reset(new Boss(enemyModel.get(), { 0.f,0.f,20.f }));
 
+	boss->SetPhase([&] {
+		XMFLOAT3 pos;
+		pos = boss->GetPosition();
+		pos.x += 0.1f;
+		boss->SetPosition(pos);
+		});
+
 	// パーティクル初期化
 	ParticleManager::GetInstance()->SetCamera(camera.get());
 
@@ -81,8 +88,6 @@ void BossScene::Initialize(DirectXCommon* dxcommon)
 
 	// 音声読み込み
 	Audio::GetInstance()->LoadWave("Alarm01.wav");
-
-
 }
 
 void BossScene::Finalize()
@@ -166,8 +171,6 @@ void BossScene::play()
 		sprintf_s(tmp, 32, "%.2f,%.2f,%.2f", player->GetPosition().x, player->GetPosition().y, player->GetPosition().z);
 		DebugText::GetInstance()->Print(tmp, 0, 100);
 	}
-
-
 
 	// レーンの位置
 	{
@@ -255,7 +258,7 @@ void BossScene::play()
 		playerRot.x -= rotSpeed * mousePosDiff.y;
 		player->SetRotation(playerRot);
 	}
-	
+
 	// aim->SetPosition({0,0,0});
 
 	if (boss->GetAlive())

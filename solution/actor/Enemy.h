@@ -63,7 +63,9 @@ public:
 	/// </summary>
 	void hitStop();
 
-private:
+
+	inline void SetPhase(std::function<void()> phase) { this->phase = phase; };
+protected:
 	// 敵の行動パターン
 	std::function<void()> phase;
 	void Approach();

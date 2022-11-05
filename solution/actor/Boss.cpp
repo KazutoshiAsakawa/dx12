@@ -3,9 +3,11 @@
 void Boss::Update()
 {
 	if (alive) {
-		obj->Update();
+		phase();
 
+		// À•W•ÏŠ·‚ÌŒvŽZ
 		Screen();
+		obj->Update();
 	}
 }
 

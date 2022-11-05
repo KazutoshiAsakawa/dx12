@@ -130,6 +130,7 @@ void Enemy::Update()
 	// “G‚Ì’e‚ðÁ‚·
 	bullet.erase(std::remove_if(bullet.begin(), bullet.end(), [](EnemyBullet& i) {return !i.GetAlive(); }), bullet.end());
 
+	// À•W•ÏŠ·‚ÌŒvŽZ
 	Screen();
 	obj->Update();
 }
