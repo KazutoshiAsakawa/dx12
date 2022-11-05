@@ -122,6 +122,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 	// 音声再生
 	// audio->PlayWave("Alarm01.wav");
 
+	// スプライン曲線
 	csv = Enemy::LoadCsv("Resources/spline.csv");
 
 	// スタートは2個必要だから最初の座標をあらかじめ入れておく
@@ -141,17 +142,25 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 	// エンドも2個必要
 	points.emplace_back(points.back());
 
-
-	// スプライン曲線
-	// posints = { start, start, p2, p3, end, end }
-	/*points.emplace_back(XMVectorSet(0, 0, 0, 0));
-	points.emplace_back(XMVectorSet(0, 0, 0, 0));
-	points.emplace_back(XMVectorSet(0, 0, 20, 0));
-	points.emplace_back(XMVectorSet(0, 20, 40, 0));
-	points.emplace_back(XMVectorSet(0, 0, 80, 0));
-	points.emplace_back(XMVectorSet(0, 0, 80, 0));*/
-
 	splineStartIndex = 1;
+
+	// 壁
+	wallModel.reset(ObjModel::LoadFromObj("enemy"));
+	wallObj.resize(points.size());
+
+	for (UINT i = 0; i < wallObj.size(); i++) {
+		wallObj[i].resize(2);
+		for (UINT x = 0; x < wallObj[i].size(); x++) {
+			wallObj[i][x] = ObjObject3d::Create();
+			wallObj[i][x]->Initialize();
+			wallObj[i][x]->SetModel(wallModel.get());
+			XMFLOAT3 pos;
+			XMStoreFloat3(&pos, points[i]);
+			pos.x -= 12.f;
+			pos.x += 24.f * (float)x;
+			wallObj[i][x]->SetPosition(pos);
+		}
+	}
 
 	// CSV読み込み
 	csv = Enemy::LoadCsv("Resources/enemy.csv");
@@ -215,6 +224,12 @@ void GamePlayScene::Update()
 		//}
 		for (auto& i : enemy) {
 			i->Update();
+		}
+
+		for (auto& i : wallObj) {
+			for (auto& x : i) {
+				x->Update();
+			}
 		}
 
 		groundObj->Update();
@@ -615,6 +630,12 @@ void GamePlayScene::Draw(DirectXCommon* dxcommon)
 
 	// 3Dオブジェクト描画前処理
 	ObjObject3d::PreDraw();
+
+	for (auto& i : wallObj) {
+		for (auto& x : i) {
+			x->Draw();
+		}
+	}
 
 	// 地面
 	groundObj->Draw();

@@ -73,7 +73,7 @@ public:
 	/// </summary>
 	/// <param name="maxFrame">最大フレーム</param>
 	/// <param name="nowFrame">現在のフレーム</param>
-	void DamageEffect(UINT maxFrame,UINT nowFrame);
+	void DamageEffect(UINT maxFrame, UINT nowFrame);
 
 private:
 	// 背景スプライト
@@ -138,10 +138,13 @@ private:
 	UINT shiftNowFrame = 0;
 	UINT shiftMaxFrame = 15;
 	bool shiftFlag = false;
-	
+
 	// スプライン曲線の点
 	std::vector<DirectX::XMVECTOR> points;
 	size_t splineStartIndex;
+
+	std::vector<std::vector<std::unique_ptr<ObjObject3d>>> wallObj;
+	std::unique_ptr<ObjModel> wallModel;
 
 	UINT frame = 0;
 
