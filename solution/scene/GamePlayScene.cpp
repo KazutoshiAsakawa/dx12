@@ -20,8 +20,6 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 	SpriteCommon::GetInstance()->LoadTexture(1, L"Resources/gameplay.png");
 	SpriteCommon::GetInstance()->LoadTexture(2, L"Resources/aim.png");
 	SpriteCommon::GetInstance()->LoadTexture(3, L"Resources/hp/hp.png");
-	SpriteCommon::GetInstance()->LoadTexture(4, L"Resources/hp/hp2.png");
-	SpriteCommon::GetInstance()->LoadTexture(5, L"Resources/hp/hp3.png");
 	SpriteCommon::GetInstance()->LoadTexture(6, L"Resources/pouse/pouseBack.png");
 	SpriteCommon::GetInstance()->LoadTexture(7, L"Resources/pouse/pouseTitle.png");
 	SpriteCommon::GetInstance()->LoadTexture(8, L"Resources/pouse/pouseClose.png");
@@ -142,7 +140,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 	splineStartIndex = 1;
 
 	// •Ç
-	wallModel.reset(ObjModel::LoadFromObj("enemy"));
+	wallModel.reset(ObjModel::LoadFromObj("wall"));
 	wallObj.resize(points.size());
 
 	for (UINT i = 0; i < wallObj.size(); i++) {
@@ -583,14 +581,14 @@ void GamePlayScene::play()
 
 	// ƒXƒvƒ‰ƒCƒ“‹Èü‚ÅˆÚ“®
 	{
-		frame++;
-		float timeRate = (float)frame / 120.f;
+		splineFrame++;
+		float timeRate = (float)splineFrame / 120.f;
 		if (timeRate >= 1.0f)
 		{
 			if (splineStartIndex < points.size() - 3) {
 				splineStartIndex++;
 				timeRate -= 1.0f;
-				frame = 0;
+				splineFrame = 0;
 			}
 			else
 			{

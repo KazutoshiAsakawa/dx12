@@ -148,11 +148,15 @@ private:
 
 	UINT frame = 0;
 
+	UINT splineFrame = 0;
+
 	// “G‚ğ”­¶
 	// n‚Ü‚è,I‚í‚è
 	std::list<std::pair<UINT, UINT>> enemyFrame;
 
 	std::vector< std::vector<std::string>> csv;
+
+	std::vector< std::vector<std::string>> splineCsv;
 
 	// “G‚ÌÀ•W
 	std::vector<DirectX::XMFLOAT3> enemyPos;

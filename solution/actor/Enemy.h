@@ -95,13 +95,13 @@ protected:
 
 	// 振動
 	bool shakeFlag = false;
-	const float shakeFrameDef = 0.4f;
+	const float shakeFrameDef = 1.f;
 	float shakeFrame = shakeFrameDef;
 	DirectX::XMFLOAT3 memoryPos{};
 
 	// ヒットストップ
 	bool hitStopFlag = false;
-	const float hitStopFrameDef = 12.f;
+	const float hitStopFrameDef = 30.f;
 	float hitStopFrame = hitStopFrameDef;
 };
 

@@ -259,8 +259,6 @@ void BossScene::play()
 		player->SetRotation(playerRot);
 	}
 
-	// aim->SetPosition({0,0,0});
-
 	if (boss->GetAlive())
 	{
 		// ‰æ‘œ‚Ì¶ã‚Æ‰E‰º
