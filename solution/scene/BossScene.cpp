@@ -51,7 +51,7 @@ void BossScene::Initialize(DirectXCommon* dxcommon)
 	// 自機の読み込み
 	pBulletModel.reset(ObjModel::LoadFromObj("playerBullet"));
 	// 敵の読み込み
-	enemyModel.reset(ObjModel::LoadFromObj("enemy"));
+	enemyModel.reset(ObjModel::LoadFromObj("obake"));
 
 	//デバイスをセット
 	FbxObject3d::SetDevice(dxcommon->GetDev());
@@ -493,7 +493,7 @@ void BossScene::DamageEffect(UINT maxFrame, UINT nowFrame) {
 
 	rate = 1 - rate;
 	constexpr float  c4 = 2.f * XM_PI / 3.f;
-	float easeRate = -powf(2.f, 10.f * rate - 10.f) * sin((rate * 10.f - 10.75f) * c4);
+	float easeRate = -powf(2.f, 10.f * rate - 10.f) * sinf((rate * 10.f - 10.75f) * c4);
 
 	float shiftNum = easeRate * 0.1f;
 

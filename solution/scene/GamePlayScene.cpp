@@ -32,7 +32,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 
 	// hp画像のtexNumberの最初が3
 	playerHpSprite.reset(Sprite::Create(3, { 0,1 }));
-	playerHpSprite->SetPosition(XMFLOAT3(0,WinApp::window_height,0));
+	playerHpSprite->SetPosition(XMFLOAT3(0, WinApp::window_height, 0));
 
 	// ポーズ画面の画像を作る
 	pouseSprite.resize(pouseMax);
@@ -72,7 +72,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 	// 自機の読み込み
 	pBulletModel.reset(ObjModel::LoadFromObj("playerBullet"));
 	// 敵の読み込み
-	enemyModel.reset(ObjModel::LoadFromObj("enemy"));
+	enemyModel.reset(ObjModel::LoadFromObj("enemy"));// enemy
 
 	//デバイスをセット
 	FbxObject3d::SetDevice(dxcommon->GetDev());
@@ -95,7 +95,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 	camera->SetEye(eye);*/
 
 	// カメラをレーンの位置にセット
-	camera->SetTrackingTarget(lane.get());
+	camera->SetTrackingTarget(player.get());
 	camera->SetTarget(lane->GetPosition());
 	XMFLOAT3 eye = lane->GetPosition();
 	eye.z -= 50;
@@ -173,7 +173,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 			}
 			else if (y[0] == "POPTIME") {
 				// 指定時間
-				nowframe += std::stof(y[1]);
+				nowframe += std::stoul(y[1]);
 				enemyFrame.emplace_back(nowframe, nowframe + 60 * 39);// (敵が出る時間,敵が消える時間)
 			}
 		}
@@ -385,8 +385,8 @@ void GamePlayScene::play()
 
 	// 敵を発生
 	for (auto& i : enemyFrame) {
-		if (i.first <= frame) {
-			auto& a = EnemyAdd(enemyPos[addedEnemyNum], { 0, 0, -0.1 });
+		if (i.first <= frame) {// 敵の速度を設定
+			auto& a = EnemyAdd(enemyPos[addedEnemyNum], { 0.f, 0.f, -0.1f });
 			addedEnemyNum++;
 			a->SetLifeSpan(i.second);
 		}
@@ -442,16 +442,16 @@ void GamePlayScene::play()
 
 		// 照準と敵のスクリーン座標の当たり判定
 		player->SetShotTarget(nullptr);
-		for (auto& enemyobject : enemy) {
-			if (!enemyobject->GetAlive())continue;
-			enemyPos = { enemyobject->GetFloat2ScreenPos().x,enemyobject->GetFloat2ScreenPos().y };
+		for (auto& i : enemy) {
+			if (!i->GetAlive())continue;
+			enemyPos = { i->GetFloat2ScreenPos().x,i->GetFloat2ScreenPos().y };
 
 			// 当たり判定
 			if (aimLT.x <= enemyPos.x && aimLT.y <= enemyPos.y &&
 				aimRB.x >= enemyPos.x && aimRB.y >= enemyPos.y) {
 				flag = true;
 
-				player->SetShotTarget(enemyobject.get());
+				player->SetShotTarget(i.get());
 			}
 		}
 
@@ -518,6 +518,7 @@ void GamePlayScene::play()
 
 					// 振動
 					e->SetShake(true);
+					// ヒットストップ
 					e->SetHitStop(true);
 
 					// パーティクルの発生
@@ -746,7 +747,7 @@ void GamePlayScene::DamageEffect(UINT maxFrame, UINT nowFrame) {
 
 	rate = 1 - rate;
 	constexpr float  c4 = 2.f * XM_PI / 3.f;
-	float easeRate = -powf(2, 10.f * rate - 10.f) * sin((rate * 10.f - 10.75f) * c4);
+	float easeRate = -powf(2, 10.f * rate - 10.f) * sinf((rate * 10.f - 10.75f) * c4);
 
 	float shiftNum = easeRate * 0.1f;
 

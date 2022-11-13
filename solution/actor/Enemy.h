@@ -48,7 +48,7 @@ public:
 	inline void Damage(UINT damage) { if (hp >= damage)hp -= damage; }
 	inline UINT GetHp() { return hp; }
 
-	inline void SetShake(bool shakeFlag) { this->shakeFlag = shakeFlag; }
+	inline void SetShake(bool shakeFlag) { this->shakeFlag = shakeFlag; memoryPos = obj->GetPosition(); }
 	inline bool GetShake() { return shakeFlag; }
 	/// <summary>
 	/// 振動
@@ -95,13 +95,14 @@ protected:
 
 	// 振動
 	bool shakeFlag = false;
-	const float shakeFrameDef = 1.f;
-	float shakeFrame = shakeFrameDef;
+	const float shakeRateDef = 1.f;
+	float shakeRate = shakeRateDef;
 	DirectX::XMFLOAT3 memoryPos{};
 
 	// ヒットストップ
 	bool hitStopFlag = false;
-	const float hitStopFrameDef = 30.f;
-	float hitStopFrame = hitStopFrameDef;
+	UINT hitStopFrameDef = 30;
+	UINT hitStopFrame = hitStopFrameDef;
+	DirectX::XMFLOAT3 memoryVel{};
 };
 

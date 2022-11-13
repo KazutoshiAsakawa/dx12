@@ -2,10 +2,24 @@
 
 #include <fstream>
 #include <sstream>
+#include <random>
 
 using namespace DirectX;
 
 namespace {
+
+	// 乱数
+	float MyRand(float center, float range) {
+		// 乱数生成器
+		static std::mt19937_64 mt64(0);
+
+		// 乱数生成器
+		std::normal_distribution<> rnd(center, range);
+
+		// 乱数を生成
+		return (float)rnd(mt64);
+	}
+
 	// 球面線形補間
 	XMVECTOR SLerp(XMVECTOR vel, XMVECTOR vec, float t) {
 		// 大きさを1にする
@@ -130,6 +144,8 @@ void Enemy::Update()
 	// 敵の弾を消す
 	bullet.erase(std::remove_if(bullet.begin(), bullet.end(), [](EnemyBullet& i) {return !i.GetAlive(); }), bullet.end());
 
+	// obj->SetRotation({0,180,0});
+
 	// 座標変換の計算
 	Screen();
 	obj->Update();
@@ -182,40 +198,41 @@ void Enemy::Shot(ObjModel* model, float scale)
 
 void Enemy::Shake()
 {
-	if (shakeFrame >= 0) {
+	if (shakeRate >= 0) {
 		XMFLOAT3 pos = obj->GetPosition();
-		memoryPos = pos;
+		// memoryPos = pos;
 
-		pos.x = pos.x + (float)rand() / RAND_MAX * shakeFrame - shakeFrame / 2;
-		pos.y = pos.y + (float)rand() / RAND_MAX * shakeFrame - shakeFrame / 2;
+		pos.x = MyRand(memoryPos.x, 0.3f * shakeRate);
+		pos.y = MyRand(memoryPos.y, 0.3f * shakeRate);
 
-		shakeFrame -= 0.025f;
+		shakeRate -= 0.025f;
 		obj->SetPosition(pos);
 	}
 	else {
 		shakeFlag = false;
-		shakeFrame = shakeFrameDef;
+		shakeRate = shakeRateDef;
 		obj->SetPosition(memoryPos);
 	}
 }
 
 void Enemy::hitStop()
 {
+	// 最初のフレームだけ読み込む、速度を下げる
 	if (hitStopFrame == hitStopFrameDef) {
-		vel.x = vel.x / 2.f;
-		vel.y = vel.y / 2.f;
-		vel.z = vel.z / 2.f;
+		memoryVel = vel;
+
+		vel = { 0.f,0.f ,0.f };
 	}
 
-	if (hitStopFrame >= 0) {
+	// カウント
+	if (hitStopFrame > 0) {
 		hitStopFrame--;
 	}
-	else {
+	else {// カウントし終わったら速度を戻す
 		hitStopFrame = hitStopFrameDef;
 		hitStopFlag = false;
-		vel.x = vel.x * 2.f;
-		vel.y = vel.y * 2.f;
-		vel.z = vel.z * 2.f;
+
+		vel = memoryVel;
 	}
 
 }
@@ -227,6 +244,10 @@ void Enemy::Approach()
 	pos.x += vel.x;
 	pos.y += vel.y;
 	pos.z += vel.z;
+
+	memoryPos.x += vel.x;
+	memoryPos.y += vel.y;
+	memoryPos.z += vel.z;
 
 	obj->SetPosition(pos);
 	obj->Update();
@@ -245,6 +266,10 @@ void Enemy::Leave()
 	pos.x += vel.x;
 	pos.y += vel.y;
 	pos.z += vel.z;
+
+	memoryPos.x += vel.x;
+	memoryPos.y += vel.y;
+	memoryPos.z += vel.z;
 
 	obj->SetPosition(pos);
 	obj->Update();
