@@ -70,6 +70,8 @@ public:
 	/// <param name="parent">ペアレント</param>
 	inline void SetParent(ObjObject3d* parent) { obj->SetParent(parent); }
 
+	inline ObjObject3d* GetParent() { return obj->GetParent(); }
+
 	/// <summary>
 	/// オブジェクトを取得
 	/// </summary>

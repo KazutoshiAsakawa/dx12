@@ -149,6 +149,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 			wallObj[i][x] = ObjObject3d::Create();
 			wallObj[i][x]->Initialize();
 			wallObj[i][x]->SetModel(wallModel.get());
+			wallObj[i][x]->SetScale(XMFLOAT3(1,100,50));
 			XMFLOAT3 pos;
 			XMStoreFloat3(&pos, points[i]);
 			pos.x -= 12.f;
@@ -318,8 +319,8 @@ void GamePlayScene::play()
 		pos.z += 0.2;
 		lane->SetPosition(pos);
 
-		skyDomeObj->SetPosition(pos);
 	}*/
+		skyDomeObj->SetPosition(lane->GetPosition());
 
 	// プレイヤーの移動と回避
 	{
@@ -339,6 +340,8 @@ void GamePlayScene::play()
 		if (hitW || hitS || hitA || hitD || hitZ || hitX) {
 			auto pos = player->GetPosition();
 			float moveSpeed = 0.2f;
+			XMFLOAT3 rot {};
+
 			if (hitSpace && avoidFrame == 0) {
 				moveSpeed *= 10;
 				avoidFrame = avoidFrameMax;
@@ -346,19 +349,24 @@ void GamePlayScene::play()
 
 			if (hitW && pos.y < 8.f) {
 				pos.y += moveSpeed;
+				rot.x -= 5.f;
 			}
 			else if (hitS && pos.y > -4.f) {
 				pos.y -= moveSpeed;
+				rot.x += 5.f;
 			}
 
 			if (hitD && pos.x < 10.f) {
 				pos.x += moveSpeed;
+				rot.z -= 5.f;
 			}
 			else if (hitA && pos.x > -10.f) {
 				pos.x -= moveSpeed;
+				rot.z += 5.f;
 			}
 
 			player->SetPosition(pos);
+			player->SetRotation(rot);
 		}
 	}
 
@@ -386,7 +394,7 @@ void GamePlayScene::play()
 	// 敵を発生
 	for (auto& i : enemyFrame) {
 		if (i.first <= frame) {// 敵の速度を設定
-			auto& a = EnemyAdd(enemyPos[addedEnemyNum], { 0.f, 0.f, -0.1f });
+			auto& a = EnemyAdd(enemyPos[addedEnemyNum], { 0.f, 0.f, -0.25f });
 			addedEnemyNum++;
 			a->SetLifeSpan(i.second);
 		}
@@ -550,7 +558,7 @@ void GamePlayScene::play()
 					// 当たったら消える
 					if (Collision::CheckSphere2Sphere(playerShape, eBulletShape)) {
 						eb.SetAlive(false);				// 敵の弾を消す
-						player->Damage(1);				// プレイヤーにダメージ
+						// player->Damage(1);				// プレイヤーにダメージ
 						shiftFlag = true;				// RGBずらしをする
 						shiftNowFrame = 0;
 						if (player->GetHp() == 0) {		// 体力が0になったら

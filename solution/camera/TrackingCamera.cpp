@@ -17,6 +17,15 @@ void TrackingCamera::startUpdate()
 	if (trackingTarget) {
 		XMFLOAT3 target = trackingTarget->GetPosition();
 
+		ObjObject3d* targetParent = trackingTarget->GetParent();
+		while (targetParent) {
+			target.x += targetParent->GetPosition().x;
+			target.y += targetParent->GetPosition().y;
+			target.z += targetParent->GetPosition().z;
+
+			targetParent = targetParent->GetParent();
+		}
+
 		float sinNum = sinf(XMConvertToRadians(trackingTarget->GetRotation().x + 20));
 		float cosNum = cosf(XMConvertToRadians(trackingTarget->GetRotation().x + 20));
 
