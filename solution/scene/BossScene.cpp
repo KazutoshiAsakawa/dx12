@@ -75,8 +75,9 @@ void BossScene::Initialize(DirectXCommon* dxcommon)
 
 	boss->SetPhaseApproach();
 	boss->SetAttackTarget(player.get());
-
 	boss->SetBulletModel(enemyModel.get());
+
+	boss->SetHp(10);
 
 	// パーティクル初期化
 	ParticleManager::GetInstance()->SetCamera(camera.get());
@@ -330,12 +331,17 @@ void BossScene::play()
 
 			// 当たったら消える
 			if (Collision::CheckSphere2Sphere(pBulletShape, enemyShape)) {
-				boss->SetAlive(false);
+				boss->Damage(1);
 				pb.SetAlive(false);
 				aim->SetColor({ 1,1,1,1 });
 
+				if (boss->GetHp() == 0)
+				{
+					boss->SetAlive(false);
+				}
+
 				// パーティクルの発生
-				ParticleManager::GetInstance()->CreateParticle(boss->GetPosition(), 100, 10, 10);
+				ParticleManager::GetInstance()->CreateParticle(boss->GetPosition(), 10, 4, 5);
 			}
 		}
 	}

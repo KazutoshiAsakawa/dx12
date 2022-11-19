@@ -45,7 +45,8 @@ public:
 	inline void SetLifeSpan(const UINT& lifeSpan) { this->lifeSpan = lifeSpan; }
 	inline const UINT& GetLifeSpan() { return lifeSpan; }
 
-	inline void Damage(UINT damage) { if (hp >= damage)hp -= damage; }
+	inline void Damage(UINT damage) { if (hp >= damage)hp -= damage;else hp = 0; }
+	inline void SetHp(UINT hp) { this->hp = hp; }
 	inline UINT GetHp() { return hp; }
 
 	inline void SetShake(bool shakeFlag) { this->shakeFlag = shakeFlag; memoryPos = obj->GetPosition(); }
