@@ -74,6 +74,7 @@ void BossScene::Initialize(DirectXCommon* dxcommon)
 	boss.reset(new Boss(enemyModel.get(), { 0.f,0.f,20.f }));
 
 	boss->SetPhaseApproach();
+	boss->SetAttackTarget(player.get());
 
 	// パーティクル初期化
 	ParticleManager::GetInstance()->SetCamera(camera.get());
