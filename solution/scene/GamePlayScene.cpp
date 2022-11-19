@@ -20,6 +20,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 	SpriteCommon::GetInstance()->LoadTexture(1, L"Resources/gameplay.png");
 	SpriteCommon::GetInstance()->LoadTexture(2, L"Resources/aim.png");
 	SpriteCommon::GetInstance()->LoadTexture(3, L"Resources/hp/hp.png");
+	SpriteCommon::GetInstance()->LoadTexture(4, L"Resources/hp/hpSlide.png");
 	SpriteCommon::GetInstance()->LoadTexture(6, L"Resources/pouse/pouseBack.png");
 	SpriteCommon::GetInstance()->LoadTexture(7, L"Resources/pouse/pouseTitle.png");
 	SpriteCommon::GetInstance()->LoadTexture(8, L"Resources/pouse/pouseClose.png");
@@ -29,10 +30,12 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 	sprite.reset(Sprite::Create(1, { 0,0 }, false, false));
 	aim.reset(Sprite::Create(2));
 
-
-	// hp画像のtexNumberの最初が3
+	// hp画像
 	playerHpSprite.reset(Sprite::Create(3, { 0,1 }));
-	playerHpSprite->SetPosition(XMFLOAT3(0, WinApp::window_height, 0));
+	playerHpSprite->SetPosition(XMFLOAT3(40, WinApp::window_height - 40, 0));
+
+	playerHpSlide.reset(Sprite::Create(4,{0,1}));
+	playerHpSlide->SetPosition(XMFLOAT3(35, WinApp::window_height - 35, 0));
 
 	// ポーズ画面の画像を作る
 	pouseSprite.resize(pouseMax);
@@ -72,7 +75,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 	// 自機の読み込み
 	pBulletModel.reset(ObjModel::LoadFromObj("playerBullet"));
 	// 敵の読み込み
-	enemyModel.reset(ObjModel::LoadFromObj("enemy"));// enemy
+	enemyModel.reset(ObjModel::LoadFromObj("enemy2"));// enemy
 
 	//デバイスをセット
 	FbxObject3d::SetDevice(dxcommon->GetDev());
@@ -149,11 +152,11 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 			wallObj[i][x] = ObjObject3d::Create();
 			wallObj[i][x]->Initialize();
 			wallObj[i][x]->SetModel(wallModel.get());
-			wallObj[i][x]->SetScale(XMFLOAT3(1,100,50));
+			wallObj[i][x]->SetScale(XMFLOAT3(1, 100, 50));
 			XMFLOAT3 pos;
 			XMStoreFloat3(&pos, points[i]);
-			pos.x -= 12.f;
-			pos.x += 24.f * (float)x;
+			pos.x -= 13.f;
+			pos.x += 25.f * (float)x;
 			wallObj[i][x]->SetPosition(pos);
 		}
 	}
@@ -248,8 +251,9 @@ void GamePlayScene::Update()
 
 			// 体力バー
 			playerHpSprite->Update();
-		}
 
+			playerHpSlide->Update();
+		}
 	}// ポーズ画面
 	else {
 		pouseSprite[pouse]->Update();
@@ -307,12 +311,6 @@ void GamePlayScene::play()
 {
 	Input* input = Input::GetInstance();
 
-	{
-		char tmp[32]{};
-		sprintf_s(tmp, 32, "%.2f,%.2f,%.2f", player->GetPosition().x, player->GetPosition().y, player->GetPosition().z);
-		DebugText::GetInstance()->Print(tmp, 0, 100);
-	}
-
 	// レーンの位置
 	/*{
 		auto pos = lane->GetPosition();
@@ -320,7 +318,7 @@ void GamePlayScene::play()
 		lane->SetPosition(pos);
 
 	}*/
-		skyDomeObj->SetPosition(lane->GetPosition());
+	skyDomeObj->SetPosition(lane->GetPosition());
 
 	// プレイヤーの移動と回避
 	{
@@ -340,7 +338,7 @@ void GamePlayScene::play()
 		if (hitW || hitS || hitA || hitD || hitZ || hitX) {
 			auto pos = player->GetPosition();
 			float moveSpeed = 0.2f;
-			XMFLOAT3 rot {};
+			XMFLOAT3 rot{};
 
 			if (hitSpace && avoidFrame == 0) {
 				moveSpeed *= 10;
@@ -349,20 +347,20 @@ void GamePlayScene::play()
 
 			if (hitW && pos.y < 8.f) {
 				pos.y += moveSpeed;
-				rot.x -= 5.f;
+				rot.x -= 4.f;
 			}
 			else if (hitS && pos.y > -4.f) {
 				pos.y -= moveSpeed;
-				rot.x += 5.f;
+				rot.x += 4.f;
 			}
 
 			if (hitD && pos.x < 10.f) {
 				pos.x += moveSpeed;
-				rot.z -= 5.f;
+				rot.z -= 4.f;
 			}
 			else if (hitA && pos.x > -10.f) {
 				pos.x -= moveSpeed;
-				rot.z += 5.f;
+				rot.z += 4.f;
 			}
 
 			player->SetPosition(pos);
@@ -371,7 +369,7 @@ void GamePlayScene::play()
 	}
 
 	// プレイヤーの回転
-	if (input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN) || input->PushKey(DIK_RIGHT) || input->PushKey(DIK_LEFT))
+	/*if (input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN) || input->PushKey(DIK_RIGHT) || input->PushKey(DIK_LEFT))
 	{
 		XMFLOAT3 playerRot = player->GetRotation();
 		constexpr float rotSpeed = 1.f;
@@ -389,7 +387,7 @@ void GamePlayScene::play()
 			playerRot.x += rotSpeed;
 		}
 		player->SetRotation(playerRot);
-	}
+	}*/
 
 	// 敵を発生
 	for (auto& i : enemyFrame) {
@@ -558,7 +556,7 @@ void GamePlayScene::play()
 					// 当たったら消える
 					if (Collision::CheckSphere2Sphere(playerShape, eBulletShape)) {
 						eb.SetAlive(false);				// 敵の弾を消す
-						// player->Damage(1);				// プレイヤーにダメージ
+						player->Damage(1);				// プレイヤーにダメージ
 						shiftFlag = true;				// RGBずらしをする
 						shiftNowFrame = 0;
 						if (player->GetHp() == 0) {		// 体力が0になったら
@@ -679,6 +677,7 @@ void GamePlayScene::DrawFrontSprite(DirectXCommon* dxcommon) {
 	if (player->GetHp() > 0) {
 		playerHpSprite->Draw();
 	}
+	playerHpSlide->Draw();
 
 	aim->Draw();
 	ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_WindowBg, ImVec4(1.f, 0.f, 1.f, 0.5f));
@@ -703,6 +702,7 @@ void GamePlayScene::DrawFrontSprite(DirectXCommon* dxcommon) {
 		ImGui::Text(u8"WASD:移動");
 		ImGui::Text(u8"左クリック:撃つ");
 		ImGui::Text(u8"スペース:回避");
+		ImGui::Text(u8"ESC:ポーズ画面");
 
 		ImGui::SetNextWindowPos(ImVec2(ImGui::GetWindowPos().x,
 			ImGui::GetWindowPos().y + ImGui::GetWindowSize().y));

@@ -4,6 +4,8 @@ class Boss :
 	public Enemy
 {
 
+	GameObject* attackTarget;
+
 public:
 	using Enemy::Enemy;
 
@@ -16,5 +18,11 @@ public:
 	/// •`‰æ
 	/// </summary>
 	void Draw() override;
+
+	inline void SetAttackTarget(GameObject* attackTarget) { this->attackTarget = attackTarget; }
+
+	inline void SetPhaseApproach() { SetPhase(std::bind(&Boss::Approach, this)); }
+
+	void Approach();
 };
 

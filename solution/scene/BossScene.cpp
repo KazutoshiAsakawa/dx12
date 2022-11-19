@@ -73,12 +73,7 @@ void BossScene::Initialize(DirectXCommon* dxcommon)
 	// ボス
 	boss.reset(new Boss(enemyModel.get(), { 0.f,0.f,20.f }));
 
-	boss->SetPhase([&] {
-		XMFLOAT3 pos;
-		pos = boss->GetPosition();
-		pos.x += 0.1f;
-		boss->SetPosition(pos);
-		});
+	boss->SetPhaseApproach();
 
 	// パーティクル初期化
 	ParticleManager::GetInstance()->SetCamera(camera.get());
@@ -309,6 +304,9 @@ void BossScene::play()
 				player->Shot(pBulletModel.get(), pBulletScale);
 			}
 		}
+	}
+	else {// ボスが死んだら
+		SceneManager::GetInstance()->ChangeScene("END");
 	}
 
 	// 敵と自機の弾の当たり判定

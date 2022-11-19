@@ -88,9 +88,10 @@ private:
 	int pouse = 0;
 
 	// 自機HP最大値
-	UINT playerHpMax = 3;
+	UINT playerHpMax = 4;
 	// HP画像の配列
 	std::unique_ptr<Sprite> playerHpSprite;
+	std::unique_ptr<Sprite> playerHpSlide;
 
 	// 敵が当たって無い時のターゲット
 	std::unique_ptr<GameObject> nullTarget;
