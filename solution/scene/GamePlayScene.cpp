@@ -211,7 +211,6 @@ void GamePlayScene::Update()
 		// シーン遷移
 		updateProcess();
 
-
 		// パーティクル更新
 		ParticleManager::GetInstance()->Update();
 
@@ -403,7 +402,7 @@ void GamePlayScene::play()
 	// 敵が全部居なくなったらエンドシーンに行く
 	{
 		if (enemyFrame.empty() && enemy.empty()) {
-			SceneManager::GetInstance()->ChangeScene("END");
+			SceneManager::GetInstance()->ChangeScene("BOSSPLAY");
 		}
 	}
 

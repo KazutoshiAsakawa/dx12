@@ -118,7 +118,7 @@ void Enemy::Update()
 			angleVec = XMVector3AngleBetweenNormals(vel, vec);
 			if (XMVectorGetX(angleVec) > XM_PI / 3.f) continue;
 
-			vel = SLerp(vel, vec, 0.03f);
+			vel = SLerp(vel, vec, 0.02f);
 			// ‘¬“x‚Ì‘å‚«‚³‚ðŽw’è
 			vel *= 0.8f;
 

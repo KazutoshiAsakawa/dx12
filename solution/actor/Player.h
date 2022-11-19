@@ -26,7 +26,8 @@ public:
 
 	inline DirectX::XMFLOAT2 GetScreenAimPos() { return float2ScreenAimPos; }
 
-	inline void Damage(UINT damage) { if (hp >= damage)hp -= damage; }
+	inline void Damage(UINT damage) { if (hp >= damage)hp -= damage; else hp = 0; }
+	inline void SetHp(UINT hp) { this->hp = hp; }
 	inline UINT GetHp() { return hp; }
 
 private:

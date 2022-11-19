@@ -27,8 +27,6 @@ void BossScene::Initialize(DirectXCommon* dxcommon)
 
 	// カメラの初期化
 	camera.reset(new TrackingCamera());
-	//camera->SetEye({ 0, 5, -20 });
-	// camera->SetTarget({ 0, 0, 50 });
 
 	ObjObject3d::SetCamera(camera.get());
 
@@ -62,16 +60,18 @@ void BossScene::Initialize(DirectXCommon* dxcommon)
 	// プレイヤー初期化
 	player = std::make_unique<Player>();
 
+	player->SetHp(4);
+
 	// カメラをプレイヤーの位置にセット
 	camera->SetTrackingTarget(player.get());
 	camera->SetTarget(player->GetPosition());
 	XMFLOAT3 eye = player->GetPosition();
-	eye.z -= 50;
-	eye.y += 10;
+	eye.z -= 500;
+	eye.y += 50;
 	camera->SetEye(eye);
 
 	// ボス
-	boss.reset(new Boss(enemyModel.get(), { 0.f,0.f,20.f }));
+	boss.reset(new Boss(enemyModel.get(), { 0.f,0.f,50.f }));
 
 	boss->SetPhaseApproach();
 	boss->SetAttackTarget(player.get());
@@ -121,9 +121,7 @@ void BossScene::Update()
 
 		camera->Update();
 
-		//fbxObj->Update();
 		player->Update();
-		//}
 
 		boss->Update();
 
@@ -133,8 +131,6 @@ void BossScene::Update()
 		// スプライト更新
 		sprite->Update();
 
-		// aim->SetPosition({player->GetScreenAimPos().x,player->GetScreenAimPos().y,0});
-		// aim->SetPosition({ (float)Input::GetInstance()->GetMousePos().x,(float)Input::GetInstance()->GetMousePos().y,0 });
 		aim->Update();
 	}
 }
@@ -144,7 +140,7 @@ void BossScene::start()
 {
 	Input* input = Input::GetInstance();
 	// モザイクをかける時間
-	constexpr UINT mosaicFrameMax = 40;
+	constexpr UINT mosaicFrameMax = 60;
 
 	// モザイクの時間が最大までいったらplay関数に変える
 	if (++mosaicFrame > mosaicFrameMax) {
@@ -356,6 +352,7 @@ void BossScene::play()
 		// 衝突判定をする
 		if (player->GetAlive()) {
 			for (auto& eb : boss->GetBullet()) {
+				if (!eb.GetAlive())continue;
 				Sphere eBulletShape;
 				eBulletShape.center = XMLoadFloat3(&eb.GetPosition());
 				eBulletShape.radius = eb.GetScale().z;
@@ -374,7 +371,6 @@ void BossScene::play()
 				}
 			}
 		}
-
 	}
 
 	if (shiftFlag) {
@@ -467,6 +463,7 @@ void BossScene::DrawFrontSprite(DirectXCommon* dxcommon) {
 		ImGui::Text(u8"左クリック:撃つ");
 		ImGui::Text(u8"マウス差分 %d,%d", mousePosDiff.x, mousePosDiff.y);
 		ImGui::Text(u8"マウス %d,%d", Input::GetInstance()->GetMousePos().x, Input::GetInstance()->GetMousePos().y);
+		ImGui::Text(u8"ボスの弾 %u", boss->GetBullet().size());
 
 		ImGui::SetNextWindowPos(ImVec2(ImGui::GetWindowPos().x,
 			ImGui::GetWindowPos().y + ImGui::GetWindowSize().y));
