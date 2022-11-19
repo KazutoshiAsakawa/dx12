@@ -1,5 +1,7 @@
 #pragma once
 #include "Enemy.h"
+#include "ObjModel.h"
+
 class Boss :
 	public Enemy
 {
@@ -25,9 +27,16 @@ public:
 	void Approach();
 	void Leave();
 
+	void Attack();
+
 private:
 	GameObject* attackTarget;
 
 	ObjModel* bulletModel;
+
+	UINT shotInterval = 60;
+	UINT nowShotFrame;
+	UINT shotNum = 5;
+	UINT nowShotNum;
 };
 

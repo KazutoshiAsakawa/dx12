@@ -10,8 +10,10 @@ void Boss::Update()
 		// À•W•ÏŠ·‚ÌŒvZ
 		Screen();
 		obj->Update();
+	}
 
-
+	for (auto& i : bullet) {
+		i.Update();
 	}
 }
 
@@ -19,6 +21,10 @@ void Boss::Draw()
 {
 	if (alive) {
 		obj->Draw();
+	}
+
+	for (auto& i : bullet) {
+		i.Draw();
 	}
 }
 
@@ -80,6 +86,25 @@ void Boss::Leave()
 
 	// ˆê’è‹——£—£‚ê‚½‚ç‹ß‚Ã‚­
 	if (lengthSq > (GetScale().z * 30) * (GetScale().z * 30)) {
-		SetPhase(std::bind(&Boss::Approach, this));
+		SetPhase(std::bind(&Boss::Attack, this));
+		SetShotTarget(attackTarget);
+		nowShotFrame = shotInterval;
+		nowShotNum = 0;
+	}
+}
+
+void Boss::Attack()
+{
+	// 0‚É‚È‚Á‚½‚çŒ‚‚Â
+	if (nowShotFrame-- == 0) {
+		Shot(bulletModel, 1);
+		nowShotNum++;
+
+		if (nowShotNum >= shotNum) {
+			SetPhase(std::bind(&Boss::Approach, this));
+		}
+
+		// ‰Šú‰»
+		nowShotFrame = shotInterval;
 	}
 }

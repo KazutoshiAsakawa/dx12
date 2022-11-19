@@ -76,6 +76,8 @@ void BossScene::Initialize(DirectXCommon* dxcommon)
 	boss->SetPhaseApproach();
 	boss->SetAttackTarget(player.get());
 
+	boss->SetBulletModel(enemyModel.get());
+
 	// パーティクル初期化
 	ParticleManager::GetInstance()->SetCamera(camera.get());
 
@@ -355,7 +357,7 @@ void BossScene::play()
 				// 当たったら消える
 				if (Collision::CheckSphere2Sphere(playerShape, eBulletShape)) {
 					eb.SetAlive(false);				// 敵の弾を消す
-					// player->Damage(1);				// プレイヤーにダメージ
+					player->Damage(1);				// プレイヤーにダメージ
 					shiftFlag = true;				// RGBずらしをする
 					nowFrame = 0;
 					if (player->GetHp() == 0) {		// 体力が0になったら
