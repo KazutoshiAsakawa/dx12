@@ -3,9 +3,6 @@
 class Boss :
 	public Enemy
 {
-
-	GameObject* attackTarget;
-
 public:
 	using Enemy::Enemy;
 
@@ -23,6 +20,14 @@ public:
 
 	inline void SetPhaseApproach() { SetPhase(std::bind(&Boss::Approach, this)); }
 
+	inline void SetBulletModel(ObjModel* bulletModel) { this->bulletModel = bulletModel; }
+
 	void Approach();
+	void Leave();
+
+private:
+	GameObject* attackTarget;
+
+	ObjModel* bulletModel;
 };
 

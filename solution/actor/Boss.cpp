@@ -31,6 +31,8 @@ void Boss::Approach()
 
 	// XMVECTOR‚É•ÏŠ·
 	XMVECTOR vectorVel = XMLoadFloat3(&vel);
+	// ‹——£‚Ì“ñæ
+	float lengthSq = vel.x * vel.x + vel.y * vel.y + vel.z * vel.z;
 	// ‘å‚«‚³‚ğ1‚É‚·‚é
 	vectorVel = XMVector3Normalize(vectorVel);
 	// ‘å‚«‚³‚ğ”CˆÓ‚Ì’l‚É‚·‚é
@@ -44,4 +46,40 @@ void Boss::Approach()
 	pos.y += vel.y;
 	pos.z += vel.z;
 	SetPosition(pos);
+
+	// ˆê’è‹——£‹ß‚Ã‚¢‚½‚ç—£‚ê‚é
+	if (lengthSq < (GetScale().z * 3) * (GetScale().z * 3)) {
+		SetPhase(std::bind(&Boss::Leave, this));
+	}
+}
+
+void Boss::Leave()
+{
+	XMFLOAT3 vel;
+	vel.x = attackTarget->GetPosition().x - GetPosition().x;
+	vel.y = attackTarget->GetPosition().y - GetPosition().y;
+	vel.z = attackTarget->GetPosition().z - GetPosition().z;
+
+	// XMVECTOR‚É•ÏŠ·
+	XMVECTOR vectorVel = XMLoadFloat3(&vel);
+	// ‹——£‚Ì“ñæ
+	float lengthSq = vel.x * vel.x + vel.y * vel.y + vel.z * vel.z;
+	// ‘å‚«‚³‚ğ1‚É‚·‚é
+	vectorVel = XMVector3Normalize(vectorVel);
+	// ‘å‚«‚³‚ğ”CˆÓ‚Ì’l‚É‚·‚é
+	vectorVel = XMVectorScale(vectorVel, -0.1f);
+	// FLOAT3‚É•ÏŠ·
+	XMStoreFloat3(&vel, vectorVel);
+
+	XMFLOAT3 pos;
+	pos = GetPosition();
+	pos.x += vel.x;
+	pos.y += vel.y;
+	pos.z += vel.z;
+	SetPosition(pos);
+
+	// ˆê’è‹——£—£‚ê‚½‚ç‹ß‚Ã‚­
+	if (lengthSq > (GetScale().z * 30) * (GetScale().z * 30)) {
+		SetPhase(std::bind(&Boss::Approach, this));
+	}
 }
