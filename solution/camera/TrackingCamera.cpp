@@ -71,5 +71,7 @@ void TrackingCamera::startUpdate()
 		target.y += targetVel.y;
 		target.z += targetVel.z;
 		SetTarget(target);
+
+
 	}
 }

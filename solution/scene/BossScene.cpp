@@ -259,6 +259,15 @@ void BossScene::play()
 
 		playerRot.y -= rotSpeed * mousePosDiff.x;
 		playerRot.x -= rotSpeed * mousePosDiff.y;
+
+		// プレイヤー回転制限
+		if (playerRot.x > 60.f) {
+			playerRot.x = 60.f;
+		}
+		if (playerRot.x < -60.f) {
+			playerRot.x = -60.f;
+		}
+
 		player->SetRotation(playerRot);
 	}
 
@@ -456,7 +465,7 @@ void BossScene::DrawFrontSprite(DirectXCommon* dxcommon) {
 	}
 	else {
 		ImGui::SetNextWindowSize(ImVec2(200, 200));
-		ImGui::Begin("aaa", nullptr, ImGuiWindowFlags_NoSavedSettings);
+		ImGui::Begin("説明", nullptr, ImGuiWindowFlags_NoSavedSettings);
 		ImGui::Text(u8"フレーム %u", frame);
 		ImGui::Text(u8"体力 %u", player->GetHp());
 		ImGui::Text(u8"WASD:移動");
