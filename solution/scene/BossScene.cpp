@@ -187,9 +187,10 @@ void BossScene::play()
 			avoidFrame--;
 		}
 
-		if (hitW || hitS || hitA || hitD || hitZ || hitX) {
+		if (hitW || hitS || hitA || hitD || hitZ || hitX || hitSpace) {
 			auto pos = player->GetPosition();
 			float moveSpeed = 0.2f;
+
 			if (hitSpace && avoidFrame == 0) {
 				moveSpeed *= 10;
 				avoidFrame = avoidFrameMax;
@@ -218,6 +219,8 @@ void BossScene::play()
 			XMFLOAT3 right;
 			XMStoreFloat3(&right, rightVec);
 
+			
+
 			if (hitW) {
 				pos.x += forward.x;
 				pos.y += forward.y;
@@ -238,6 +241,11 @@ void BossScene::play()
 				pos.x -= right.x;
 				pos.y -= right.y;
 				pos.z -= right.z;
+			}
+
+			// ˆÚ“®§ŒÀ(’n–Ê)
+			if (0 > pos.y) {
+				pos.y = 0;
 			}
 
 			player->SetPosition(pos);
@@ -278,14 +286,6 @@ void BossScene::play()
 			aimRB.x >= enemyPos.x && aimRB.y >= enemyPos.y) {
 			flag = true;
 			player->SetShotTarget(boss.get());
-		}
-
-		{
-			char tmp[128];
-			sprintf_s(tmp, 128, "boss : %.2f,%.2f", enemyPos.x, enemyPos.y);
-			DebugText::GetInstance()->Print(tmp, 0, 0);
-			sprintf_s(tmp, 128, "mouse : %.2f,%.2f", aim->GetPosition().x, aim->GetPosition().y);
-			DebugText::GetInstance()->Print(tmp, 0, 20);
 		}
 
 		if (flag) {

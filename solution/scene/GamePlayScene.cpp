@@ -201,12 +201,6 @@ void GamePlayScene::Update()
 	//	PostQuitMessage(0); //OSに対して、アプリの終了を伝える
 	//}
 
-	{
-		char tmp[128];
-		sprintf_s(tmp, 128, "mouse : %.2f,%.2f", aim->GetPosition().x, aim->GetPosition().y);
-		DebugText::GetInstance()->Print(tmp, 0, 20);
-	}
-
 	if (!pause) {
 		// シーン遷移
 		updateProcess();

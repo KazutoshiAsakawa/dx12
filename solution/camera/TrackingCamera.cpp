@@ -51,25 +51,25 @@ void TrackingCamera::startUpdate()
 		XMFLOAT3 old = GetEye();
 		// 移動幅 = 移動後の座標 - 移動前の座標
 		XMFLOAT3 vel =
-		{ (eye.x - old.x) * 0.3f,
-		(eye.y - old.y) * 0.3f,
-		(eye.z - old.z) * 0.3f };
+		{ (eye.x - old.x) * 0.1f,
+		(eye.y - old.y) * 0.1f,
+		(eye.z - old.z) * 0.1f };
 		// 移動後の座標 = 移動前の座標 + 移動幅
 		eye = { old.x + vel.x,old.y + vel.y ,old.z + vel.z };
 		// 移動後の座標を適用
 		SetEye(eye);
 
 
-		XMFLOAT3 a;
-		XMStoreFloat3(&a, XMVector3Transform(XMVectorSet(
+		XMFLOAT3 targetVel;
+		XMStoreFloat3(&targetVel, XMVector3Transform(XMVectorSet(
 			trackingTargetToCameraTarget.x,
 			trackingTargetToCameraTarget.y,
 			trackingTargetToCameraTarget.z, 1),
 			trackingTarget->GetMatRotation()));
 
-		target.x += a.x;
-		target.y += a.y;
-		target.z += a.z;
+		target.x += targetVel.x;
+		target.y += targetVel.y;
+		target.z += targetVel.z;
 		SetTarget(target);
 	}
 }

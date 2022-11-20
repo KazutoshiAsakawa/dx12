@@ -4,6 +4,34 @@ using namespace DirectX;
 
 void Boss::Update()
 {
+	// ボスの向き
+	{
+		XMVECTOR vel, vec;
+		XMFLOAT3 floatVel;
+
+		vel = XMVectorSet(GetVel().x, GetVel().y, GetVel().z, 1);
+		vel = XMVector3Normalize(vel);
+
+		vec = XMVectorSet(
+			attackTarget->GetPosition().x - GetPosition().x,
+			attackTarget->GetPosition().y - GetPosition().y,
+			attackTarget->GetPosition().z - GetPosition().z,
+			1
+		);
+		vec = XMVector3Normalize(vec);
+
+		// XMStoreFloat3(&XMFLOAT3の変数, XMVECTORの変数);
+		XMStoreFloat3(&floatVel, vel);
+
+		// 標的に向ける
+		float rotx = atan2f(-floatVel.y,
+			sqrtf(floatVel.x * floatVel.x + floatVel.z * floatVel.z));
+		float roty = atan2f(floatVel.x, floatVel.z);
+
+		SetRotation(XMFLOAT3(XMConvertToDegrees(rotx), XMConvertToDegrees(roty) + 180, 0));
+
+	}
+
 	if (alive) {
 		phase();
 
@@ -30,7 +58,6 @@ void Boss::Draw()
 
 void Boss::Approach()
 {
-	XMFLOAT3 vel;
 	vel.x = attackTarget->GetPosition().x - GetPosition().x;
 	vel.y = attackTarget->GetPosition().y - GetPosition().y;
 	vel.z = attackTarget->GetPosition().z - GetPosition().z;
@@ -54,14 +81,13 @@ void Boss::Approach()
 	SetPosition(pos);
 
 	// 一定距離近づいたら離れる
-	if (lengthSq < (GetScale().z * 3) * (GetScale().z * 3)) {
+	if (lengthSq < (GetScale().z * 10) * (GetScale().z * 10)) {
 		SetPhase(std::bind(&Boss::Leave, this));
 	}
 }
 
 void Boss::Leave()
 {
-	XMFLOAT3 vel;
 	vel.x = attackTarget->GetPosition().x - GetPosition().x;
 	vel.y = attackTarget->GetPosition().y - GetPosition().y;
 	vel.z = attackTarget->GetPosition().z - GetPosition().z;
@@ -82,6 +108,12 @@ void Boss::Leave()
 	pos.x += vel.x;
 	pos.y += vel.y;
 	pos.z += vel.z;
+
+	// 移動制限(地面)
+	if (0 > pos.y) {
+		pos.y = 0;
+	}
+
 	SetPosition(pos);
 
 	// 一定距離離れたら近づく
