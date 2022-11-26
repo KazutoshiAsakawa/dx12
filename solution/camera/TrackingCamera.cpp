@@ -51,9 +51,9 @@ void TrackingCamera::startUpdate()
 		XMFLOAT3 old = GetEye();
 		// 移動幅 = 移動後の座標 - 移動前の座標
 		XMFLOAT3 vel =
-		{ (eye.x - old.x) * 0.1f,
-		(eye.y - old.y) * 0.1f,
-		(eye.z - old.z) * 0.1f };
+		{ (eye.x - old.x) * 0.2f,
+		(eye.y - old.y) * 0.2f,
+		(eye.z - old.z) * 0.2f };
 		// 移動後の座標 = 移動前の座標 + 移動幅
 		eye = { old.x + vel.x,old.y + vel.y ,old.z + vel.z };
 		// 移動後の座標を適用

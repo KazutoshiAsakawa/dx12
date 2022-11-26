@@ -465,7 +465,7 @@ void BossScene::DrawFrontSprite(DirectXCommon* dxcommon) {
 	}
 	else {
 		ImGui::SetNextWindowSize(ImVec2(200, 200));
-		ImGui::Begin("à–¾", nullptr, ImGuiWindowFlags_NoSavedSettings);
+		ImGui::Begin(u8"à–¾", nullptr, ImGuiWindowFlags_NoSavedSettings);
 		ImGui::Text(u8"ƒtƒŒ[ƒ€ %u", frame);
 		ImGui::Text(u8"‘Ì—Í %u", player->GetHp());
 		ImGui::Text(u8"WASD:ˆÚ“®");

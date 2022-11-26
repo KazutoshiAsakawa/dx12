@@ -34,9 +34,9 @@ private:
 
 	ObjModel* bulletModel;
 
-	UINT shotInterval = 60;
+	UINT shotInterval = 10;
 	UINT nowShotFrame;
-	UINT shotNum = 5;
+	UINT shotNum = 12;
 	UINT nowShotNum;
 };
 

@@ -81,7 +81,7 @@ void Boss::Approach()
 	SetPosition(pos);
 
 	// ˆê’è‹——£‹ß‚Ã‚¢‚½‚ç—£‚ê‚é
-	if (lengthSq < (GetScale().z * 10) * (GetScale().z * 10)) {
+	if (lengthSq < (GetScale().z * 12) * (GetScale().z * 12)) {
 		SetPhase(std::bind(&Boss::Leave, this));
 	}
 }
