@@ -75,7 +75,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 	// 自機の読み込み
 	pBulletModel.reset(ObjModel::LoadFromObj("playerBullet"));
 	// 敵の読み込み
-	enemyModel.reset(ObjModel::LoadFromObj("enemy2"));// enemy
+	enemyModel.reset(ObjModel::LoadFromObj("butterfly"));// enemy2
 
 	//デバイスをセット
 	FbxObject3d::SetDevice(dxcommon->GetDev());
