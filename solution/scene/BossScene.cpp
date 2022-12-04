@@ -40,7 +40,7 @@ void BossScene::Initialize(DirectXCommon* dxcommon)
 
 	// ’n–Ê
 	groundModel.reset(ObjModel::LoadFromObj("ground"));
-	groundModel->SetTiling({ 10.f,10.f });
+	groundModel->SetTiling({ 100.f,100.f });
 	groundObj = ObjObject3d::Create();
 	groundObj->SetModel(groundModel.get());
 	groundObj->SetScale({ 100,100,100 });

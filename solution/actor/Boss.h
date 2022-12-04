@@ -20,14 +20,21 @@ public:
 
 	inline void SetAttackTarget(GameObject* attackTarget) { this->attackTarget = attackTarget; }
 
-	inline void SetPhaseApproach() { SetPhase(std::bind(&Boss::Approach, this)); }
+	inline void SetPhaseApproach() { SetPhase(std::bind(&Boss::PhaseApproach, this)); }
 
 	inline void SetBulletModel(ObjModel* bulletModel) { this->bulletModel = bulletModel; }
 
-	void Approach();
-	void Leave();
+	void PhaseApproach() override;
+	void PhaseLeave() override;
 
-	void Attack();
+	void PhaseAttack();
+
+	void PhaseSpreadAttack();
+
+	// ãﬂê⁄çUåÇ
+	void meleeAttack();
+	// ägéUíe
+	void spreadBullet(ObjModel* model, float scale, float angle);
 
 private:
 	GameObject* attackTarget;

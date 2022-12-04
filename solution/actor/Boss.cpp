@@ -56,7 +56,7 @@ void Boss::Draw()
 	}
 }
 
-void Boss::Approach()
+void Boss::PhaseApproach()
 {
 	vel.x = attackTarget->GetPosition().x - GetPosition().x;
 	vel.y = attackTarget->GetPosition().y - GetPosition().y;
@@ -82,11 +82,11 @@ void Boss::Approach()
 
 	// ˆê’è‹——£‹ß‚Ã‚¢‚½‚ç—£‚ê‚é
 	if (lengthSq < (GetScale().z * 12) * (GetScale().z * 12)) {
-		SetPhase(std::bind(&Boss::Leave, this));
+		SetPhase(std::bind(&Boss::PhaseLeave, this));
 	}
 }
 
-void Boss::Leave()
+void Boss::PhaseLeave()
 {
 	vel.x = attackTarget->GetPosition().x - GetPosition().x;
 	vel.y = attackTarget->GetPosition().y - GetPosition().y;
@@ -118,25 +118,66 @@ void Boss::Leave()
 
 	// ˆê’è‹——£—£‚ê‚½‚ç‹ß‚Ã‚­
 	if (lengthSq > (GetScale().z * 30) * (GetScale().z * 30)) {
-		SetPhase(std::bind(&Boss::Attack, this));
+		SetPhase(std::bind(&Boss::PhaseAttack, this));
 		SetShotTarget(attackTarget);
 		nowShotFrame = shotInterval;
-		nowShotNum = 0;
 	}
 }
 
-void Boss::Attack()
+void Boss::PhaseAttack()
 {
 	// 0‚É‚È‚Á‚½‚çŒ‚‚Â
 	if (nowShotFrame-- == 0) {
 		Shot(bulletModel, 1);
 		nowShotNum++;
 
+		// ‰Šú‰»
+		nowShotFrame = shotInterval;
+
 		if (nowShotNum >= shotNum) {
-			SetPhase(std::bind(&Boss::Approach, this));
+			SetPhase(std::bind(&Boss::PhaseSpreadAttack, this));
+			nowShotNum = 0;
+		}
+
+
+	}
+}
+
+void Boss::PhaseSpreadAttack()
+{
+	if (nowShotFrame-- == 0) {
+		meleeAttack();
+		nowShotNum++;
+
+		if (nowShotNum >= shotNum) {
+			SetPhase(std::bind(&Boss::PhaseApproach, this));
+			nowShotNum = 0;
 		}
 
 		// ‰Šú‰»
 		nowShotFrame = shotInterval;
 	}
+}
+
+void Boss::meleeAttack()
+{
+	// ŠgU—¦
+	constexpr int  num = 10;
+
+	for (int i = 0; i <= num; i++) {
+		spreadBullet(bulletModel, 1, -(float)i / num * XM_PI);
+	}
+}
+
+void Boss::spreadBullet(ObjModel* model, float scale, float angle)
+{
+	bullet.emplace_back(model, obj->GetPosition());
+	bullet.back().SetScale({ scale / 3,scale / 3 ,scale });
+	bullet.back().SetParent(obj->GetParent());
+	XMFLOAT3 vel = { 0.f,0.f,-0.8f };
+
+	vel.x = cos(angle) * 0.8f;
+	vel.z = sin(angle) * 0.8f;
+
+	bullet.back().SetVel(vel);
 }

@@ -69,8 +69,8 @@ public:
 protected:
 	// 敵の行動パターン
 	std::function<void()> phase;
-	void Approach();
-	void Leave();
+	virtual void PhaseApproach();
+	virtual void PhaseLeave();
 	void Direction();
 
 	// モデル

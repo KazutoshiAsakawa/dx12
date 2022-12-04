@@ -48,7 +48,7 @@ namespace {
 }
 
 Enemy::Enemy(ObjModel* model, const DirectX::XMFLOAT3& position)
-	:GameObject(model, position), phase(std::bind(&Enemy::Approach, this)) {
+	:GameObject(model, position), phase(std::bind(&Enemy::PhaseApproach, this)) {
 	// Shot(ObjModel::LoadFromObj("rat"),1);
 	bulletModel.reset(ObjModel::LoadFromObj("enemyBullet"));
 	nowShotFrame = shotInterval;
@@ -237,7 +237,7 @@ void Enemy::hitStop()
 
 }
 
-void Enemy::Approach()
+void Enemy::PhaseApproach()
 {
 
 	XMFLOAT3 pos = obj->GetPosition();
@@ -260,7 +260,7 @@ void Enemy::Approach()
 	}
 }
 
-void Enemy::Leave()
+void Enemy::PhaseLeave()
 {
 	XMFLOAT3 pos = obj->GetPosition();
 	pos.x += vel.x;
@@ -279,7 +279,7 @@ void Enemy::LeaveChange(XMFLOAT3 vel) {
 	SetVel(vel);
 
 	// leave‚É•Ï‚¦‚é
-	phase = std::bind(&Enemy::Leave, this);
+	phase = std::bind(&Enemy::PhaseLeave, this);
 }
 
 void Enemy::Direction() {
