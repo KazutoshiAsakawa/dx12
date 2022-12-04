@@ -34,7 +34,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 	playerHpSprite.reset(Sprite::Create(3, { 0,1 }));
 	playerHpSprite->SetPosition(XMFLOAT3(40, WinApp::window_height - 40, 0));
 
-	playerHpSlide.reset(Sprite::Create(4,{0,1}));
+	playerHpSlide.reset(Sprite::Create(4, { 0,1 }));
 	playerHpSlide->SetPosition(XMFLOAT3(35, WinApp::window_height - 35, 0));
 
 	// ポーズ画面の画像を作る
@@ -290,6 +290,7 @@ void GamePlayScene::start()
 		PostEffect::GetInstance()->SetMosaicNum({ WinApp::window_width ,WinApp::window_height });
 		// updateProcessにplay関数をセット
 		updateProcess = std::bind(&GamePlayScene::play, this);
+		mosaicFrame = 0;
 	}
 	else {
 		XMFLOAT2 mosaicLevel = {};
@@ -396,7 +397,8 @@ void GamePlayScene::play()
 	// 敵が全部居なくなったらエンドシーンに行く
 	{
 		if (enemyFrame.empty() && enemy.empty()) {
-			SceneManager::GetInstance()->ChangeScene("BOSSPLAY");
+
+			updateProcess = std::bind(&GamePlayScene::end, this);
 		}
 	}
 
@@ -566,7 +568,7 @@ void GamePlayScene::play()
 
 	// ボスシーンに行く
 	if (input->TriggerKey(DIK_F)) {
-		SceneManager::GetInstance()->ChangeScene("BOSSPLAY");
+		updateProcess = std::bind(&GamePlayScene::end, this);
 	}
 
 	if (shiftFlag) {
@@ -622,6 +624,28 @@ void GamePlayScene::play()
 		}
 	}
 	frame++;
+}
+
+void GamePlayScene::end()
+{
+	Input* input = Input::GetInstance();
+	// モザイクをかける時間
+	constexpr UINT mosaicFrameMax = 50;
+
+	// モザイクの時間が最大までいったらplay関数に変える
+	if (++mosaicFrame > mosaicFrameMax) {
+		//PostEffect::GetInstance()->SetMosaicNum({ WinApp::window_width ,WinApp::window_height });
+		// ボスシーンへ
+		SceneManager::GetInstance()->ChangeScene("BOSSPLAY");
+	}
+	else {
+		XMFLOAT2 mosaicLevel = {};
+		float rate = (float)mosaicFrame / mosaicFrameMax;
+		rate = 1 - rate;// 1から0
+		mosaicLevel.x = WinApp::window_width * rate;
+		mosaicLevel.y = WinApp::window_height * rate;
+		PostEffect::GetInstance()->SetMosaicNum(mosaicLevel);
+	}
 }
 
 void GamePlayScene::Draw(DirectXCommon* dxcommon)

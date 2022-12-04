@@ -46,6 +46,8 @@ public:
 	/// </summary>
 	void play();
 
+	void end();
+
 	/// <summary>
 	/// •`‰æ
 	/// </summary>

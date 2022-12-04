@@ -147,6 +147,7 @@ void BossScene::start()
 		PostEffect::GetInstance()->SetMosaicNum({ WinApp::window_width ,WinApp::window_height });
 		// updateProcessにplay関数をセット
 		updateProcess = std::bind(&BossScene::play, this);
+		mosaicFrame = 0;
 	}
 	else {
 		XMFLOAT2 mosaicLevel = {};
@@ -315,7 +316,7 @@ void BossScene::play()
 		}
 	}
 	else {// ボスが死んだら
-		SceneManager::GetInstance()->ChangeScene("END");
+		updateProcess = std::bind(&BossScene::end, this);
 	}
 
 	// 敵と自機の弾の当たり判定
@@ -374,8 +375,8 @@ void BossScene::play()
 					nowFrame = 0;
 					if (player->GetHp() == 0) {		// 体力が0になったら
 						player->SetAlive(false);
-
-						SceneManager::GetInstance()->ChangeScene("END");
+						
+						updateProcess = std::bind(&BossScene::end, this);
 					}
 				}
 			}
@@ -414,6 +415,29 @@ void BossScene::play()
 	}
 
 	frame++;
+}
+
+void BossScene::end()
+{
+	Input* input = Input::GetInstance();
+	// モザイクをかける時間
+	constexpr UINT mosaicFrameMax = 50;
+
+	// モザイクの時間が最大までいったらplay関数に変える
+	if (++mosaicFrame > mosaicFrameMax) {
+		//PostEffect::GetInstance()->SetMosaicNum({ WinApp::window_width ,WinApp::window_height });
+		// ボスシーンへ
+		SceneManager::GetInstance()->ChangeScene("END");
+	}
+	else {
+		XMFLOAT2 mosaicLevel = {};
+		float rate = (float)mosaicFrame / mosaicFrameMax;
+		rate = 1 - rate;// 1から0
+		rate *= rate;
+		mosaicLevel.x = WinApp::window_width * rate;
+		mosaicLevel.y = WinApp::window_height * rate;
+		PostEffect::GetInstance()->SetMosaicNum(mosaicLevel);
+	}
 }
 
 void BossScene::Draw(DirectXCommon* dxcommon)

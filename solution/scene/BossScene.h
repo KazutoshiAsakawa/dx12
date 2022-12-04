@@ -39,6 +39,7 @@ public:
 
 	void start();
 	void play();
+	void end();
 
 	/// <summary>
 	/// •`‰æ
