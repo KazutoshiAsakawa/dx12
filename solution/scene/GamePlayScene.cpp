@@ -143,7 +143,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 	splineStartIndex = 1;
 
 	// •Ç
-	wallModel.reset(ObjModel::LoadFromObj("wall"));
+	wallModel.reset(ObjModel::LoadFromObj("torii"));// wall
 	wallObj.resize(points.size());
 
 	for (UINT i = 0; i < wallObj.size(); i++) {
@@ -152,11 +152,13 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 			wallObj[i][x] = ObjObject3d::Create();
 			wallObj[i][x]->Initialize();
 			wallObj[i][x]->SetModel(wallModel.get());
-			wallObj[i][x]->SetScale(XMFLOAT3(1, 100, 50));
+			// wallObj[i][x]->SetScale(XMFLOAT3(1, 100, 50));
+			wallObj[i][x]->SetScale(XMFLOAT3(4, 4, 4));
 			XMFLOAT3 pos;
 			XMStoreFloat3(&pos, points[i]);
-			pos.x -= 13.f;
-			pos.x += 25.f * (float)x;
+			/*pos.x -= 13.f;
+			pos.x += 25.f * (float)x;*/
+			pos.y -= 15.f;
 			wallObj[i][x]->SetPosition(pos);
 		}
 	}

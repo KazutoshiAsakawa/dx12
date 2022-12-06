@@ -32,6 +32,8 @@ void Boss::Update()
 
 	}
 
+	bullet.erase(std::remove_if(bullet.begin(), bullet.end(), [](EnemyBullet& i) {return !i.GetAlive(); }), bullet.end());
+
 	if (alive) {
 		phase();
 
@@ -138,8 +140,6 @@ void Boss::PhaseAttack()
 			SetPhase(std::bind(&Boss::PhaseSpreadAttack, this));
 			nowShotNum = 0;
 		}
-
-
 	}
 }
 
