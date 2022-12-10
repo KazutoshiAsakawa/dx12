@@ -14,6 +14,15 @@
 
 using namespace DirectX;
 
+XMFLOAT3 lerp(const XMFLOAT3& a, const XMFLOAT3& b, float t)
+{
+	XMFLOAT3 ret;
+	ret.x = a.x + t * (b.x - a.x);
+	ret.y = a.y + t * (b.y - a.y);
+	ret.z = a.z + t * (b.z - a.z);
+	return ret;
+}
+
 void BossScene::Initialize(DirectXCommon* dxcommon)
 {
 	// スプライト共通テクスチャ読み込み
@@ -155,6 +164,14 @@ void BossScene::start()
 		mosaicLevel.x = WinApp::window_width * rate;
 		mosaicLevel.y = WinApp::window_height * rate;
 		PostEffect::GetInstance()->SetMosaicNum(mosaicLevel);
+
+		constexpr XMFLOAT3 startEye = { 0,0,-100 };
+		constexpr XMFLOAT3 endEye = { 0,0,0 };
+
+		XMFLOAT3 eye;
+		eye = lerp(startEye, endEye, rate);
+
+		player->SetPosition(eye);
 	}
 }
 
@@ -219,8 +236,6 @@ void BossScene::play()
 
 			XMFLOAT3 right;
 			XMStoreFloat3(&right, rightVec);
-
-			
 
 			if (hitW) {
 				pos.x += forward.x;
@@ -375,7 +390,7 @@ void BossScene::play()
 					nowFrame = 0;
 					if (player->GetHp() == 0) {		// 体力が0になったら
 						player->SetAlive(false);
-						
+
 						updateProcess = std::bind(&BossScene::end, this);
 					}
 				}

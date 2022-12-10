@@ -191,7 +191,7 @@ void Boss::spreadBullet(ObjModel* model, float scale, float angle)
 		// XMVECTOR‚É•ÏŠ·
 		XMVECTOR vectorVel = XMLoadFloat3(&vel);
 
-		XMVECTOR rot = XMQuaternionRotationRollPitchYaw(0, angle +XM_PIDIV2, 0);
+		XMVECTOR rot = XMQuaternionRotationRollPitchYaw(0, angle + XM_PIDIV2, 0);
 		vectorVel = XMVector3Rotate(vectorVel, rot);
 
 		// ‘å‚«‚³‚ð1‚É‚·‚é
