@@ -83,7 +83,7 @@ void Boss::PhaseApproach()
 	SetPosition(pos);
 
 	// 一定距離近づいたら離れる
-	if (lengthSq < (GetScale().z * 12) * (GetScale().z * 12)) {
+	if (lengthSq < (GetScale().z * 14) * (GetScale().z * 14)) {
 		SetPhase(std::bind(&Boss::PhaseLeave, this));
 	}
 }
@@ -171,13 +171,42 @@ void Boss::meleeAttack()
 
 void Boss::spreadBullet(ObjModel* model, float scale, float angle)
 {
+	{
+		char tmp[256];
+		sprintf_s(tmp, 256, "angle : %f\n", angle);
+		OutputDebugStringA(tmp);
+	}
 	bullet.emplace_back(model, obj->GetPosition());
 	bullet.back().SetScale({ scale / 3,scale / 3 ,scale });
 	bullet.back().SetParent(obj->GetParent());
-	XMFLOAT3 vel = { 0.f,0.f,-0.8f };
+	XMFLOAT3 vel = { 0.f,0.f,-0.4f };
 
-	vel.x = cos(angle) * 0.8f;
-	vel.z = sin(angle) * 0.8f;
+	/*vel.x = cos(angle) * 0.4f;
+	vel.z = sin(angle) * 0.4f;*/
+
+	// 設定されていたら
+	if (shotTarget != nullptr) {
+		// 速度を計算
+		// 自分から標的までのベクトル
+		vel = {
+			shotTarget->GetPosition().x - obj->GetPosition().x,
+			shotTarget->GetPosition().y - obj->GetPosition().y,
+			shotTarget->GetPosition().z - obj->GetPosition().z
+		};
+		// XMVECTORに変換
+		XMVECTOR vectorVel = XMLoadFloat3(&vel);
+
+		XMVECTOR rot = XMQuaternionRotationRollPitchYaw(0, angle +XM_PIDIV2, 0);
+		vectorVel = XMVector3Rotate(vectorVel, rot);
+
+		// 大きさを1にする
+		vectorVel = XMVector3Normalize(vectorVel);
+		// 大きさを任意の値にする
+		vectorVel = XMVectorScale(vectorVel, 0.4f);
+		// FLOAT3に変換
+		XMStoreFloat3(&vel, vectorVel);
+
+	}
 
 	bullet.back().SetVel(vel);
 }

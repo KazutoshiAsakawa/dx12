@@ -152,7 +152,6 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 			wallObj[i][x] = ObjObject3d::Create();
 			wallObj[i][x]->Initialize();
 			wallObj[i][x]->SetModel(wallModel.get());
-			// wallObj[i][x]->SetScale(XMFLOAT3(1, 100, 50));
 			wallObj[i][x]->SetScale(XMFLOAT3(4, 4, 4));
 			XMFLOAT3 pos;
 			XMStoreFloat3(&pos, points[i]);
