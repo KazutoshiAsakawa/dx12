@@ -171,11 +171,6 @@ void Boss::meleeAttack()
 
 void Boss::spreadBullet(ObjModel* model, float scale, float angle)
 {
-	{
-		char tmp[256];
-		sprintf_s(tmp, 256, "angle : %f\n", angle);
-		OutputDebugStringA(tmp);
-	}
 	bullet.emplace_back(model, obj->GetPosition());
 	bullet.back().SetScale({ scale / 3,scale / 3 ,scale });
 	bullet.back().SetParent(obj->GetParent());

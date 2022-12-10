@@ -105,7 +105,6 @@ bool ObjModel::LoadTexture(const std::string& directoryPath, const std::string& 
 
 	// wstringでの長さを
 	int iBufferSize = MultiByteToWideChar(CP_ACP, 0, filepath.c_str(), -1, wfilepath, _countof(wfilepath));
-	directoryPath + filename;
 
 	result = LoadFromWICFile(
 		wfilepath, WIC_FLAGS_NONE,
@@ -200,7 +199,6 @@ void ObjModel::LoadFromOBJInternal(const std::string& modelname)
 	const std::string filename = modelname + ".obj";
 	const std::string directoryPath = "Resources/" + modelname + "/";
 
-	HRESULT result;
 	// ファイルストリーム
 	std::ifstream file;
 	// .objファイルを開く
