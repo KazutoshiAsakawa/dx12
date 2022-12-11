@@ -179,12 +179,6 @@ void BossScene::play()
 {
 	Input* input = Input::GetInstance();
 
-	{
-		char tmp[32]{};
-		sprintf_s(tmp, 32, "%.2f,%.2f,%.2f", player->GetPosition().x, player->GetPosition().y, player->GetPosition().z);
-		DebugText::GetInstance()->Print(tmp, 0, 100);
-	}
-
 	// ƒŒ[ƒ“‚ÌˆÊ’u
 	{
 		skyDomeObj->SetPosition(player->GetPosition());

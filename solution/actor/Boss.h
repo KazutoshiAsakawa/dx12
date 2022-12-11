@@ -24,11 +24,13 @@ public:
 
 	inline void SetBulletModel(ObjModel* bulletModel) { this->bulletModel = bulletModel; }
 
+	// ‹ß‚Ã‚­
 	void PhaseApproach() override;
+	// —£‚ê‚é
 	void PhaseLeave() override;
-
+	// ’e”­Ë
 	void PhaseAttack();
-
+	
 	void PhaseSpreadAttack();
 
 	// ‹ßÚUŒ‚

@@ -29,7 +29,6 @@ void Boss::Update()
 		float roty = atan2f(floatVel.x, floatVel.z);
 
 		SetRotation(XMFLOAT3(XMConvertToDegrees(rotx), XMConvertToDegrees(roty) + 180, 0));
-
 	}
 
 	bullet.erase(std::remove_if(bullet.begin(), bullet.end(), [](EnemyBullet& i) {return !i.GetAlive(); }), bullet.end());
@@ -153,7 +152,6 @@ void Boss::PhaseSpreadAttack()
 			SetPhase(std::bind(&Boss::PhaseApproach, this));
 			nowShotNum = 0;
 		}
-
 		// èâä˙âª
 		nowShotFrame = shotInterval;
 	}

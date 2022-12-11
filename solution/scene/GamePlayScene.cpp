@@ -162,6 +162,9 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 		}
 	}
 
+
+
+
 	// CSVì«Ç›çûÇ›
 	csv = Enemy::LoadCsv("Resources/enemy.csv");
 

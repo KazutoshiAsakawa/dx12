@@ -194,6 +194,7 @@
     <ClCompile Include="scene\EndScene.cpp" />
     <ClCompile Include="scene\GamePlayScene.cpp" />
     <ClCompile Include="scene\TitleScene.cpp" />
+    <ClCompile Include="Statemachine.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\shaders\Basic.hlsli" />
@@ -322,6 +323,7 @@
     <ClInclude Include="scene\EndScene.h" />
     <ClInclude Include="scene\GamePlayScene.h" />
     <ClInclude Include="scene\TitleScene.h" />
+    <ClInclude Include="Statemachine.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
