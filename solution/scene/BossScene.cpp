@@ -28,11 +28,31 @@ void BossScene::Initialize(DirectXCommon* dxcommon)
 	// スプライト共通テクスチャ読み込み
 	SpriteCommon::GetInstance()->LoadTexture(1, L"Resources/gameplay.png");
 	SpriteCommon::GetInstance()->LoadTexture(2, L"Resources/aim.png");
+	SpriteCommon::GetInstance()->LoadTexture(3, L"Resources/hp/hp.png");
+	SpriteCommon::GetInstance()->LoadTexture(4, L"Resources/hp/hpSlide.png");
+	SpriteCommon::GetInstance()->LoadTexture(6, L"Resources/pouse/pouseBack.png");
+	SpriteCommon::GetInstance()->LoadTexture(7, L"Resources/pouse/pouseTitle.png");
+	SpriteCommon::GetInstance()->LoadTexture(8, L"Resources/pouse/pouseClose.png");
 
 	// スプライトの生成
 	sprite.reset(Sprite::Create(1, { 0,0 }, false, false));
 	aim.reset(Sprite::Create(2));
 	aim->SetPosition({ WinApp::window_width / 2.0f ,WinApp::window_height / 2.0f,0.f });
+
+
+	// hp画像
+	playerHpSprite.reset(Sprite::Create(3, { 0,1 }));
+	playerHpSprite->SetPosition(XMFLOAT3(40, WinApp::window_height - 40, 0));
+
+	playerHpSlide.reset(Sprite::Create(4, { 0,1 }));
+	playerHpSlide->SetPosition(XMFLOAT3(35, WinApp::window_height - 35, 0));
+
+	// ポーズ画面の画像を作る
+	pouseSprite.resize(pouseMax);
+	for (UINT i = 0; i < pouseMax; i++) {
+		// hp画像のtexNumberの最初が6
+		pouseSprite[i].reset(Sprite::Create(i + 6, { 0,0 }));
+	}
 
 	// カメラの初期化
 	camera.reset(new TrackingCamera());
@@ -86,7 +106,7 @@ void BossScene::Initialize(DirectXCommon* dxcommon)
 	boss->SetAttackTarget(player.get());
 	boss->SetBulletModel(enemyModel.get());
 
-	boss->SetHp(10);
+	boss->SetHp(30);
 
 	// パーティクル初期化
 	ParticleManager::GetInstance()->SetCamera(camera.get());
@@ -141,6 +161,48 @@ void BossScene::Update()
 		sprite->Update();
 
 		aim->Update();
+
+		if (player->GetHp() > 0) {
+
+			// スプライト横幅 = 最大値 * hpの割合
+			playerHpSprite->SetSize(XMFLOAT2(playerHpSprite->GetTexSize().x * (float)player->GetHp() / playerHpMax,
+				playerHpSprite->GetSize().y));
+
+			playerHpSprite->TransferVertexBuffer();
+
+			// 体力バー
+			playerHpSprite->Update();
+
+			playerHpSlide->Update();
+		}
+	}
+	else {
+		pouseSprite[pouse]->Update();
+		if (Input::GetInstance()->TriggerKey(DIK_W)) {
+			pouse--;
+		}
+		if (Input::GetInstance()->TriggerKey(DIK_S)) {
+			pouse++;
+		}
+		if (pouse >= 3) {
+			pouse = 2;
+		}
+		if (pouse <= -1) {
+			pouse = 0;
+		}
+
+		if (Input::GetInstance()->TriggerKey(DIK_SPACE)) {
+			if (pouse == 0) {
+				pause = !pause;
+			}
+			else if (pouse == 1) {
+				SceneManager::GetInstance()->ChangeScene("TITLE");
+			}
+			else if (pouse == 2) {
+				WM_DESTROY; //ウィンドウが破棄された
+				PostQuitMessage(0); //OSに対して、アプリの終了を伝える
+			}
+		}
 	}
 }
 
@@ -484,17 +546,26 @@ void BossScene::Draw(DirectXCommon* dxcommon)
 
 void BossScene::DrawFrontSprite(DirectXCommon* dxcommon) {
 	SpriteCommon::GetInstance()->PreDraw();
+
+	// 体力
+	if (player->GetHp() > 0) {
+		playerHpSprite->Draw();
+	}
+	playerHpSlide->Draw();
+
+
 	aim->Draw();
 	ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_WindowBg, ImVec4(1.f, 0.f, 1.f, 0.5f));
 
 	if (pause) {
-		ImGui::SetNextWindowPos(ImVec2(10.f, 10.f));
+		/*ImGui::SetNextWindowPos(ImVec2(10.f, 10.f));
 		ImGui::SetNextWindowSize(ImVec2(WinApp::window_width - 20, WinApp::window_height - 20));
 		ImGui::Begin("pause", nullptr, ImGuiWindowFlags_NoSavedSettings);
 		ImGui::Text(u8"ESCで戻る");
 		ImGui::SetNextWindowPos(ImVec2(ImGui::GetWindowPos().x,
 			ImGui::GetWindowPos().y + ImGui::GetWindowSize().y));
-		ImGui::End();
+		ImGui::End();*/
+		pouseSprite[pouse]->Draw();
 	}
 	else {
 		ImGui::SetNextWindowSize(ImVec2(200, 200));

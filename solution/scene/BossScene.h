@@ -75,6 +75,18 @@ private:
 	std::unique_ptr<ObjModel> groundModel;
 	std::unique_ptr<ObjObject3d> groundObj;
 
+	// ポーズ画面の枚数
+	UINT pouseMax = 3;
+	// ポーズ画面の配列
+	std::vector<std::unique_ptr<Sprite>> pouseSprite;
+	int pouse = 0;
+
+	// 自機HP最大値
+	UINT playerHpMax = 4;
+	// HP画像の配列
+	std::unique_ptr<Sprite> playerHpSprite;
+	std::unique_ptr<Sprite> playerHpSlide;
+
 	// 弾
 	std::unique_ptr<ObjModel> pBulletModel = nullptr;
 	// 弾の大きさ

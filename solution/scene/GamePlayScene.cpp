@@ -695,6 +695,7 @@ void GamePlayScene::Draw(DirectXCommon* dxcommon)
 void GamePlayScene::DrawFrontSprite(DirectXCommon* dxcommon) {
 	SpriteCommon::GetInstance()->PreDraw();
 
+	// ‘Ì—Í
 	if (player->GetHp() > 0) {
 		playerHpSprite->Draw();
 	}

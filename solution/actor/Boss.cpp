@@ -70,7 +70,7 @@ void Boss::PhaseApproach()
 	// ‘å‚«‚³‚ð1‚É‚·‚é
 	vectorVel = XMVector3Normalize(vectorVel);
 	// ‘å‚«‚³‚ð”CˆÓ‚Ì’l‚É‚·‚é
-	vectorVel = XMVectorScale(vectorVel, 0.1f);
+	vectorVel = XMVectorScale(vectorVel, 0.3f);
 	// FLOAT3‚É•ÏŠ·
 	XMStoreFloat3(&vel, vectorVel);
 
@@ -82,7 +82,7 @@ void Boss::PhaseApproach()
 	SetPosition(pos);
 
 	// ˆê’è‹——£‹ß‚Ã‚¢‚½‚ç—£‚ê‚é
-	if (lengthSq < (GetScale().z * 14) * (GetScale().z * 14)) {
+	if (lengthSq < (GetScale().z * 19) * (GetScale().z * 19)) {
 		SetPhase(std::bind(&Boss::PhaseLeave, this));
 	}
 }
@@ -100,7 +100,7 @@ void Boss::PhaseLeave()
 	// ‘å‚«‚³‚ð1‚É‚·‚é
 	vectorVel = XMVector3Normalize(vectorVel);
 	// ‘å‚«‚³‚ð”CˆÓ‚Ì’l‚É‚·‚é
-	vectorVel = XMVectorScale(vectorVel, -0.1f);
+	vectorVel = XMVectorScale(vectorVel, -0.3f);
 	// FLOAT3‚É•ÏŠ·
 	XMStoreFloat3(&vel, vectorVel);
 
