@@ -146,8 +146,14 @@ private:
 	std::vector<DirectX::XMVECTOR> points;
 	size_t splineStartIndex;
 
+	// íπãè
+	std::vector<std::vector<std::unique_ptr<ObjObject3d>>> toriiObj;
+	std::unique_ptr<ObjModel> toriiModel;
+
+	// ï«
 	std::vector<std::vector<std::unique_ptr<ObjObject3d>>> wallObj;
 	std::unique_ptr<ObjModel> wallModel;
+
 
 	UINT frame = 0;
 

@@ -142,8 +142,28 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 
 	splineStartIndex = 1;
 
+	// 鳥居
+	toriiModel.reset(ObjModel::LoadFromObj("torii"));// wall
+	toriiObj.resize(points.size());
+
+	for (UINT i = 0; i < toriiObj.size(); i++) {
+		toriiObj[i].resize(2);
+		for (UINT x = 0; x < toriiObj[i].size(); x++) {
+			toriiObj[i][x] = ObjObject3d::Create();
+			toriiObj[i][x]->Initialize();
+			toriiObj[i][x]->SetModel(toriiModel.get());
+			toriiObj[i][x]->SetScale(XMFLOAT3(4, 4, 4));
+			XMFLOAT3 pos;
+			XMStoreFloat3(&pos, points[i]);
+			// pos.y -= 15.f;
+			pos.y = -5.f;
+
+			toriiObj[i][x]->SetPosition(pos);
+		}
+	}
+
 	// 壁
-	wallModel.reset(ObjModel::LoadFromObj("torii"));// wall
+	wallModel.reset(ObjModel::LoadFromObj("wall"));// wall
 	wallObj.resize(points.size());
 
 	for (UINT i = 0; i < wallObj.size(); i++) {
@@ -155,15 +175,13 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 			wallObj[i][x]->SetScale(XMFLOAT3(4, 4, 4));
 			XMFLOAT3 pos;
 			XMStoreFloat3(&pos, points[i]);
-			/*pos.x -= 13.f;
-			pos.x += 25.f * (float)x;*/
-			pos.y -= 15.f;
+			pos.x -= 40.f;
+			pos.x += 80.f * (float)x;
+			pos.y = 0.f;
+			pos.y = 0.f * (float)x;
 			wallObj[i][x]->SetPosition(pos);
 		}
 	}
-
-
-
 
 	// CSV読み込み
 	csv = Enemy::LoadCsv("Resources/enemy.csv");
@@ -220,6 +238,12 @@ void GamePlayScene::Update()
 		//}
 		for (auto& i : enemy) {
 			i->Update();
+		}
+
+		for (auto& i : toriiObj) {
+			for (auto& x : i) {
+				x->Update();
+			}
 		}
 
 		for (auto& i : wallObj) {
@@ -661,6 +685,12 @@ void GamePlayScene::Draw(DirectXCommon* dxcommon)
 
 	// 3Dオブジェクト描画前処理
 	ObjObject3d::PreDraw();
+
+	for (auto& i : toriiObj) {
+		for (auto& x : i) {
+			x->Draw();
+		}
+	}
 
 	for (auto& i : wallObj) {
 		for (auto& x : i) {
