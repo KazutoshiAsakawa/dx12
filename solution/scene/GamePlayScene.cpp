@@ -21,9 +21,9 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 	SpriteCommon::GetInstance()->LoadTexture(2, L"Resources/aim.png");
 	SpriteCommon::GetInstance()->LoadTexture(3, L"Resources/hp/hp.png");
 	SpriteCommon::GetInstance()->LoadTexture(4, L"Resources/hp/hpSlide.png");
-	SpriteCommon::GetInstance()->LoadTexture(6, L"Resources/pouse/pouseBack.png");
-	SpriteCommon::GetInstance()->LoadTexture(7, L"Resources/pouse/pouseTitle.png");
-	SpriteCommon::GetInstance()->LoadTexture(8, L"Resources/pouse/pouseClose.png");
+	SpriteCommon::GetInstance()->LoadTexture(6, L"Resources/pouse/pauseBack.png");
+	SpriteCommon::GetInstance()->LoadTexture(7, L"Resources/pouse/pauseTitle.png");
+	SpriteCommon::GetInstance()->LoadTexture(8, L"Resources/pouse/pauseClose.png");
 
 
 	// スプライトの生成
