@@ -46,8 +46,6 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 
 	// カメラの初期化
 	camera.reset(new TrackingCamera());
-	//camera->SetEye({ 0, 5, -20 });
-	// camera->SetTarget({ 0, 0, 50 });
 
 	ObjObject3d::SetCamera(camera.get());
 
@@ -89,14 +87,6 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 	// プレイヤーの親を設定
 	player->SetParent(lane->GetObj());
 
-	// カメラをプレイヤーの位置にセット
-	/*camera->SetTrackingTarget(player.get());
-	camera->SetTarget(player->GetPos());
-	XMFLOAT3 eye = player->GetPos();
-	eye.z -= 50;
-	eye.y += 10;
-	camera->SetEye(eye);*/
-
 	// カメラをレーンの位置にセット
 	camera->SetTrackingTarget(player.get());
 	camera->SetTarget(lane->GetPosition());
@@ -116,9 +106,6 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 
 	// 音声読み込み
 	Audio::GetInstance()->LoadWave("Alarm01.wav");
-
-	// 音声再生
-	// audio->PlayWave("Alarm01.wav");
 
 	// スプライン曲線
 	csv = Enemy::LoadCsv("Resources/spline.csv");
@@ -172,7 +159,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 			wallObj[i][x] = ObjObject3d::Create();
 			wallObj[i][x]->Initialize();
 			wallObj[i][x]->SetModel(wallModel.get());
-			wallObj[i][x]->SetScale(XMFLOAT3(4, 4, 4));
+			wallObj[i][x]->SetScale(XMFLOAT3(1, 100, 50));
 			XMFLOAT3 pos;
 			XMStoreFloat3(&pos, points[i]);
 			pos.x -= 40.f;

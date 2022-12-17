@@ -105,7 +105,9 @@ void BossScene::Initialize(DirectXCommon* dxcommon)
 	boss->SetPhaseApproach();
 	boss->SetAttackTarget(player.get());
 	boss->SetBulletModel(enemyModel.get());
+	boss->SetScale({2,2,2});
 
+	// ボスの体力
 	boss->SetHp(30);
 
 	// パーティクル初期化
