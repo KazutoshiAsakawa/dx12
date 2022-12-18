@@ -8,7 +8,7 @@
 /// <summary>
 /// タイトルシーン
 /// </summary>
-class EndScene :public BaseScene
+class ClearScene :public BaseScene
 {
 public:
 	/// <summary>

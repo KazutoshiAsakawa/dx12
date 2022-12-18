@@ -389,7 +389,7 @@ void BossScene::play()
 		}
 	}
 	else {// ボスが死んだら
-		updateProcess = std::bind(&BossScene::end, this);
+		updateProcess = std::bind(&BossScene::end, this, "CLEAR");
 	}
 
 	// 敵と自機の弾の当たり判定
@@ -449,7 +449,7 @@ void BossScene::play()
 					if (player->GetHp() == 0) {		// 体力が0になったら
 						player->SetAlive(false);
 
-						updateProcess = std::bind(&BossScene::end, this);
+						updateProcess = std::bind(&BossScene::end, this, "GAMEOVER");
 					}
 				}
 			}
@@ -490,7 +490,7 @@ void BossScene::play()
 	frame++;
 }
 
-void BossScene::end()
+void BossScene::end(const std::string& nextScene)
 {
 	Input* input = Input::GetInstance();
 	// モザイクをかける時間
@@ -500,7 +500,7 @@ void BossScene::end()
 	if (++mosaicFrame > mosaicFrameMax) {
 		//PostEffect::GetInstance()->SetMosaicNum({ WinApp::window_width ,WinApp::window_height });
 		// ボスシーンへ
-		SceneManager::GetInstance()->ChangeScene("END");
+		SceneManager::GetInstance()->ChangeScene(nextScene);
 	}
 	else {
 		XMFLOAT2 mosaicLevel = {};

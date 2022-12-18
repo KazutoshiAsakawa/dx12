@@ -185,16 +185,17 @@
     <ClCompile Include="camera\TrackingCamera.cpp" />
     <ClCompile Include="collision\Collision.cpp" />
     <ClCompile Include="collision\CollisionShape.cpp" />
-    <ClCompile Include="FbxLoader.cpp" />
+    <ClCompile Include="3d\FbxLoader.cpp" />
+    <ClCompile Include="scene\ClearScene.cpp" />
+    <ClCompile Include="scene\GameOverScene.cpp" />
     <ClCompile Include="input\Input.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="ParticleManager.cpp" />
-    <ClCompile Include="PostEffect.cpp" />
+    <ClCompile Include="base\main.cpp" />
+    <ClCompile Include="3d\ParticleManager.cpp" />
+    <ClCompile Include="2d\PostEffect.cpp" />
     <ClCompile Include="scene\BossScene.cpp" />
-    <ClCompile Include="scene\EndScene.cpp" />
     <ClCompile Include="scene\GamePlayScene.cpp" />
     <ClCompile Include="scene\TitleScene.cpp" />
-    <ClCompile Include="Statemachine.cpp" />
+    <ClCompile Include="base\Statemachine.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\shaders\Basic.hlsli" />
@@ -315,15 +316,16 @@
     <ClInclude Include="camera\TrackingCamera.h" />
     <ClInclude Include="collision\Collision.h" />
     <ClInclude Include="collision\CollisionShape.h" />
-    <ClInclude Include="FbxLoader.h" />
+    <ClInclude Include="3d\FbxLoader.h" />
+    <ClInclude Include="scene\ClearScene.h" />
+    <ClInclude Include="scene\GameOverScene.h" />
     <ClInclude Include="input\Input.h" />
-    <ClInclude Include="ParticleManager.h" />
-    <ClInclude Include="PostEffect.h" />
+    <ClInclude Include="3d\ParticleManager.h" />
+    <ClInclude Include="2d\PostEffect.h" />
     <ClInclude Include="scene\BossScene.h" />
-    <ClInclude Include="scene\EndScene.h" />
     <ClInclude Include="scene\GamePlayScene.h" />
     <ClInclude Include="scene\TitleScene.h" />
-    <ClInclude Include="Statemachine.h" />
+    <ClInclude Include="base\Statemachine.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

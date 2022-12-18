@@ -1,4 +1,4 @@
-#include "EndScene.h"
+#include "GameOverScene.h"
 #include "SceneManager.h"
 #include "Audio.h"
 #include "Input.h"
@@ -7,10 +7,10 @@
 
 using namespace DirectX;
 
-void EndScene::Initialize(DirectXCommon* dxcommon)
+void GameOverScene::Initialize(DirectXCommon* dxcommon)
 {
 	// スプライト共通テクスチャ読み込み
-	SpriteCommon::GetInstance()->LoadTexture(1, L"Resources/end.png");
+	SpriteCommon::GetInstance()->LoadTexture(1, L"Resources/die.png");
 
 	PostEffect::GetInstance()->SetMosaicNum(XMFLOAT2(WinApp::window_width, WinApp::window_height));
 
@@ -18,34 +18,27 @@ void EndScene::Initialize(DirectXCommon* dxcommon)
 	sprite = Sprite::Create(1, { 0,0 }, false, false);
 }
 
-void EndScene::Finalize()
+void GameOverScene::Finalize()
 {
 	// スプライト個別解放
 	delete sprite;
 }
 
-void EndScene::Update()
+void GameOverScene::Update()
 {
 	Input* input = Input::GetInstance();
 
-	// 座標操作
-	if (input->TriggerKey(DIK_UP) || input->TriggerKey(DIK_DOWN) || input->TriggerKey(DIK_RIGHT) || input->TriggerKey(DIK_LEFT))
-	{
-
-	}
 	// シーン切り替え
-	if (input->TriggerKey(DIK_RETURN))
+	if (input->TriggerKey(DIK_SPACE))
 	{
 		SceneManager::GetInstance()->ChangeScene("TITLE");
 	}
-
-	DebugText::GetInstance()->Print("Press Enter", 0, 0, 3);
 
 	// スプライト更新
 	sprite->Update();
 }
 
-void EndScene::Draw(DirectXCommon* dxcommon)
+void GameOverScene::Draw(DirectXCommon* dxcommon)
 {
 	// スプライト共通コマンド
 	SpriteCommon::GetInstance()->PreDraw();

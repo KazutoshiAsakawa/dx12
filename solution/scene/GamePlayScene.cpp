@@ -320,13 +320,6 @@ void GamePlayScene::play()
 {
 	Input* input = Input::GetInstance();
 
-	// レーンの位置
-	/*{
-		auto pos = lane->GetPosition();
-		pos.z += 0.2;
-		lane->SetPosition(pos);
-
-	}*/
 	skyDomeObj->SetPosition(lane->GetPosition());
 
 	// プレイヤーの移動と回避
@@ -376,27 +369,6 @@ void GamePlayScene::play()
 			player->SetRotation(rot);
 		}
 	}
-
-	// プレイヤーの回転
-	/*if (input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN) || input->PushKey(DIK_RIGHT) || input->PushKey(DIK_LEFT))
-	{
-		XMFLOAT3 playerRot = player->GetRotation();
-		constexpr float rotSpeed = 1.f;
-
-		if (input->PushKey(DIK_RIGHT)) {
-			playerRot.y += rotSpeed;
-		}
-		if (input->PushKey(DIK_LEFT)) {
-			playerRot.y -= rotSpeed;
-		}
-		if (input->PushKey(DIK_UP)) {
-			playerRot.x -= rotSpeed;
-		}
-		if (input->PushKey(DIK_DOWN)) {
-			playerRot.x += rotSpeed;
-		}
-		player->SetRotation(playerRot);
-	}*/
 
 	// 敵を発生
 	for (auto& i : enemyFrame) {
@@ -572,7 +544,7 @@ void GamePlayScene::play()
 						if (player->GetHp() == 0) {		// 体力が0になったら
 							player->SetAlive(false);
 
-							SceneManager::GetInstance()->ChangeScene("END");
+							SceneManager::GetInstance()->ChangeScene("GAMEOVER");
 						}
 						break;
 					}
