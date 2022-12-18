@@ -7,8 +7,8 @@
 
 BaseScene* SceneFactory::CreateScene(const std::string& sceneName)
 {
-	BaseScene* newScene  = nullptr;
-	
+	BaseScene* newScene = nullptr;
+
 	if (sceneName == "TITLE") {
 		newScene = new TitleScene();
 	}

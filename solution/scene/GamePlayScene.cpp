@@ -370,6 +370,15 @@ void GamePlayScene::play()
 		}
 	}
 
+	// ‘€ìà–¾
+	{
+		DebugText::GetInstance()->Print("D", 1280.f / 2.f + 100.f, 720.f / 2.f + 100.f);
+		DebugText::GetInstance()->Print("A", 1280.f / 2.f - 100.f, 720.f / 2.f + 100.f);
+		DebugText::GetInstance()->Print("W", 1280.f / 2.f, 720.f / 2.f + 50.f);
+		DebugText::GetInstance()->Print("S", 1280.f / 2.f, 720.f / 2.f + 175.f);
+		DebugText::GetInstance()->Print("MOUSE_L : Attack", aim->GetPosition().x, aim->GetPosition().y);
+	}
+
 	// “G‚ğ”­¶
 	for (auto& i : enemyFrame) {
 		if (i.first <= frame) {// “G‚Ì‘¬“x‚ğİ’è
