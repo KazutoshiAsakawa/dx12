@@ -175,4 +175,11 @@ private:
 
 	// ƒ|[ƒY‰æ–ÊŠÇ—
 	bool pause = false;
+
+	// ‘€ì
+	bool dispWFlag = true;
+	bool dispAFlag = true;
+	bool dispSFlag = true;
+	bool dispDFlag = true;
+	bool dispClickFlag = true;
 };

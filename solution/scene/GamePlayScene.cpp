@@ -350,19 +350,23 @@ void GamePlayScene::play()
 			if (hitW && pos.y < 8.f) {
 				pos.y += moveSpeed;
 				rot.x -= 4.f;
+				dispWFlag = false;
 			}
 			else if (hitS && pos.y > -4.f) {
 				pos.y -= moveSpeed;
 				rot.x += 4.f;
+				dispSFlag = false;
 			}
 
 			if (hitD && pos.x < 10.f) {
 				pos.x += moveSpeed;
 				rot.z -= 4.f;
+				dispDFlag = false;
 			}
 			else if (hitA && pos.x > -10.f) {
 				pos.x -= moveSpeed;
 				rot.z += 4.f;
+				dispAFlag = false;
 			}
 
 			player->SetPosition(pos);
@@ -372,11 +376,21 @@ void GamePlayScene::play()
 
 	// ‘€ìà–¾
 	{
-		DebugText::GetInstance()->Print("D", 1280.f / 2.f + 100.f, 720.f / 2.f + 100.f);
-		DebugText::GetInstance()->Print("A", 1280.f / 2.f - 100.f, 720.f / 2.f + 100.f);
-		DebugText::GetInstance()->Print("W", 1280.f / 2.f, 720.f / 2.f + 50.f);
-		DebugText::GetInstance()->Print("S", 1280.f / 2.f, 720.f / 2.f + 175.f);
-		DebugText::GetInstance()->Print("MOUSE_L : Attack", aim->GetPosition().x, aim->GetPosition().y);
+		if (dispDFlag) {
+			DebugText::GetInstance()->Print("D", 1280.f / 2.f + 100.f, 720.f / 2.f + 100.f);
+		}
+		if (dispAFlag) {
+			DebugText::GetInstance()->Print("A", 1280.f / 2.f - 100.f, 720.f / 2.f + 100.f);
+		}
+		if (dispWFlag) {
+			DebugText::GetInstance()->Print("W", 1280.f / 2.f, 720.f / 2.f + 50.f);
+		}
+		if (dispSFlag) {
+			DebugText::GetInstance()->Print("S", 1280.f / 2.f, 720.f / 2.f + 175.f);
+		}
+		if (dispClickFlag) {
+			DebugText::GetInstance()->Print("MOUSE_L : Attack", aim->GetPosition().x, aim->GetPosition().y);
+		}
 	}
 
 	// “G‚ğ”­¶
@@ -463,6 +477,9 @@ void GamePlayScene::play()
 				pos.x += player->GetPosition().x;
 				pos.y += player->GetPosition().y;
 				pos.z += player->GetPosition().z;
+
+				// ‘€ìà–¾‚ğÁ‚·
+				dispClickFlag = false;
 			}
 		}
 		else {
