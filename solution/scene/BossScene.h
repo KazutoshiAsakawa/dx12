@@ -39,6 +39,7 @@ public:
 
 	void start();
 	void play();
+	void killEffect();
 	void end(const std::string& nextScene);
 
 	/// <summary>
@@ -111,6 +112,8 @@ private:
 	// ボス
 	std::unique_ptr<Boss> boss;
 
+	bool killBossFlag = false;
+
 	std::function<void()> updateProcess;
 
 	// モザイク
@@ -126,6 +129,8 @@ private:
 	size_t splineStartIndex;
 
 	UINT frame = 0;
+
+	UINT nowEffectFrame = 0;
 
 	// 敵を発生
 	// 始まり,終わり

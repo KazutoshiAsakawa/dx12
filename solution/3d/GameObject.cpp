@@ -19,7 +19,8 @@ void GameObject::Update()
 
 void GameObject::Draw()
 {
-	if (alive) {
+	if(drawFlag)
+	{
 		obj->Draw();
 	}
 }

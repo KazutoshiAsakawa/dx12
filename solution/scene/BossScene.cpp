@@ -401,7 +401,7 @@ void BossScene::play()
 			}
 		}
 	}
-	else {// ボスが死んだら
+	else if(killBossFlag){// ボスが死んだら
 		updateProcess = std::bind(&BossScene::end, this, "CLEAR");
 	}
 
@@ -430,6 +430,13 @@ void BossScene::play()
 				if (boss->GetHp() == 0)
 				{
 					boss->SetAlive(false);
+					killBossFlag = true;
+
+					camera->SetTrackingTarget(boss.get());
+					updateProcess = std::bind(&BossScene::killEffect, this);
+					XMFLOAT3 angle = camera->GetAngle();
+					angle.y += 180.f;
+					camera->SetAngle(angle);
 				}
 
 				// パーティクルの発生
@@ -501,6 +508,20 @@ void BossScene::play()
 	}
 
 	frame++;
+}
+
+void BossScene::killEffect()
+{
+	constexpr UINT effectFrameMax = 180;
+
+	if(++nowEffectFrame > effectFrameMax)
+	{
+		updateProcess = std::bind(&BossScene::end, this, "GAMEOVER");
+	} else
+	{
+		// パーティクルの発生
+		ParticleManager::GetInstance()->CreateParticle(boss->GetPosition(), 10, 1, 5);
+	}
 }
 
 void BossScene::end(const std::string& nextScene)
@@ -582,6 +603,7 @@ void BossScene::DrawFrontSprite(DirectXCommon* dxcommon) {
 		ImGui::Text(u8"左クリック:撃つ");
 		ImGui::Text(u8"スペース:回避");
 		ImGui::Text(u8"ESC:ポーズ画面");
+		ImGui::Text(u8"ボス体力:%u", boss->GetHp());
 
 		ImGui::SetNextWindowPos(ImVec2(ImGui::GetWindowPos().x,
 			ImGui::GetWindowPos().y + ImGui::GetWindowSize().y));

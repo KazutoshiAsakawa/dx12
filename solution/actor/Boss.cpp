@@ -33,13 +33,11 @@ void Boss::Update()
 
 	bullet.erase(std::remove_if(bullet.begin(), bullet.end(), [](EnemyBullet& i) {return !i.GetAlive(); }), bullet.end());
 
-	if (alive) {
-		phase();
+	phase();
 
-		// À•W•ÏŠ·‚ÌŒvŽZ
-		Screen();
-		obj->Update();
-	}
+	// À•W•ÏŠ·‚ÌŒvŽZ
+	Screen();
+	obj->Update();
 
 	for (auto& i : bullet) {
 		i.Update();
@@ -48,9 +46,7 @@ void Boss::Update()
 
 void Boss::Draw()
 {
-	if (alive) {
-		obj->Draw();
-	}
+	obj->Draw();
 
 	for (auto& i : bullet) {
 		i.Draw();

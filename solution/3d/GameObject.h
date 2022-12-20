@@ -10,6 +10,7 @@ class GameObject {
 protected:
 	std::unique_ptr<ObjObject3d> obj;
 	bool alive = true;
+	bool drawFlag = true;
 
 	DirectX::XMFLOAT2 float2ScreenPos{};
 
@@ -24,6 +25,17 @@ public:
 	/// </summary>
 	/// <returns>生存フラグ</returns>
 	inline bool GetAlive() const { return alive; }
+
+	/// <summary>
+	/// 描画フラグの設定
+	/// </summary>
+	/// <param name="alive">描画フラグ</param>
+	inline void SetDrawFlag(bool drawFlag){this->drawFlag = drawFlag; }
+	/// <summary>
+	/// 描画フラグの取得
+	/// </summary>
+	/// <returns>描画フラグ</returns>
+	inline bool GetDrawFlag() const { return drawFlag; }
 
 	/// <summary>
 	/// 座標の設定

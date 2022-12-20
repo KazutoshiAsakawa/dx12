@@ -26,14 +26,14 @@ void TrackingCamera::startUpdate()
 			targetParent = targetParent->GetParent();
 		}
 
-		float sinNum = sinf(XMConvertToRadians(trackingTarget->GetRotation().x + 20));
-		float cosNum = cosf(XMConvertToRadians(trackingTarget->GetRotation().x + 20));
+		float sinNum = sinf(XMConvertToRadians(trackingTarget->GetRotation().x + angle.x));
+		float cosNum = cosf(XMConvertToRadians(trackingTarget->GetRotation().x + angle.x));
 
 		// xŽ²‰ñ“]‚ð”½‰f‚µ‚½ˆÊ’u
 		XMFLOAT3 tempPosition = { 0,sinNum * eyeToCameraTargetLength ,-cosNum * eyeToCameraTargetLength };
 
-		sinNum = sinf(XMConvertToRadians(-trackingTarget->GetRotation().y));
-		cosNum = cosf(XMConvertToRadians(-trackingTarget->GetRotation().y));
+		sinNum = sinf(XMConvertToRadians(-trackingTarget->GetRotation().y + angle.y));
+		cosNum = cosf(XMConvertToRadians(-trackingTarget->GetRotation().y + angle.y));
 
 		// yŽ²‰ñ“]‚ð”½‰f‚µ‚½ˆÊ’u
 		XMFLOAT3 tempPosition2 = {

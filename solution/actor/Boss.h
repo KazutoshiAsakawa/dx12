@@ -30,7 +30,7 @@ public:
 	void PhaseLeave() override;
 	// ’e”­Ë
 	void PhaseAttack();
-	
+
 	void PhaseSpreadAttack();
 
 	// ‹ßÚUŒ‚
