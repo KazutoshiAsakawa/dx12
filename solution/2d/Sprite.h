@@ -57,13 +57,15 @@ public:
 	void SetPosition(const DirectX::XMFLOAT3& position) { this->position = position; }
 	void SetRotation(float rotation) { this->rotation = rotation; }
 	void SetSize(const DirectX::XMFLOAT2& size) { this->size = size; }
-	void SetTexLeftTop(const DirectX::XMFLOAT2& texLeftTop){ this->texLeftTop = texLeftTop;}
-	void SetTexSize(const DirectX::XMFLOAT2& texSize){ this->texSize = texSize;}
-	void SetColor(const DirectX::XMFLOAT4& color){ this->color = color;}
+	void SetTexLeftTop(const DirectX::XMFLOAT2& texLeftTop) { this->texLeftTop = texLeftTop; }
+	void SetTexSize(const DirectX::XMFLOAT2& texSize) { this->texSize = texSize; }
+	void SetColor(const DirectX::XMFLOAT4& color) { this->color = color; }
+	void SetIsInvisible(bool isInvisible) { this->isInvisible = isInvisible; }
 
-	inline const DirectX::XMFLOAT2& GetSize() {return size; };
-	inline const DirectX::XMFLOAT2& GetTexSize() {return texSize; };
-	inline const DirectX::XMFLOAT3& GetPosition() {return position;}
+	inline const DirectX::XMFLOAT2& GetSize() { return size; };
+	inline const DirectX::XMFLOAT2& GetTexSize() { return texSize; };
+	inline const DirectX::XMFLOAT3& GetPosition() { return position; }
+	inline bool GetIsInvisible() { return isInvisible; }
 
 private:
 	//頂点バッファ;

@@ -28,6 +28,34 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 	SpriteCommon::GetInstance()->LoadTexture(7, L"Resources/pouse/pauseTitle.png");
 	SpriteCommon::GetInstance()->LoadTexture(8, L"Resources/pouse/pauseClose.png");
 
+	SpriteCommon::GetInstance()->LoadTexture(9, L"Resources/operation/W.png");
+	SpriteCommon::GetInstance()->LoadTexture(10, L"Resources/operation/S.png");
+	SpriteCommon::GetInstance()->LoadTexture(11, L"Resources/operation/A.png");
+	SpriteCommon::GetInstance()->LoadTexture(12, L"Resources/operation/D.png");
+	SpriteCommon::GetInstance()->LoadTexture(13, L"Resources/operation/L_Click.png");
+
+	operationSprite["W"].reset(Sprite::Create(9, { 0.5f, 0.5f }, false, false));
+	operationSprite["S"].reset(Sprite::Create(10, { 0.5f, 0.5f }, false, false));
+	operationSprite["A"].reset(Sprite::Create(11, { 0.5f, 0.5f }, false, false));
+	operationSprite["D"].reset(Sprite::Create(12, { 0.5f, 0.5f }, false, false));
+	operationSprite["L_Click"].reset(Sprite::Create(13, { 0.f, 0.f }, false, false));
+
+	operationSprite["W"]->SetPosition({ WinApp::window_width / 2.f,
+										WinApp::window_height / 2.f + 50.f,
+										0.f
+		});
+	operationSprite["S"]->SetPosition({ WinApp::window_width / 2.f,
+										WinApp::window_height / 2.f + 225.f,
+										0.f
+		});
+	operationSprite["A"]->SetPosition({ WinApp::window_width / 2.f - 100.f,
+										WinApp::window_height / 2.f + 150.f,
+										0.f
+		});
+	operationSprite["D"]->SetPosition({ WinApp::window_width / 2.f + 100.f,
+										WinApp::window_height / 2.f + 150.f,
+										0.f
+		});
 
 	// スプライトの生成
 	sprite.reset(Sprite::Create(1, { 0,0 }, false, false));
@@ -39,6 +67,8 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 
 	playerHpSlide.reset(Sprite::Create(4, { 0,1 }));
 	playerHpSlide->SetPosition(XMFLOAT3(35, WinApp::window_height - 35, 0));
+
+
 
 	// ポーズ画面の画像を作る
 	pouseSprite.resize(pouseMax);
@@ -267,6 +297,11 @@ void GamePlayScene::Update()
 			playerHpSprite->Update();
 
 			playerHpSlide->Update();
+
+			for (auto& i : operationSprite)
+			{
+				i.second->Update();
+			}
 		}
 	}// ポーズ画面
 	else {
@@ -356,23 +391,24 @@ void GamePlayScene::play()
 			if (hitW && pos.y < 8.f) {
 				pos.y += moveSpeed;
 				rot.x -= 4.f;
-				dispWFlag = false;
+				operationSprite["W"]->SetIsInvisible(true);
+
 			}
 			else if (hitS && pos.y > -4.f) {
 				pos.y -= moveSpeed;
 				rot.x += 4.f;
-				dispSFlag = false;
+				operationSprite["S"]->SetIsInvisible(true);
 			}
 
 			if (hitD && pos.x < 10.f) {
 				pos.x += moveSpeed;
 				rot.z -= 4.f;
-				dispDFlag = false;
+				operationSprite["D"]->SetIsInvisible(true);
 			}
 			else if (hitA && pos.x > -10.f) {
 				pos.x -= moveSpeed;
 				rot.z += 4.f;
-				dispAFlag = false;
+				operationSprite["A"]->SetIsInvisible(true);
 			}
 
 			player->SetPosition(pos);
@@ -382,20 +418,21 @@ void GamePlayScene::play()
 
 	// 操作説明
 	{
-		if (dispDFlag) {
-			DebugText::GetInstance()->Print("D", 1280.f / 2.f + 100.f, 720.f / 2.f + 100.f);
-		}
-		if (dispAFlag) {
-			DebugText::GetInstance()->Print("A", 1280.f / 2.f - 100.f, 720.f / 2.f + 100.f);
-		}
-		if (dispWFlag) {
-			DebugText::GetInstance()->Print("W", 1280.f / 2.f, 720.f / 2.f + 50.f);
-		}
-		if (dispSFlag) {
-			DebugText::GetInstance()->Print("S", 1280.f / 2.f, 720.f / 2.f + 175.f);
-		}
-		if (dispClickFlag) {
-			DebugText::GetInstance()->Print("MOUSE_L : Attack", aim->GetPosition().x, aim->GetPosition().y);
+		// if (dispDFlag) {
+		// 	DebugText::GetInstance()->Print("D", 1280.f / 2.f + 100.f, 720.f / 2.f + 100.f);
+		// }
+		// if (dispAFlag) {
+		// 	DebugText::GetInstance()->Print("A", 1280.f / 2.f - 100.f, 720.f / 2.f + 100.f);
+		// }
+		// if (dispWFlag) {
+		// 	DebugText::GetInstance()->Print("W", 1280.f / 2.f, 720.f / 2.f + 50.f);
+		// }
+		// if (dispSFlag) {
+		// 	DebugText::GetInstance()->Print("S", 1280.f / 2.f, 720.f / 2.f + 175.f);
+		// }
+		if (operationSprite["L_Click"]->GetIsInvisible() == false) {
+			// DebugText::GetInstance()->Print("MOUSE_L : Attack", aim->GetPosition().x, aim->GetPosition().y);
+			operationSprite["L_Click"]->SetPosition({ aim->GetPosition().x, aim->GetPosition().y, 0.f });
 		}
 	}
 
@@ -485,7 +522,7 @@ void GamePlayScene::play()
 				pos.z += player->GetPosition().z;
 
 				// 操作説明を消す
-				dispClickFlag = false;
+				operationSprite["L_Click"]->SetIsInvisible(true);
 			}
 		}
 		else {
@@ -722,13 +759,17 @@ void GamePlayScene::DrawFrontSprite(DirectXCommon* dxcommon) {
 	}
 	playerHpSlide->Draw();
 
+	for (auto& i : operationSprite)
+	{
+		i.second->Draw();
+	}
+
 	aim->Draw();
 	ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_WindowBg, ImVec4(1.f, 0.f, 1.f, 0.5f));
 
 	if (pause) {
 		// ポーズ画面描画
 		pouseSprite[pouse]->Draw();
-
 	}
 	else {
 		ImGui::SetNextWindowSize(ImVec2(100, 200));

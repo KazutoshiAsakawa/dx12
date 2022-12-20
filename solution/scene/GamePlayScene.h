@@ -11,6 +11,8 @@
 #include "Enemy.h"
 #include "TrackingCamera.h"
 
+#include <unordered_map>
+
 #include <Vector>
 #include <memory>
 #include <functional>
@@ -95,6 +97,9 @@ private:
 	std::unique_ptr<Sprite> playerHpSprite;
 	std::unique_ptr<Sprite> playerHpSlide;
 
+	// 操作画像
+	std::unordered_map<std::string, std::unique_ptr<Sprite>> operationSprite;
+
 	// 敵が当たって無い時のターゲット
 	std::unique_ptr<GameObject> nullTarget;
 
@@ -175,11 +180,4 @@ private:
 
 	// ポーズ画面管理
 	bool pause = false;
-
-	// 操作
-	bool dispWFlag = true;
-	bool dispAFlag = true;
-	bool dispSFlag = true;
-	bool dispDFlag = true;
-	bool dispClickFlag = true;
 };
