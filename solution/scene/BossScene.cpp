@@ -591,7 +591,9 @@ void BossScene::DrawFrontSprite(DirectXCommon* dxcommon) {
 
 
 	aim->Draw();
-	ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_WindowBg, ImVec4(1.f, 0.f, 1.f, 0.5f));
+
+	ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_WindowBg, ImVec4(0.5f, 0.5f, 0.5f, 0.5f));
+	ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_TitleBgActive, ImVec4(0.5f, 0.125f, 0.125f, 1.f));
 
 	if (pause) {
 		pouseSprite[pouse]->Draw();
@@ -599,10 +601,8 @@ void BossScene::DrawFrontSprite(DirectXCommon* dxcommon) {
 	else {
 		ImGui::SetNextWindowSize(ImVec2(200, 200));
 		ImGui::Begin(u8"説明", nullptr, ImGuiWindowFlags_NoSavedSettings);
-		ImGui::Text(u8"WASD:移動");
-		ImGui::Text(u8"左クリック:撃つ");
 		ImGui::Text(u8"スペース:回避");
-		ImGui::Text(u8"ESC:ポーズ画面");
+		ImGui::Text(u8"ESC:ポーズ");
 		ImGui::Text(u8"ボス体力:%u", boss->GetHp());
 
 		ImGui::SetNextWindowPos(ImVec2(ImGui::GetWindowPos().x,
@@ -610,6 +610,7 @@ void BossScene::DrawFrontSprite(DirectXCommon* dxcommon) {
 		ImGui::End();
 	}
 
+	ImGui::PopStyleColor();
 	ImGui::PopStyleColor();
 }
 

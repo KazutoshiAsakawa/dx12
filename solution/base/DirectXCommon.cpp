@@ -346,6 +346,10 @@ bool DirectXCommon::InitializeImgui() {
 		return false;
 	}
 
+	ImGui::GetStyle().WindowRounding = 0.f;
+	ImGui::GetStyle().ItemSpacing = ImVec2(0.f, 0.f);
+	ImGui::GetStyle().DisplayWindowPadding = ImVec2(0.f, 0.f);
+
 	ImGui::GetIO().IniFilename = NULL;
 	ImGui::GetIO().Fonts->AddFontFromFileTTF("Resources/ume-pgo4.ttf",12.f,nullptr,ImGui::GetIO().Fonts->GetGlyphRangesJapanese());
 	return true;
