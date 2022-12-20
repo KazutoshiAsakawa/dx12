@@ -6,21 +6,39 @@
 using namespace DirectX;
 
 Player::Player()
-	:Player(ObjModel::LoadFromObj("rat"))
+	:Player(ObjModel::LoadFromObj("fox"))
 {
+	// プレイヤーのオブジェクト
 	obj->SetPosition({ 0,0,0 });
 	obj->SetScale({ 1,1,1 });
 
+	// 照準のオブジェクト
 	aim = ObjObject3d::Create();
 	aim->Initialize();
-	aim->SetModel(ObjModel::LoadFromObj("sphere"));
-	constexpr float aimLength = 10;
+	constexpr float aimLength = 10.f;
 	aim->SetPosition({ 0,0,aimLength });
 	aim->SetScale({ 0.5,0.5,1 });
 	aim->SetParent(obj.get());
 
+	// 紅葉のオブジェクト
+	momijiObj = ObjObject3d::Create();
+	momijiObj->Initialize();
+	// モデルをセット
+	momijiObj->SetModel(ObjModel::LoadFromObj("MomijiLeave"));
+	// 位置
+	momijiObj->SetPosition({0.f, -obj->GetScale().y, 0.f});
+	// 大きさ
+	constexpr float momijiScale = 2.f;
+	momijiObj->SetScale({momijiScale, momijiScale, momijiScale});
+	// 回転
+	momijiObj->SetRotation({0.f, 180.f, 0.f});
+	// 本体を親とする
+	momijiObj->SetParent(obj.get());
+
+	// プレイヤーの体力
 	hp = 4;
 
+	// 攻撃対象へのポインタ
 	shotTarget = nullptr;
 }
 
@@ -48,6 +66,7 @@ void Player::Update()
 
 	obj->Update();
 	aim->Update(); // プレイヤーの目の前にあるただのモデル
+	momijiObj->Update();
 }
 
 void Player::Draw()
@@ -59,7 +78,7 @@ void Player::Draw()
 
 	if (alive) {
 		obj->Draw();
-		// aim->Draw();
+		momijiObj->Draw();
 	}
 
 }

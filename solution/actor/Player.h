@@ -35,6 +35,9 @@ private:
 	std::unique_ptr <ObjModel> model;
 	std::vector<PlayerBullet> bullet;
 
+	// æ‚è•¨
+	std::unique_ptr <ObjObject3d> momijiObj;
+
 	// Æ€
 	std::unique_ptr <ObjObject3d> aim;
 

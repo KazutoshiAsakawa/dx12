@@ -720,13 +720,6 @@ void GamePlayScene::DrawFrontSprite(DirectXCommon* dxcommon) {
 	ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_WindowBg, ImVec4(1.f, 0.f, 1.f, 0.5f));
 
 	if (pause) {
-		/*ImGui::SetNextWindowPos(ImVec2(10.f, 10.f));
-		ImGui::SetNextWindowSize(ImVec2(WinApp::window_width - 20, WinApp::window_height - 20));
-		ImGui::Begin("pause", nullptr, ImGuiWindowFlags_NoSavedSettings);
-		ImGui::Text(u8"ESC‚Å–ß‚é");
-		ImGui::SetNextWindowPos(ImVec2(ImGui::GetWindowPos().x,
-			ImGui::GetWindowPos().y + ImGui::GetWindowSize().y));
-		ImGui::End();*/
 		// ƒ|[ƒY‰æ–Ê•`‰æ
 		pouseSprite[pouse]->Draw();
 
