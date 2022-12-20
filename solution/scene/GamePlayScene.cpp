@@ -16,6 +16,9 @@ using namespace DirectX;
 
 void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 {
+	// マウスカーソルを消す
+	ShowCursor(false);
+
 	// スプライト共通テクスチャ読み込み
 	SpriteCommon::GetInstance()->LoadTexture(1, L"Resources/gameplay.png");
 	SpriteCommon::GetInstance()->LoadTexture(2, L"Resources/aim.png");
@@ -196,6 +199,9 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 void GamePlayScene::Finalize()
 {
 	DamageEffect(1, 1);
+
+	// マウスカーソルを出す
+	ShowCursor(true);
 }
 
 void GamePlayScene::Update()
@@ -727,8 +733,6 @@ void GamePlayScene::DrawFrontSprite(DirectXCommon* dxcommon) {
 	else {
 		ImGui::SetNextWindowSize(ImVec2(100, 200));
 		ImGui::Begin(u8"説明", nullptr, ImGuiWindowFlags_NoSavedSettings);
-		ImGui::Text(u8"フレーム %u", frame);
-		ImGui::Text(u8"体力 %u", player->GetHp());
 		ImGui::Text(u8"WASD:移動");
 		ImGui::Text(u8"左クリック:撃つ");
 		ImGui::Text(u8"スペース:回避");

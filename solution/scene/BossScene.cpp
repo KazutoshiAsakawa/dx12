@@ -25,6 +25,9 @@ XMFLOAT3 lerp(const XMFLOAT3& a, const XMFLOAT3& b, float t)
 
 void BossScene::Initialize(DirectXCommon* dxcommon)
 {
+	// マウスカーソルを消す
+	ShowCursor(false);
+
 	// スプライト共通テクスチャ読み込み
 	SpriteCommon::GetInstance()->LoadTexture(1, L"Resources/gameplay.png");
 	SpriteCommon::GetInstance()->LoadTexture(2, L"Resources/aim.png");
@@ -38,7 +41,6 @@ void BossScene::Initialize(DirectXCommon* dxcommon)
 	sprite.reset(Sprite::Create(1, { 0,0 }, false, false));
 	aim.reset(Sprite::Create(2));
 	aim->SetPosition({ WinApp::window_width / 2.0f ,WinApp::window_height / 2.0f,0.f });
-
 
 	// hp画像
 	playerHpSprite.reset(Sprite::Create(3, { 0,1 }));
@@ -123,6 +125,9 @@ void BossScene::Initialize(DirectXCommon* dxcommon)
 void BossScene::Finalize()
 {
 	DamageEffect(1, 1);
+
+	// マウスカーソルを出す
+	ShowCursor(true);
 }
 
 void BossScene::Update()
@@ -213,7 +218,7 @@ void BossScene::start()
 {
 	Input* input = Input::GetInstance();
 	// モザイクをかける時間
-	constexpr UINT mosaicFrameMax = 60;
+	constexpr UINT mosaicFrameMax = 120;
 
 	// モザイクの時間が最大までいったらplay関数に変える
 	if (++mosaicFrame > mosaicFrameMax) {
@@ -229,13 +234,21 @@ void BossScene::start()
 		mosaicLevel.y = WinApp::window_height * rate;
 		PostEffect::GetInstance()->SetMosaicNum(mosaicLevel);
 
-		constexpr XMFLOAT3 startEye = { 0,0,-100 };
+		rate *= rate * rate;
+
+		constexpr XMFLOAT3 startEye = { 100,0,-100 };
 		constexpr XMFLOAT3 endEye = { 0,0,0 };
 
 		XMFLOAT3 eye;
 		eye = lerp(startEye, endEye, rate);
-
 		player->SetPosition(eye);
+
+		constexpr XMFLOAT3 startRota = {0.f, 360.f, 0.f};
+		constexpr XMFLOAT3 endRota = {0.f, 0.f, 0.f};
+
+		XMFLOAT3 rota;
+		rota = lerp(startRota, endRota, rate);
+		player->SetRotation(rota);
 	}
 }
 
@@ -560,25 +573,15 @@ void BossScene::DrawFrontSprite(DirectXCommon* dxcommon) {
 	ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_WindowBg, ImVec4(1.f, 0.f, 1.f, 0.5f));
 
 	if (pause) {
-		/*ImGui::SetNextWindowPos(ImVec2(10.f, 10.f));
-		ImGui::SetNextWindowSize(ImVec2(WinApp::window_width - 20, WinApp::window_height - 20));
-		ImGui::Begin("pause", nullptr, ImGuiWindowFlags_NoSavedSettings);
-		ImGui::Text(u8"ESCで戻る");
-		ImGui::SetNextWindowPos(ImVec2(ImGui::GetWindowPos().x,
-			ImGui::GetWindowPos().y + ImGui::GetWindowSize().y));
-		ImGui::End();*/
 		pouseSprite[pouse]->Draw();
 	}
 	else {
 		ImGui::SetNextWindowSize(ImVec2(200, 200));
 		ImGui::Begin(u8"説明", nullptr, ImGuiWindowFlags_NoSavedSettings);
-		ImGui::Text(u8"フレーム %u", frame);
-		ImGui::Text(u8"体力 %u", player->GetHp());
 		ImGui::Text(u8"WASD:移動");
 		ImGui::Text(u8"左クリック:撃つ");
-		ImGui::Text(u8"マウス差分 %d,%d", mousePosDiff.x, mousePosDiff.y);
-		ImGui::Text(u8"マウス %d,%d", Input::GetInstance()->GetMousePos().x, Input::GetInstance()->GetMousePos().y);
-		ImGui::Text(u8"ボスの弾 %u", boss->GetBullet().size());
+		ImGui::Text(u8"スペース:回避");
+		ImGui::Text(u8"ESC:ポーズ画面");
 
 		ImGui::SetNextWindowPos(ImVec2(ImGui::GetWindowPos().x,
 			ImGui::GetWindowPos().y + ImGui::GetWindowSize().y));
