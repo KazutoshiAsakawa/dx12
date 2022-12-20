@@ -516,7 +516,7 @@ void BossScene::killEffect()
 
 	if(++nowEffectFrame > effectFrameMax)
 	{
-		updateProcess = std::bind(&BossScene::end, this, "GAMEOVER");
+		updateProcess = std::bind(&BossScene::end, this, "CLEAR");
 	} else
 	{
 		// パーティクルの発生

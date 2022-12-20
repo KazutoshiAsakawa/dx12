@@ -163,7 +163,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 	splineStartIndex = 1;
 
 	// íπãè
-	toriiModel.reset(ObjModel::LoadFromObj("torii"));// wall
+	toriiModel.reset(ObjModel::LoadFromObj("torii"));
 	toriiObj.resize(points.size());
 
 	for (UINT i = 0; i < toriiObj.size(); i++) {
@@ -183,7 +183,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 	}
 
 	// ï«
-	wallModel.reset(ObjModel::LoadFromObj("wall"));// wall
+	wallModel.reset(ObjModel::LoadFromObj("fence"));// wall
 	wallObj.resize(points.size());
 
 	for (UINT i = 0; i < wallObj.size(); i++) {
@@ -192,13 +192,12 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 			wallObj[i][x] = ObjObject3d::Create();
 			wallObj[i][x]->Initialize();
 			wallObj[i][x]->SetModel(wallModel.get());
-			wallObj[i][x]->SetScale(XMFLOAT3(1, 100, 50));
+			wallObj[i][x]->SetScale(XMFLOAT3(4, 4, 50));
 			XMFLOAT3 pos;
 			XMStoreFloat3(&pos, points[i]);
 			pos.x -= 40.f;
 			pos.x += 80.f * (float)x;
-			pos.y = 0.f;
-			pos.y = 0.f * (float)x;
+			pos.y = -5.f;
 			wallObj[i][x]->SetPosition(pos);
 		}
 	}
@@ -418,20 +417,7 @@ void GamePlayScene::play()
 
 	// ëÄçÏê‡ñæ
 	{
-		// if (dispDFlag) {
-		// 	DebugText::GetInstance()->Print("D", 1280.f / 2.f + 100.f, 720.f / 2.f + 100.f);
-		// }
-		// if (dispAFlag) {
-		// 	DebugText::GetInstance()->Print("A", 1280.f / 2.f - 100.f, 720.f / 2.f + 100.f);
-		// }
-		// if (dispWFlag) {
-		// 	DebugText::GetInstance()->Print("W", 1280.f / 2.f, 720.f / 2.f + 50.f);
-		// }
-		// if (dispSFlag) {
-		// 	DebugText::GetInstance()->Print("S", 1280.f / 2.f, 720.f / 2.f + 175.f);
-		// }
 		if (operationSprite["L_Click"]->GetIsInvisible() == false) {
-			// DebugText::GetInstance()->Print("MOUSE_L : Attack", aim->GetPosition().x, aim->GetPosition().y);
 			operationSprite["L_Click"]->SetPosition({ aim->GetPosition().x, aim->GetPosition().y, 0.f });
 		}
 	}
