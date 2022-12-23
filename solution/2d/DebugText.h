@@ -4,6 +4,7 @@
 
 #include <windows.h>
 #include <string>
+#include <DirectXMath.h>
 
 /// <summary>
 /// デバッグ文字列クラスの定義
@@ -23,7 +24,7 @@ public: // メンバ関数
 
 	void Finalize();
 
-	void Print(const std::string& text, float x, float y, float scale = 1.0f);
+	void Print(const std::string& text, float x, float y, float scale = 1.0f, const DirectX::XMFLOAT4& color = { 1.f, 1.f, 1.f, 1.f });
 
 	void DrawAll();
 

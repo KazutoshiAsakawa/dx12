@@ -85,7 +85,7 @@ private:
 
 	// ©‹@HPÅ‘å’l
 	UINT playerHpMax = 30;
-	// HP‰æ‘œ‚Ì”z—ñ
+	// HP‰æ‘œ
 	std::unique_ptr<Sprite> playerHpSprite;
 	std::unique_ptr<Sprite> playerHpSlide;
 

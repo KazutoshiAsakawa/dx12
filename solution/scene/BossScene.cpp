@@ -173,20 +173,6 @@ void BossScene::Update()
 		sprite->Update();
 
 		aim->Update();
-
-		if (player->GetHp() > 0) {
-
-			// スプライト横幅 = 最大値 * hpの割合
-			playerHpSprite->SetSize(XMFLOAT2(playerHpSprite->GetTexSize().x * (float)player->GetHp() / playerHpMax,
-				playerHpSprite->GetSize().y));
-
-			playerHpSprite->TransferVertexBuffer();
-
-			// 体力バー
-			playerHpSprite->Update();
-
-			playerHpSlide->Update();
-		}
 	}
 	else {
 		pouseSprite[pouse]->Update();
@@ -275,6 +261,13 @@ void BossScene::bossEntry()
 		// 進行度
 		float rate = (float)bossEntryNowFrame / (float)frameMax;
 
+		// 体力バーをだんだん増やす
+		playerHpSprite->SetSize({ playerHpSprite->GetTexSize().x * (1.f - powf(1.f - rate, 4.f)),
+			playerHpSprite->GetSize().y });
+		playerHpSprite->TransferVertexBuffer();
+		playerHpSprite->Update();
+		playerHpSlide->Update();
+
 		// イージング(4乗)
 		rate *= rate * rate * rate;
 
@@ -284,7 +277,15 @@ void BossScene::bossEntry()
 		// 今のカメラの距離
 		float cameraLength = cameraLengthDef + rate * (lengthMax - cameraLengthDef);
 
+		// 今のカメラの距離をセット
 		camera->SetEyeToCameraTargetLength(cameraLength);
+
+		// ボスの名前(イメージ)
+		DebugText::GetInstance()->Print("boss: obake",
+			WinApp::window_width / DebugText::fontWidth,
+			(WinApp::window_height / 3) * 2,
+			10.f,
+			{ 1.f, 1.f, 1.f, 1.f - (rate * rate * rate * rate) });
 	}
 }
 
@@ -543,6 +544,20 @@ void BossScene::play()
 		}
 	}
 
+	if (player->GetHp() > 0) {
+
+		// スプライト横幅 = 最大値 * hpの割合
+		playerHpSprite->SetSize(XMFLOAT2(playerHpSprite->GetTexSize().x * (float)player->GetHp() / playerHpMax,
+			playerHpSprite->GetSize().y));
+
+		playerHpSprite->TransferVertexBuffer();
+
+		// 体力バー
+		playerHpSprite->Update();
+
+		playerHpSlide->Update();
+	}
+
 	frame++;
 }
 
@@ -569,7 +584,6 @@ void BossScene::end(const std::string& nextScene)
 
 	// モザイクの時間が最大までいったらplay関数に変える
 	if (++mosaicFrame > mosaicFrameMax) {
-		//PostEffect::GetInstance()->SetMosaicNum({ WinApp::window_width ,WinApp::window_height });
 		// ボスシーンへ
 		SceneManager::GetInstance()->ChangeScene(nextScene);
 	}

@@ -30,7 +30,7 @@ void DebugText::Finalize()
 	}
 }
 
-void DebugText::Print(const std::string& text, float x, float y, float scale)
+void DebugText::Print(const std::string& text, float x, float y, float scale, const DirectX::XMFLOAT4& color)
 {
 	// 全ての文字について
 	for (int i = 0; i < text.size(); i++)
@@ -58,6 +58,7 @@ void DebugText::Print(const std::string& text, float x, float y, float scale)
 		sprites[spriteIndex]->SetTexLeftTop({ (float)fontIndexX * fontWidth, (float)fontIndexY * fontHeight });
 		sprites[spriteIndex]->SetTexSize({ fontWidth, fontHeight });
 		sprites[spriteIndex]->SetSize({ fontWidth * scale, fontHeight * scale });
+		sprites[spriteIndex]->SetColor(color);
 		// 頂点バッファ転送
 		sprites[spriteIndex]->TransferVertexBuffer();
 		// 更新
