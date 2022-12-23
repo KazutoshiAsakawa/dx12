@@ -91,7 +91,7 @@ void BossScene::Initialize(DirectXCommon* dxcommon)
 	// プレイヤー初期化
 	player = std::make_unique<Player>();
 
-	player->SetHp(4);
+	player->SetHp(playerHpMax);
 
 	// カメラをプレイヤーの位置にセット
 	camera->SetTrackingTarget(player.get());

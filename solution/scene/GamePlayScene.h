@@ -92,7 +92,7 @@ private:
 	int pouse = 0;
 
 	// ©‹@HPÅ‘å’l
-	UINT playerHpMax = 4;
+	UINT playerHpMax = 10;
 	// HP‰æ‘œ‚Ì”z—ñ
 	std::unique_ptr<Sprite> playerHpSprite;
 	std::unique_ptr<Sprite> playerHpSlide;

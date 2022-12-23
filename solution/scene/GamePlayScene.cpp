@@ -68,8 +68,6 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 	playerHpSlide.reset(Sprite::Create(4, { 0,1 }));
 	playerHpSlide->SetPosition(XMFLOAT3(35, WinApp::window_height - 35, 0));
 
-
-
 	// ポーズ画面の画像を作る
 	pouseSprite.resize(pouseMax);
 	for (UINT i = 0; i < pouseMax; i++) {
@@ -119,6 +117,9 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 
 	// プレイヤーの親を設定
 	player->SetParent(lane->GetObj());
+
+	// プレイヤーの体力を設定
+	player->SetHp(playerHpMax);
 
 	// カメラをレーンの位置にセット
 	camera->SetTrackingTarget(player.get());
@@ -608,10 +609,12 @@ void GamePlayScene::play()
 		}
 	}
 
+#ifdef _DEBUG
 	// ボスシーンに行く
 	if (input->TriggerKey(DIK_F)) {
 		updateProcess = std::bind(&GamePlayScene::end, this);
 	}
+#endif //_DEBUG
 
 	if (shiftFlag) {
 

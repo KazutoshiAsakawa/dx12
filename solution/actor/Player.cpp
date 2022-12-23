@@ -26,20 +26,20 @@ Player::Player()
 	// モデルをセット
 	momijiObj->SetModel(ObjModel::LoadFromObj("MomijiLeave"));
 	// 位置
-	momijiObj->SetPosition({0.f, -obj->GetScale().y, 0.f});
+	momijiObj->SetPosition({ 0.f, -obj->GetScale().y, 0.f });
 	// 大きさ
 	constexpr float momijiScale = 2.f;
-	momijiObj->SetScale({momijiScale, momijiScale, momijiScale});
+	momijiObj->SetScale({ momijiScale, momijiScale, momijiScale });
 	// 回転
-	momijiObj->SetRotation({0.f, 180.f, 0.f});
+	momijiObj->SetRotation({ 0.f, 180.f, 0.f });
 	// 本体を親とする
 	momijiObj->SetParent(obj.get());
 
-	// プレイヤーの体力
-	hp = 4;
-
 	// 攻撃対象へのポインタ
 	shotTarget = nullptr;
+
+	// 体力を初期化
+	hp = 1;
 }
 
 void Player::Update()
