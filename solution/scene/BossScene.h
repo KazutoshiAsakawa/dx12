@@ -37,10 +37,11 @@ public:
 	/// </summary>
 	void Update() override;
 
-	void start();
-	void play();
-	void killEffect();
-	void end(const std::string& nextScene);
+	void start();	// 開始
+	void bossEntry();	// ボス登場
+	void play();	// ゲーム本編
+	void killEffect();	// ボスを倒したエフェクト
+	void end(const std::string& nextScene);	// 終了
 
 	/// <summary>
 	/// 描画
@@ -99,6 +100,7 @@ private:
 	float enemyScale = 2;
 	// カメラ
 	std::unique_ptr<TrackingCamera> camera;
+	float cameraLengthDef;
 
 	// プレイヤー
 	std::unique_ptr<Player> player;
@@ -140,4 +142,6 @@ private:
 	// UINT addedEnemyNum = 0;
 
 	bool pause = false;
+
+	UINT bossEntryNowFrame = 0;
 };

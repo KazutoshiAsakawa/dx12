@@ -100,6 +100,7 @@ void BossScene::Initialize(DirectXCommon* dxcommon)
 	eye.z -= 500;
 	eye.y += 50;
 	camera->SetEye(eye);
+	cameraLengthDef = camera->GetEyeToCameraTargetLength();
 
 	// ボス
 	boss.reset(new Boss(enemyModel.get(), { 0.f,0.f,50.f }));
@@ -107,10 +108,14 @@ void BossScene::Initialize(DirectXCommon* dxcommon)
 	boss->SetPhaseApproach();
 	boss->SetAttackTarget(player.get());
 	boss->SetBulletModel(enemyModel.get());
-	boss->SetScale({2,2,2});
+	boss->SetScale({ 2,2,2 });
 
 	// ボスの体力
 	boss->SetHp(30);
+
+	boss->SetAlive(false);
+
+	bossEntryNowFrame = 0;
 
 	// パーティクル初期化
 	ParticleManager::GetInstance()->SetCamera(camera.get());
@@ -223,8 +228,9 @@ void BossScene::start()
 	// モザイクの時間が最大までいったらplay関数に変える
 	if (++mosaicFrame > mosaicFrameMax) {
 		PostEffect::GetInstance()->SetMosaicNum({ WinApp::window_width ,WinApp::window_height });
-		// updateProcessにplay関数をセット
-		updateProcess = std::bind(&BossScene::play, this);
+		// updateProcessにbossEntry関数をセット
+		camera->SetTrackingTarget(boss.get());
+		updateProcess = std::bind(&BossScene::bossEntry, this);
 		mosaicFrame = 0;
 	}
 	else {
@@ -243,12 +249,42 @@ void BossScene::start()
 		eye = lerp(startEye, endEye, rate);
 		player->SetPosition(eye);
 
-		constexpr XMFLOAT3 startRota = {0.f, 360.f, 0.f};
-		constexpr XMFLOAT3 endRota = {0.f, 0.f, 0.f};
+		constexpr XMFLOAT3 startRota = { 0.f, 360.f, 0.f };
+		constexpr XMFLOAT3 endRota = { 0.f, 0.f, 0.f };
 
 		XMFLOAT3 rota;
 		rota = lerp(startRota, endRota, rate);
 		player->SetRotation(rota);
+	}
+}
+
+void BossScene::bossEntry()
+{
+	constexpr UINT frameMax = 360;
+
+	// フレームが最大まで行ったら次の関数へ
+	if (bossEntryNowFrame++ > frameMax) {
+		camera->SetTrackingTarget(player.get());
+		updateProcess = std::bind(&BossScene::play, this);
+
+		camera->SetEyeToCameraTargetLength(cameraLengthDef);
+
+		boss->SetAlive(true);
+	}
+	else {
+		// 進行度
+		float rate = (float)bossEntryNowFrame / (float)frameMax;
+
+		// イージング(4乗)
+		rate *= rate * rate * rate;
+
+		// カメラの距離の最大値
+		const float lengthMax = cameraLengthDef * 2.f;
+
+		// 今のカメラの距離
+		float cameraLength = cameraLengthDef + rate * (lengthMax - cameraLengthDef);
+
+		camera->SetEyeToCameraTargetLength(cameraLength);
 	}
 }
 
@@ -401,7 +437,7 @@ void BossScene::play()
 			}
 		}
 	}
-	else if(killBossFlag){// ボスが死んだら
+	else if (killBossFlag) {// ボスが死んだら
 		updateProcess = std::bind(&BossScene::end, this, "CLEAR");
 	}
 
@@ -514,10 +550,11 @@ void BossScene::killEffect()
 {
 	constexpr UINT effectFrameMax = 180;
 
-	if(++nowEffectFrame > effectFrameMax)
+	if (++nowEffectFrame > effectFrameMax)
 	{
 		updateProcess = std::bind(&BossScene::end, this, "CLEAR");
-	} else
+	}
+	else
 	{
 		// パーティクルの発生
 		ParticleManager::GetInstance()->CreateParticle(boss->GetPosition(), 10, 1, 5);

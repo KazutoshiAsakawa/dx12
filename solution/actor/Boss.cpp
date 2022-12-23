@@ -4,37 +4,38 @@ using namespace DirectX;
 
 void Boss::Update()
 {
-	// ボスの向き
-	{
-		XMVECTOR vel, vec;
-		XMFLOAT3 floatVel;
+	if (alive) {
+		// ボスの向き
+		{
+			XMVECTOR vel, vec;
+			XMFLOAT3 floatVel;
 
-		vel = XMVectorSet(GetVel().x, GetVel().y, GetVel().z, 1);
-		vel = XMVector3Normalize(vel);
+			vel = XMVectorSet(GetVel().x, GetVel().y, GetVel().z, 1);
+			vel = XMVector3Normalize(vel);
 
-		vec = XMVectorSet(
-			attackTarget->GetPosition().x - GetPosition().x,
-			attackTarget->GetPosition().y - GetPosition().y,
-			attackTarget->GetPosition().z - GetPosition().z,
-			1
-		);
-		vec = XMVector3Normalize(vec);
+			vec = XMVectorSet(
+				attackTarget->GetPosition().x - GetPosition().x,
+				attackTarget->GetPosition().y - GetPosition().y,
+				attackTarget->GetPosition().z - GetPosition().z,
+				1
+			);
+			vec = XMVector3Normalize(vec);
 
-		// XMStoreFloat3(&XMFLOAT3の変数, XMVECTORの変数);
-		XMStoreFloat3(&floatVel, vel);
+			// XMStoreFloat3(&XMFLOAT3の変数, XMVECTORの変数);
+			XMStoreFloat3(&floatVel, vel);
 
-		// 標的に向ける
-		float rotx = atan2f(-floatVel.y,
-			sqrtf(floatVel.x * floatVel.x + floatVel.z * floatVel.z));
-		float roty = atan2f(floatVel.x, floatVel.z);
+			// 標的に向ける
+			float rotx = atan2f(-floatVel.y,
+				sqrtf(floatVel.x * floatVel.x + floatVel.z * floatVel.z));
+			float roty = atan2f(floatVel.x, floatVel.z);
 
-		SetRotation(XMFLOAT3(XMConvertToDegrees(rotx), XMConvertToDegrees(roty) + 180, 0));
+			SetRotation(XMFLOAT3(XMConvertToDegrees(rotx), XMConvertToDegrees(roty) + 180, 0));
+		}
+
+		bullet.erase(std::remove_if(bullet.begin(), bullet.end(), [](EnemyBullet& i) {return !i.GetAlive(); }), bullet.end());
+
+		phase();
 	}
-
-	bullet.erase(std::remove_if(bullet.begin(), bullet.end(), [](EnemyBullet& i) {return !i.GetAlive(); }), bullet.end());
-
-	phase();
-
 	// 座標変換の計算
 	Screen();
 	obj->Update();

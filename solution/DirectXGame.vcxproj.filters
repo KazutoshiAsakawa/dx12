@@ -168,7 +168,7 @@
     <ClCompile Include="actor\PlayerBullet.cpp">
       <Filter>ソース ファイル\actor</Filter>
     </ClCompile>
-    <ClCompile Include="3d\GameObject.cpp">
+    <ClCompile Include="actor\GameObject.cpp">
       <Filter>ソース ファイル\3d</Filter>
     </ClCompile>
     <ClCompile Include="base\Statemachine.cpp">
@@ -348,7 +348,7 @@
     <ClInclude Include="actor\PlayerBullet.h">
       <Filter>ヘッダー ファイル\actor</Filter>
     </ClInclude>
-    <ClInclude Include="3d\GameObject.h">
+    <ClInclude Include="actor\GameObject.h">
       <Filter>ヘッダー ファイル\3d</Filter>
     </ClInclude>
     <ClInclude Include="base\Statemachine.h">

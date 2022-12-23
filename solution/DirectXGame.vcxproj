@@ -165,7 +165,7 @@
     <ClCompile Include="2d\SpriteCommon.cpp" />
     <ClCompile Include="3d\FbxModel.cpp" />
     <ClCompile Include="3d\FbxObject3d.cpp" />
-    <ClCompile Include="3d\GameObject.cpp" />
+    <ClCompile Include="actor\GameObject.cpp" />
     <ClCompile Include="3d\ObjModel.cpp" />
     <ClCompile Include="3d\ObjObject3d.cpp" />
     <ClCompile Include="actor\Boss.cpp" />
@@ -293,7 +293,7 @@
     <ClInclude Include="2d\SpriteCommon.h" />
     <ClInclude Include="3d\FbxModel.h" />
     <ClInclude Include="3d\FbxObject3d.h" />
-    <ClInclude Include="3d\GameObject.h" />
+    <ClInclude Include="actor\GameObject.h" />
     <ClInclude Include="3d\ObjModel.h" />
     <ClInclude Include="3d\ObjObject3d.h" />
     <ClInclude Include="actor\Boss.h" />
