@@ -65,8 +65,6 @@ private:
 	// マウス
 	POINT mousePosDiff{};
 
-	// 背景
-	std::unique_ptr<Sprite> sprite;
 	std::unique_ptr<Sprite> aim;
 
 	// スカイドーム
@@ -108,11 +106,13 @@ private:
 	UINT avoidFrame = 0;
 	UINT avoidFrameMax = 60;
 
-	// 敵
-	// std::list<std::unique_ptr<Enemy>> enemy;
-
 	// ボス
 	std::unique_ptr<Boss> boss;
+	// ボスHP最大値
+	UINT bossHpMax = 30;
+	// ボスHP画像
+	std::unique_ptr<Sprite> bossHpSprite;
+	std::unique_ptr<Sprite> bossHpSlide;
 
 	bool killBossFlag = false;
 

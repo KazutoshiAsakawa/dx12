@@ -80,8 +80,6 @@ public:
 	void DamageEffect(UINT maxFrame, UINT nowFrame);
 
 private:
-	// 背景スプライト
-	std::unique_ptr<Sprite> sprite;
 	// 照準スプライト
 	std::unique_ptr<Sprite> aim;
 

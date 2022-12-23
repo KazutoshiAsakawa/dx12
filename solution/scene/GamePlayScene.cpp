@@ -58,7 +58,6 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 		});
 
 	// スプライトの生成
-	sprite.reset(Sprite::Create(1, { 0,0 }, false, false));
 	aim.reset(Sprite::Create(2));
 
 	// hp画像
@@ -279,9 +278,6 @@ void GamePlayScene::Update()
 		skyDomeObj->Update();
 
 		// スプライト更新
-		sprite->Update();
-
-		// aim->SetPosition({player->GetScreenAimPos().x,player->GetScreenAimPos().y,0});
 		aim->SetPosition({ (float)Input::GetInstance()->GetMousePos().x,(float)Input::GetInstance()->GetMousePos().y,0 });
 		aim->Update();
 
@@ -695,11 +691,6 @@ void GamePlayScene::end()
 
 void GamePlayScene::Draw(DirectXCommon* dxcommon)
 {
-	// スプライト共通コマンド
-	SpriteCommon::GetInstance()->PreDraw();
-	// スプライト描画
-	sprite->Draw();
-
 	// 3Dオブジェクト描画前処理
 	ObjObject3d::PreDraw();
 

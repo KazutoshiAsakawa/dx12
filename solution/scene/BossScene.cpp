@@ -38,16 +38,8 @@ void BossScene::Initialize(DirectXCommon* dxcommon)
 	SpriteCommon::GetInstance()->LoadTexture(8, L"Resources/pouse/pauseClose.png");
 
 	// スプライトの生成
-	sprite.reset(Sprite::Create(1, { 0,0 }, false, false));
 	aim.reset(Sprite::Create(2));
-	aim->SetPosition({ WinApp::window_width / 2.0f ,WinApp::window_height / 2.0f,0.f });
-
-	// hp画像
-	playerHpSprite.reset(Sprite::Create(3, { 0,1 }));
-	playerHpSprite->SetPosition(XMFLOAT3(40, WinApp::window_height - 40, 0));
-
-	playerHpSlide.reset(Sprite::Create(4, { 0,1 }));
-	playerHpSlide->SetPosition(XMFLOAT3(35, WinApp::window_height - 35, 0));
+	aim->SetPosition({ WinApp::window_width / 2.f ,WinApp::window_height / 2.f, 0.f });
 
 	// ポーズ画面の画像を作る
 	pouseSprite.resize(pouseMax);
@@ -88,10 +80,28 @@ void BossScene::Initialize(DirectXCommon* dxcommon)
 	FbxObject3d::SetCamera(camera.get());
 	//グラフィックスパイプライン生成
 	FbxObject3d::CreateGraphicsPipeline();
+
+#pragma region プレイヤー
 	// プレイヤー初期化
 	player = std::make_unique<Player>();
 
 	player->SetHp(playerHpMax);
+
+	// hp画像
+	playerHpSprite.reset(Sprite::Create(3, { 0,1 }));
+	playerHpSprite->SetPosition(XMFLOAT3(40, WinApp::window_height - 40, 0));
+	playerHpSprite->SetSize({ 0.f, playerHpSprite->GetTexSize().y });
+	playerHpSlide.reset(Sprite::Create(4, { 0,1 }));
+	playerHpSlide->SetPosition(XMFLOAT3(35, WinApp::window_height - 35, 0));
+
+	playerHpSprite->TransferVertexBuffer();
+	playerHpSprite->Update();
+	playerHpSlide->TransferVertexBuffer();
+	playerHpSlide->Update();
+
+#pragma endregion プレイヤー
+
+#pragma region カメラ
 
 	// カメラをプレイヤーの位置にセット
 	camera->SetTrackingTarget(player.get());
@@ -102,8 +112,12 @@ void BossScene::Initialize(DirectXCommon* dxcommon)
 	camera->SetEye(eye);
 	cameraLengthDef = camera->GetEyeToCameraTargetLength();
 
+#pragma endregion カメラ
+
+#pragma region ボス
+
 	// ボス
-	boss.reset(new Boss(enemyModel.get(), { 0.f,0.f,50.f }));
+	boss.reset(new Boss(enemyModel.get(), { 0.f, 0.f, 50.f }));
 
 	boss->SetPhaseApproach();
 	boss->SetAttackTarget(player.get());
@@ -111,11 +125,29 @@ void BossScene::Initialize(DirectXCommon* dxcommon)
 	boss->SetScale({ 2,2,2 });
 
 	// ボスの体力
-	boss->SetHp(30);
+	boss->SetHp(bossHpMax);
 
 	boss->SetAlive(false);
 
 	bossEntryNowFrame = 0;
+
+	// ボスHPスプライト
+	bossHpSprite.reset(Sprite::Create(3, { 0.5f, 0.f }));
+	bossHpSlide.reset(Sprite::Create(4, { 0.5f, 0.f }));
+
+	bossHpSprite->SetPosition({ (float)WinApp::window_width / 2.f, 10.f, 0.f });
+	bossHpSlide->SetPosition({ (float)WinApp::window_width / 2.f, 5.f, 0.f });
+
+	bossHpSprite->SetColor({ 0.5f, 1.f, 1.f, 1.f });
+	bossHpSprite->SetSize({ 0.f, bossHpSprite->GetTexSize().y });
+
+	bossHpSprite->TransferVertexBuffer();
+	bossHpSlide->TransferVertexBuffer();
+
+	bossHpSprite->Update();
+	bossHpSlide->Update();
+
+#pragma endregion ボス
 
 	// パーティクル初期化
 	ParticleManager::GetInstance()->SetCamera(camera.get());
@@ -170,8 +202,6 @@ void BossScene::Update()
 		skyDomeObj->Update();
 
 		// スプライト更新
-		sprite->Update();
-
 		aim->Update();
 	}
 	else {
@@ -256,6 +286,14 @@ void BossScene::bossEntry()
 		camera->SetEyeToCameraTargetLength(cameraLengthDef);
 
 		boss->SetAlive(true);
+
+		playerHpSprite->SetSize({ playerHpSprite->GetTexSize().x, playerHpSprite->GetSize().y });
+		playerHpSprite->TransferVertexBuffer();
+		playerHpSprite->Update();
+
+		bossHpSprite->SetSize({ bossHpSprite->GetTexSize().x, bossHpSprite->GetSize().y });
+		bossHpSprite->TransferVertexBuffer();
+		bossHpSprite->Update();
 	}
 	else {
 		// 進行度
@@ -266,7 +304,12 @@ void BossScene::bossEntry()
 			playerHpSprite->GetSize().y });
 		playerHpSprite->TransferVertexBuffer();
 		playerHpSprite->Update();
-		playerHpSlide->Update();
+
+		bossHpSprite->SetSize({ bossHpSprite->GetTexSize().x * (1.f - powf(1.f - rate, 4.f)),
+			bossHpSprite->GetSize().y });
+		bossHpSprite->TransferVertexBuffer();
+		bossHpSprite->Update();
+
 
 		// イージング(4乗)
 		rate *= rate * rate * rate;
@@ -557,6 +600,16 @@ void BossScene::play()
 
 		playerHpSlide->Update();
 	}
+	if (boss->GetHp() > 0) {
+
+		// スプライト横幅 = 最大値 * hpの割合
+		bossHpSprite->SetSize(XMFLOAT2(bossHpSprite->GetTexSize().x * (float)boss->GetHp() / bossHpMax,
+			bossHpSprite->GetSize().y));
+
+		bossHpSprite->TransferVertexBuffer();
+		bossHpSprite->Update();
+		bossHpSlide->Update();
+	}
 
 	frame++;
 }
@@ -600,11 +653,6 @@ void BossScene::end(const std::string& nextScene)
 
 void BossScene::Draw(DirectXCommon* dxcommon)
 {
-	// スプライト共通コマンド
-	SpriteCommon::GetInstance()->PreDraw();
-	// スプライト描画
-	sprite->Draw();
-
 	// 3Dオブジェクト描画前処理
 	ObjObject3d::PreDraw();
 
@@ -640,6 +688,12 @@ void BossScene::DrawFrontSprite(DirectXCommon* dxcommon) {
 	}
 	playerHpSlide->Draw();
 
+	// ボス体力
+	if (boss->GetHp() > 0) {
+		bossHpSprite->Draw();
+	}
+	bossHpSlide->Draw();
+
 
 	aim->Draw();
 
@@ -654,7 +708,6 @@ void BossScene::DrawFrontSprite(DirectXCommon* dxcommon) {
 		ImGui::Begin(u8"説明", nullptr, ImGuiWindowFlags_NoSavedSettings);
 		ImGui::Text(u8"スペース:回避");
 		ImGui::Text(u8"ESC:ポーズ");
-		ImGui::Text(u8"ボス体力:%u", boss->GetHp());
 
 		ImGui::SetNextWindowPos(ImVec2(ImGui::GetWindowPos().x,
 			ImGui::GetWindowPos().y + ImGui::GetWindowSize().y));
