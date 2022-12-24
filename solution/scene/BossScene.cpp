@@ -190,6 +190,8 @@ void BossScene::Update()
 		// シーン遷移
 		updateProcess();
 
+		DebugText::GetInstance()->Print("ESC : Pause", 0.f, 0.f);
+
 		// パーティクル更新
 		ParticleManager::GetInstance()->Update();
 
@@ -228,7 +230,6 @@ void BossScene::Update()
 				SceneManager::GetInstance()->ChangeScene("TITLE");
 			}
 			else if (pouse == 2) {
-				WM_DESTROY; //ウィンドウが破棄された
 				PostQuitMessage(0); //OSに対して、アプリの終了を伝える
 			}
 		}
@@ -723,7 +724,6 @@ void BossScene::DrawFrontSprite(DirectXCommon* dxcommon) {
 		ImGui::SetNextWindowSize(ImVec2(200, 200));
 		ImGui::Begin(u8"説明", nullptr, ImGuiWindowFlags_NoSavedSettings);
 		ImGui::Text(u8"スペース:回避");
-		ImGui::Text(u8"ESC:ポーズ");
 
 		ImGui::SetNextWindowPos(ImVec2(ImGui::GetWindowPos().x,
 			ImGui::GetWindowPos().y + ImGui::GetWindowSize().y));

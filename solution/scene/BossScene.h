@@ -56,9 +56,6 @@ public:
 
 	DirectX::XMVECTOR SplinePosition(const std::vector<DirectX::XMVECTOR>& posints, size_t startIndex, float t);
 
-	// ìGÇî≠ê∂Ç≥ÇπÇÈ
-	// std::unique_ptr<Enemy>& EnemyAdd(DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 vel);
-
 	void DamageEffect(UINT maxFrame, UINT nowFrame);
 
 private:
@@ -134,13 +131,6 @@ private:
 	UINT frame = 0;
 
 	UINT nowEffectFrame = 0;
-
-	// ìGÇî≠ê∂
-	// énÇ‹ÇË,èIÇÌÇË
-	// std::list<std::pair<UINT, UINT>> enemyFrame;
-	// std::vector< std::vector<std::string>> csv;
-	// std::vector<DirectX::XMFLOAT3> enemyPos;
-	// UINT addedEnemyNum = 0;
 
 	bool pause = false;
 

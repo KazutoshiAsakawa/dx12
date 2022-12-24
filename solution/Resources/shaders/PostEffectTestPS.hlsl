@@ -64,6 +64,8 @@ float4 RgbShiftGaussianBlur(Texture2D<float4> tex, float2 uv, float2 shiftR, flo
 	return retCol;
 }
 
+
+
 float4 main(VSOutput input) : SV_TARGET
 {
 	// mosaic
@@ -77,6 +79,10 @@ float4 main(VSOutput input) : SV_TARGET
 
 	// vignatte
 	float vignVal = vignette(mosaicUv, 0.4f);
+
+	float4 tmp = RgbShiftGaussianBlur(tex0, input.uv, shiftR, shiftG, shiftB);
+	tmp.rgb = pow(tmp.rgb, 1.f / 8.f);
+	retColor.rgb += tmp / 3.f;
 
 	return float4(retColor.rgb - vignVal, 1.0f);
 

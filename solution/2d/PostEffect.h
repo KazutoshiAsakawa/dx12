@@ -32,6 +32,7 @@ public:
 		DirectX::XMFLOAT2 shiftB{};
 
 		//todo 画面サイズを追加(シェーダー側も合わせる)
+		DirectX::XMFLOAT2 windowSize{};
 	};
 
 	static const float clearColor[4];
@@ -81,6 +82,12 @@ public:
 	inline void SetShiftB(const DirectX::XMFLOAT2& shiftB) { this->shiftB = shiftB, constBuffDirty = true; }
 
 	/// <summary>
+	/// 画面サイズ
+	/// </summary>
+	/// <param name="windowSize">画面サイズ</param>
+	inline void SetWindowSize(const DirectX::XMFLOAT2& windowSize) { this->windowSize = windowSize, constBuffDirty = true; }
+
+	/// <summary>
 	/// デバイスの設定
 	/// </summary>
 	/// <param name="device">デバイス</param>
@@ -121,5 +128,8 @@ private: // メンバ変数
 	DirectX::XMFLOAT2 shiftR{};
 	DirectX::XMFLOAT2 shiftG{};
 	DirectX::XMFLOAT2 shiftB{};
+	
+	// 画面サイズ
+	DirectX::XMFLOAT2 windowSize{};
 };
 

@@ -23,12 +23,15 @@ PostEffect* PostEffect::GetInstance()
 	return &postEffect;
 }
 
-PostEffect::PostEffect() : mosaicNum(XMFLOAT2(WinApp::window_width,
- 											  WinApp::window_height)) {
-	 Initialize();
+PostEffect::PostEffect() :
+	mosaicNum(XMFLOAT2(WinApp::window_width,
+		WinApp::window_height)),
+	windowSize((XMFLOAT2(WinApp::window_width,
+		WinApp::window_height))) {
+	Initialize();
 }
 
-void PostEffect::CreateGraphicsPipelineState(UINT shaderNum , const wchar_t* PSpath) {
+void PostEffect::CreateGraphicsPipelineState(UINT shaderNum, const wchar_t* PSpath) {
 	HRESULT result = S_FALSE;
 	ComPtr<ID3DBlob> vsBlob; // 頂点シェーダオブジェクト
 	ComPtr<ID3DBlob> psBlob;	// ピクセルシェーダオブジェクト
@@ -147,7 +150,7 @@ void PostEffect::CreateGraphicsPipelineState(UINT shaderNum , const wchar_t* PSp
 	descRangeSRV1.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 1); // t1 レジスタ
 
 	// ルートパラメータ
-	CD3DX12_ROOT_PARAMETER rootparams[3];
+	CD3DX12_ROOT_PARAMETER rootparams[3]{};
 	rootparams[0].InitAsConstantBufferView(0, 0, D3D12_SHADER_VISIBILITY_ALL);
 	rootparams[1].InitAsDescriptorTable(1, &descRangeSRV0, D3D12_SHADER_VISIBILITY_ALL);
 	rootparams[2].InitAsDescriptorTable(1, &descRangeSRV1, D3D12_SHADER_VISIBILITY_ALL);
@@ -259,7 +262,7 @@ void PostEffect::Initialize()
 			// 画像全体のデータサイズ
 			const UINT depthPitch = rowPitch * WinApp::window_height;
 			// 画像イメージ
-			UINT* img = new UINT[pixelCount];
+			UINT* img = new UINT[pixelCount]{};
 			// 0xrrggbbaaの色にする
 			for (UINT j = 0; j < pixelCount; j++) {
 				img[j] = 0xff0000ff;
@@ -289,7 +292,7 @@ void PostEffect::Initialize()
 	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
 	srvDesc.Texture2D.MipLevels = 1;
 
-	
+
 	for (int i = 0; i < 2; i++) {
 		// デスクリプタヒープにSRV作成
 		device->CreateShaderResourceView(texBuff[i].Get(),	// ビューと関連付けるバッファ
@@ -356,9 +359,9 @@ void PostEffect::Initialize()
 		descHeapDSV->GetCPUDescriptorHandleForHeapStart());
 }
 
-void PostEffect::Draw(ID3D12GraphicsCommandList* cmdList,UINT shaderNum)
+void PostEffect::Draw(ID3D12GraphicsCommandList* cmdList, UINT shaderNum)
 {
-	if(constBuffDirty){
+	if (constBuffDirty) {
 		// 定数バッファにデータ転送
 		ConstBufferData* constMap = nullptr;
 		HRESULT result = this->constBuff->Map(0, nullptr, (void**)&constMap);
@@ -368,6 +371,8 @@ void PostEffect::Draw(ID3D12GraphicsCommandList* cmdList,UINT shaderNum)
 			constMap->shiftR = shiftR;
 			constMap->shiftG = shiftG;
 			constMap->shiftB = shiftB;
+
+			constMap->windowSize = windowSize;
 			this->constBuff->Unmap(0, nullptr);
 		}
 
