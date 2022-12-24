@@ -110,6 +110,7 @@ private:
 	std::unique_ptr<Boss> boss;
 	// ボスHP最大値
 	UINT bossHpMax = 30;
+	float bossScale;
 	// ボスHP画像
 	std::unique_ptr<Sprite> bossHpSprite;
 	std::unique_ptr<Sprite> bossHpSlide;

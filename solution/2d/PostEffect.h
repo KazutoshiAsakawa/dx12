@@ -30,6 +30,8 @@ public:
 		DirectX::XMFLOAT2 shiftR{};
 		DirectX::XMFLOAT2 shiftG{};
 		DirectX::XMFLOAT2 shiftB{};
+
+		//todo 画面サイズを追加(シェーダー側も合わせる)
 	};
 
 	static const float clearColor[4];

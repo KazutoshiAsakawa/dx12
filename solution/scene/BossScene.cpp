@@ -122,7 +122,8 @@ void BossScene::Initialize(DirectXCommon* dxcommon)
 	boss->SetPhaseApproach();
 	boss->SetAttackTarget(player.get());
 	boss->SetBulletModel(enemyModel.get());
-	boss->SetScale({ 2,2,2 });
+	bossScale = 2.f;
+	boss->SetScale({ bossScale,bossScale,bossScale });
 
 	// ボスの体力
 	boss->SetHp(bossHpMax);
@@ -626,6 +627,21 @@ void BossScene::killEffect()
 	{
 		// パーティクルの発生
 		ParticleManager::GetInstance()->CreateParticle(boss->GetPosition(), 10, 1, 5);
+
+		// 進行度
+		float rate = (float)nowEffectFrame / (float)effectFrameMax;
+
+		// イージング(8乗)
+		rate *= rate * rate * rate * rate * rate * rate * rate;
+
+		// 1から0にする
+		rate = 1.f - rate;
+
+		// イージングを反映させたボスの大きさ
+		float scale = bossScale * rate;
+
+		// 大きさをセット
+		boss->SetScale({ scale, scale, scale });
 	}
 }
 
