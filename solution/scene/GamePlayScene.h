@@ -175,7 +175,4 @@ private:
 
 	// ‘‚â‚µ‚½“G‚Ì”
 	UINT addedEnemyNum = 0;
-
-	// ƒ|[ƒY‰æ–ÊŠÇ—
-	bool pause = false;
 };

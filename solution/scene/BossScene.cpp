@@ -33,13 +33,20 @@ void BossScene::Initialize(DirectXCommon* dxcommon)
 	SpriteCommon::GetInstance()->LoadTexture(2, L"Resources/aim.png");
 	SpriteCommon::GetInstance()->LoadTexture(3, L"Resources/hp/hp.png");
 	SpriteCommon::GetInstance()->LoadTexture(4, L"Resources/hp/hpSlide.png");
+
 	SpriteCommon::GetInstance()->LoadTexture(6, L"Resources/pouse/pauseBack.png");
 	SpriteCommon::GetInstance()->LoadTexture(7, L"Resources/pouse/pauseTitle.png");
 	SpriteCommon::GetInstance()->LoadTexture(8, L"Resources/pouse/pauseClose.png");
 
+	SpriteCommon::GetInstance()->LoadTexture(9, L"Resources/operation/ESC_Pause.png");
+
 	// スプライトの生成
 	aim.reset(Sprite::Create(2));
 	aim->SetPosition({ WinApp::window_width / 2.f ,WinApp::window_height / 2.f, 0.f });
+
+	operationSprite["ESC_Pause"].reset(Sprite::Create(9, { 0.f, 0.f }, false, false));
+	// 最初は表示する
+	operationSprite["ESC_Pause"]->SetIsInvisible(false);
 
 	// ポーズ画面の画像を作る
 	pouseSprite.resize(pouseMax);
@@ -171,11 +178,11 @@ void BossScene::Finalize()
 void BossScene::Update()
 {
 	if (Input::GetInstance()->TriggerKey(DIK_ESCAPE)) {
-		pause = !pause;
+		bool invisibleFlag = operationSprite["ESC_Pause"]->GetIsInvisible();
+		operationSprite["ESC_Pause"]->SetIsInvisible(!invisibleFlag);
 	}
 
-	if (!pause) {
-
+	if (operationSprite["ESC_Pause"]->GetIsInvisible() == false) {
 		// マウスの固定
 		{
 			POINT oldMousePos = Input::GetInstance()->GetMousePos();
@@ -189,8 +196,6 @@ void BossScene::Update()
 
 		// シーン遷移
 		updateProcess();
-
-		DebugText::GetInstance()->Print("ESC : Pause", 0.f, 0.f);
 
 		// パーティクル更新
 		ParticleManager::GetInstance()->Update();
@@ -206,25 +211,24 @@ void BossScene::Update()
 
 		// スプライト更新
 		aim->Update();
+		operationSprite["ESC_Pause"]->Update();
 	}
 	else {
 		pouseSprite[pouse]->Update();
 		if (Input::GetInstance()->TriggerKey(DIK_W)) {
-			pouse--;
+			if (--pouse <= -1) {
+				pouse = 2;
+			}
 		}
 		if (Input::GetInstance()->TriggerKey(DIK_S)) {
-			pouse++;
-		}
-		if (pouse >= 3) {
-			pouse = 2;
-		}
-		if (pouse <= -1) {
-			pouse = 0;
+			if (++pouse >= 3) {
+				pouse = 0;
+			}
 		}
 
 		if (Input::GetInstance()->TriggerKey(DIK_SPACE)) {
 			if (pouse == 0) {
-				pause = !pause;
+				operationSprite["ESC_Pause"]->SetIsInvisible(false);
 			}
 			else if (pouse == 1) {
 				SceneManager::GetInstance()->ChangeScene("TITLE");
@@ -699,6 +703,8 @@ void BossScene::Draw(DirectXCommon* dxcommon)
 void BossScene::DrawFrontSprite(DirectXCommon* dxcommon) {
 	SpriteCommon::GetInstance()->PreDraw();
 
+	operationSprite["ESC_Pause"]->Draw();
+
 	// 体力
 	if (player->GetHp() > 0) {
 		playerHpSprite->Draw();
@@ -717,7 +723,7 @@ void BossScene::DrawFrontSprite(DirectXCommon* dxcommon) {
 	ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_WindowBg, ImVec4(0.5f, 0.5f, 0.5f, 0.5f));
 	ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_TitleBgActive, ImVec4(0.5f, 0.125f, 0.125f, 1.f));
 
-	if (pause) {
+	if (operationSprite["ESC_Pause"]->GetIsInvisible()) {
 		pouseSprite[pouse]->Draw();
 	}
 	else {

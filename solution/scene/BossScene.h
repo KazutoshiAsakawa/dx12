@@ -15,6 +15,7 @@
 #include <Vector>
 #include <memory>
 #include <functional>
+#include <unordered_map>
 
 /// <summary>
 /// ゲームプレイシーン
@@ -63,6 +64,9 @@ private:
 	POINT mousePosDiff{};
 
 	std::unique_ptr<Sprite> aim;
+
+	// 操作画像
+	std::unordered_map<std::string, std::unique_ptr<Sprite>> operationSprite;
 
 	// スカイドーム
 	std::unique_ptr<ObjModel> skyDomeModel;
@@ -131,8 +135,6 @@ private:
 	UINT frame = 0;
 
 	UINT nowEffectFrame = 0;
-
-	bool pause = false;
 
 	UINT bossEntryNowFrame = 0;
 };

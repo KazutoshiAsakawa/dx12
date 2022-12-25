@@ -24,6 +24,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 	SpriteCommon::GetInstance()->LoadTexture(2, L"Resources/aim.png");
 	SpriteCommon::GetInstance()->LoadTexture(3, L"Resources/hp/hp.png");
 	SpriteCommon::GetInstance()->LoadTexture(4, L"Resources/hp/hpSlide.png");
+
 	SpriteCommon::GetInstance()->LoadTexture(6, L"Resources/pouse/pauseBack.png");
 	SpriteCommon::GetInstance()->LoadTexture(7, L"Resources/pouse/pauseTitle.png");
 	SpriteCommon::GetInstance()->LoadTexture(8, L"Resources/pouse/pauseClose.png");
@@ -33,12 +34,16 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 	SpriteCommon::GetInstance()->LoadTexture(11, L"Resources/operation/A.png");
 	SpriteCommon::GetInstance()->LoadTexture(12, L"Resources/operation/D.png");
 	SpriteCommon::GetInstance()->LoadTexture(13, L"Resources/operation/L_Click.png");
+	SpriteCommon::GetInstance()->LoadTexture(14, L"Resources/operation/ESC_Pause.png");
 
 	operationSprite["W"].reset(Sprite::Create(9, { 0.5f, 0.5f }, false, false));
 	operationSprite["S"].reset(Sprite::Create(10, { 0.5f, 0.5f }, false, false));
 	operationSprite["A"].reset(Sprite::Create(11, { 0.5f, 0.5f }, false, false));
 	operationSprite["D"].reset(Sprite::Create(12, { 0.5f, 0.5f }, false, false));
 	operationSprite["L_Click"].reset(Sprite::Create(13, { 0.f, 0.f }, false, false));
+	operationSprite["ESC_Pause"].reset(Sprite::Create(14, { 0.f, 0.f }, false, false));
+	// 最初は表示する
+	operationSprite["ESC_Pause"]->SetIsInvisible(false);
 
 	operationSprite["W"]->SetPosition({ WinApp::window_width / 2.f,
 										WinApp::window_height / 2.f + 50.f,
@@ -236,14 +241,13 @@ void GamePlayScene::Finalize()
 void GamePlayScene::Update()
 {
 	if (Input::GetInstance()->TriggerKey(DIK_ESCAPE)) {
-		pause = !pause;
+		bool invisibleFlag = operationSprite["ESC_Pause"]->GetIsInvisible();
+		operationSprite["ESC_Pause"]->SetIsInvisible(!invisibleFlag);
 	}
 
-	if (!pause) {
+	if (operationSprite["ESC_Pause"]->GetIsInvisible() == false) {
 		// シーン遷移
 		updateProcess();
-
-		DebugText::GetInstance()->Print("ESC : Pause", 0.f, 0.f);
 
 		// パーティクル更新
 		ParticleManager::GetInstance()->Update();
@@ -299,27 +303,24 @@ void GamePlayScene::Update()
 	else {
 		pouseSprite[pouse]->Update();
 		if (Input::GetInstance()->TriggerKey(DIK_W)) {
-			pouse--;
+			if (--pouse <= -1) {
+				pouse = 2;
+			}
 		}
 		if (Input::GetInstance()->TriggerKey(DIK_S)) {
-			pouse++;
-		}
-		if (pouse >= 3) {
-			pouse = 2;
-		}
-		if (pouse <= -1) {
-			pouse = 0;
+			if (++pouse >= 3) {
+				pouse = 0;
+			}
 		}
 
 		if (Input::GetInstance()->TriggerKey(DIK_SPACE)) {
 			if (pouse == 0) {
-				pause = !pause;
+				operationSprite["ESC_Pause"]->SetIsInvisible(false);
 			}
 			else if (pouse == 1) {
 				SceneManager::GetInstance()->ChangeScene("TITLE");
 			}
 			else if (pouse == 2) {
-				WM_DESTROY; //ウィンドウが破棄された
 				PostQuitMessage(0); //OSに対して、アプリの終了を伝える
 			}
 		}
@@ -745,7 +746,7 @@ void GamePlayScene::DrawFrontSprite(DirectXCommon* dxcommon) {
 	ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_WindowBg, ImVec4(0.5f, 0.5f, 0.5f, 0.5f));
 	ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_TitleBgActive, ImVec4(0.5f, 0.125f, 0.125f, 1.f));
 
-	if (pause) {
+	if (operationSprite["ESC_Pause"]->GetIsInvisible()) {
 		// ポーズ画面描画
 		pouseSprite[pouse]->Draw();
 	}
