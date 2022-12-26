@@ -92,6 +92,7 @@ private:
 	// ©‹@HPÅ‘å’l
 	UINT playerHpMax = 10;
 	// HP‰æ‘œ‚Ì”z—ñ
+	DirectX::XMFLOAT2 playerHpSpriteSize;
 	std::unique_ptr<Sprite> playerHpSprite;
 	std::unique_ptr<Sprite> playerHpSlide;
 

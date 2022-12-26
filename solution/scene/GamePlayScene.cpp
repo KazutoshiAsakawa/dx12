@@ -66,11 +66,15 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 	aim.reset(Sprite::Create(2));
 
 	// hp画像
+	playerHpSpriteSize = { 330.f, 30.f };
+
 	playerHpSprite.reset(Sprite::Create(3, { 0,1 }));
-	playerHpSprite->SetPosition(XMFLOAT3(40, WinApp::window_height - 40, 0));
+	playerHpSprite->SetPosition(XMFLOAT3(35, WinApp::window_height - 35, 0));
 
 	playerHpSlide.reset(Sprite::Create(4, { 0,1 }));
 	playerHpSlide->SetPosition(XMFLOAT3(35, WinApp::window_height - 35, 0));
+	playerHpSlide->SetSize(playerHpSpriteSize);
+	playerHpSlide->TransferVertexBuffer();
 
 	// ポーズ画面の画像を作る
 	pouseSprite.resize(pouseMax);
@@ -284,8 +288,8 @@ void GamePlayScene::Update()
 		if (player->GetHp() > 0) {
 
 			// スプライト横幅 = 最大値 * hpの割合
-			playerHpSprite->SetSize(XMFLOAT2(playerHpSprite->GetTexSize().x * (float)player->GetHp() / playerHpMax,
-				playerHpSprite->GetSize().y));
+			playerHpSprite->SetSize(XMFLOAT2(playerHpSpriteSize.x * (float)player->GetHp() / playerHpMax,
+				playerHpSpriteSize.y));
 
 			playerHpSprite->TransferVertexBuffer();
 

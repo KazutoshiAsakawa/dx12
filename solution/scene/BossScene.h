@@ -85,6 +85,7 @@ private:
 	// 自機HP最大値
 	UINT playerHpMax = 30;
 	// HP画像
+	DirectX::XMFLOAT2 playerHpSpriteSize;
 	std::unique_ptr<Sprite> playerHpSprite;
 	std::unique_ptr<Sprite> playerHpSlide;
 
@@ -113,6 +114,7 @@ private:
 	UINT bossHpMax = 30;
 	float bossScale;
 	// ボスHP画像
+	DirectX::XMFLOAT2 bossHpSpriteSize;
 	std::unique_ptr<Sprite> bossHpSprite;
 	std::unique_ptr<Sprite> bossHpSlide;
 

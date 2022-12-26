@@ -95,11 +95,13 @@ void BossScene::Initialize(DirectXCommon* dxcommon)
 	player->SetHp(playerHpMax);
 
 	// hp画像
+	playerHpSpriteSize = { 330.f, 30.f };
 	playerHpSprite.reset(Sprite::Create(3, { 0,1 }));
-	playerHpSprite->SetPosition(XMFLOAT3(40, WinApp::window_height - 40, 0));
-	playerHpSprite->SetSize({ 0.f, playerHpSprite->GetTexSize().y });
+	playerHpSprite->SetPosition(XMFLOAT3(35, WinApp::window_height - 35, 0));
+	playerHpSprite->SetSize({ 0.f,playerHpSpriteSize.y });
 	playerHpSlide.reset(Sprite::Create(4, { 0,1 }));
 	playerHpSlide->SetPosition(XMFLOAT3(35, WinApp::window_height - 35, 0));
+	playerHpSlide->SetSize(playerHpSpriteSize);
 
 	playerHpSprite->TransferVertexBuffer();
 	playerHpSprite->Update();
@@ -140,14 +142,17 @@ void BossScene::Initialize(DirectXCommon* dxcommon)
 	bossEntryNowFrame = 0;
 
 	// ボスHPスプライト
+	bossHpSpriteSize = { 430.f, 30.f };
 	bossHpSprite.reset(Sprite::Create(3, { 0.5f, 0.f }));
 	bossHpSlide.reset(Sprite::Create(4, { 0.5f, 0.f }));
 
-	bossHpSprite->SetPosition({ (float)WinApp::window_width / 2.f, 10.f, 0.f });
+	bossHpSprite->SetPosition({ (float)WinApp::window_width / 2.f, 5.f, 0.f });
 	bossHpSlide->SetPosition({ (float)WinApp::window_width / 2.f, 5.f, 0.f });
 
 	bossHpSprite->SetColor({ 0.5f, 1.f, 1.f, 1.f });
-	bossHpSprite->SetSize({ 0.f, bossHpSprite->GetTexSize().y });
+
+	bossHpSprite->SetSize({ 0.f, bossHpSpriteSize.y });
+	bossHpSlide->SetSize(bossHpSpriteSize);
 
 	bossHpSprite->TransferVertexBuffer();
 	bossHpSlide->TransferVertexBuffer();
@@ -293,11 +298,11 @@ void BossScene::bossEntry()
 
 		boss->SetAlive(true);
 
-		playerHpSprite->SetSize({ playerHpSprite->GetTexSize().x, playerHpSprite->GetSize().y });
+		playerHpSprite->SetSize(playerHpSpriteSize);
 		playerHpSprite->TransferVertexBuffer();
 		playerHpSprite->Update();
 
-		bossHpSprite->SetSize({ bossHpSprite->GetTexSize().x, bossHpSprite->GetSize().y });
+		bossHpSprite->SetSize(bossHpSpriteSize);
 		bossHpSprite->TransferVertexBuffer();
 		bossHpSprite->Update();
 	}
@@ -306,12 +311,12 @@ void BossScene::bossEntry()
 		float rate = (float)bossEntryNowFrame / (float)frameMax;
 
 		// 体力バーをだんだん増やす
-		playerHpSprite->SetSize({ playerHpSprite->GetTexSize().x * (1.f - powf(1.f - rate, 4.f)),
+		playerHpSprite->SetSize({ playerHpSpriteSize.x * (1.f - powf(1.f - rate, 4.f)),
 			playerHpSprite->GetSize().y });
 		playerHpSprite->TransferVertexBuffer();
 		playerHpSprite->Update();
 
-		bossHpSprite->SetSize({ bossHpSprite->GetTexSize().x * (1.f - powf(1.f - rate, 4.f)),
+		bossHpSprite->SetSize({ bossHpSpriteSize.x * (1.f - powf(1.f - rate, 4.f)),
 			bossHpSprite->GetSize().y });
 		bossHpSprite->TransferVertexBuffer();
 		bossHpSprite->Update();
@@ -596,7 +601,7 @@ void BossScene::play()
 	if (player->GetHp() > 0) {
 
 		// スプライト横幅 = 最大値 * hpの割合
-		playerHpSprite->SetSize(XMFLOAT2(playerHpSprite->GetTexSize().x * (float)player->GetHp() / playerHpMax,
+		playerHpSprite->SetSize(XMFLOAT2(playerHpSpriteSize.x * (float)player->GetHp() / playerHpMax,
 			playerHpSprite->GetSize().y));
 
 		playerHpSprite->TransferVertexBuffer();
@@ -609,7 +614,7 @@ void BossScene::play()
 	if (boss->GetHp() > 0) {
 
 		// スプライト横幅 = 最大値 * hpの割合
-		bossHpSprite->SetSize(XMFLOAT2(bossHpSprite->GetTexSize().x * (float)boss->GetHp() / bossHpMax,
+		bossHpSprite->SetSize(XMFLOAT2(bossHpSpriteSize.x * (float)boss->GetHp() / bossHpMax,
 			bossHpSprite->GetSize().y));
 
 		bossHpSprite->TransferVertexBuffer();

@@ -40,7 +40,6 @@ Player::Player()
 
 	// ‘Ì—Í‚ğ‰Šú‰»
 	hp = 1;	
-
 }
 
 void Player::Update()
