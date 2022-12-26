@@ -387,7 +387,7 @@ void GamePlayScene::play()
 				operationSprite["W"]->SetIsInvisible(true);
 
 			}
-			else if (hitS && pos.y > -4.f) {
+			if (hitS && pos.y > -4.f) {
 				pos.y -= moveSpeed;
 				rot.x += 4.f;
 				operationSprite["S"]->SetIsInvisible(true);
@@ -398,7 +398,7 @@ void GamePlayScene::play()
 				rot.z -= 4.f;
 				operationSprite["D"]->SetIsInvisible(true);
 			}
-			else if (hitA && pos.x > -10.f) {
+			if (hitA && pos.x > -10.f) {
 				pos.x -= moveSpeed;
 				rot.z += 4.f;
 				operationSprite["A"]->SetIsInvisible(true);

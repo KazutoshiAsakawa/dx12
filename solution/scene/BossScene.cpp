@@ -399,7 +399,7 @@ void BossScene::play()
 				pos.y += forward.y;
 				pos.z += forward.z;
 			}
-			else if (hitS) {
+			if (hitS) {
 				pos.x -= forward.x;
 				pos.y -= forward.y;
 				pos.z -= forward.z;
@@ -410,7 +410,7 @@ void BossScene::play()
 				pos.y += right.y;
 				pos.z += right.z;
 			}
-			else if (hitA) {
+			if (hitA) {
 				pos.x -= right.x;
 				pos.y -= right.y;
 				pos.z -= right.z;

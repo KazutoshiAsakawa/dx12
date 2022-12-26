@@ -39,7 +39,8 @@ Player::Player()
 	shotTarget = nullptr;
 
 	// ‘Ì—Í‚ğ‰Šú‰»
-	hp = 1;
+	hp = 1;	
+
 }
 
 void Player::Update()
