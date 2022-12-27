@@ -75,6 +75,7 @@ protected:
 
 	// ƒ‚ƒfƒ‹
 	std::unique_ptr<ObjModel> bulletModel;
+	float bulletScale;
 	// “G‚ÌˆÚ“®‘¬“x
 	DirectX::XMFLOAT3 vel{};
 	// ’e

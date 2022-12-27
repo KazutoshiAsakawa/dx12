@@ -573,7 +573,7 @@ void GamePlayScene::play()
 			[](const std::unique_ptr <Enemy>& i) {return !i->GetAlive() && i->GetBullet().empty(); }), enemy.end());
 	}
 
-	// “G‚Ì’e‚ÆŽ©‹@
+	// “G‚Ì’e‚ÆŽ©‹@‚Ì“–‚½‚è”»’è
 	{
 		Sphere playerShape;
 

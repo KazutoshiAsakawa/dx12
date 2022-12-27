@@ -130,7 +130,7 @@ void BossScene::Initialize(DirectXCommon* dxcommon)
 
 	boss->SetPhaseApproach();
 	boss->SetAttackTarget(player.get());
-	boss->SetBulletModel(enemyModel.get());
+	boss->SetBulletModel(ObjModel::LoadFromObj("enemyBullet"));
 	bossScale = 2.f;
 	boss->SetScale({ bossScale,bossScale,bossScale });
 
@@ -536,7 +536,7 @@ void BossScene::play()
 		}
 	}
 
-	// “G‚Ì’e‚Æ©‹@
+	// “G‚Ì’e‚Æ©‹@‚Ì“–‚½‚è”»’è
 	{
 		Sphere playerShape;
 
@@ -549,6 +549,7 @@ void BossScene::play()
 				if (!eb.GetAlive())continue;
 				Sphere eBulletShape;
 				eBulletShape.center = XMLoadFloat3(&eb.GetPosition());
+				// “G’e‚ÌZ²‚Ì‘å‚«‚³
 				eBulletShape.radius = eb.GetScale().z;
 
 				// “–‚½‚Á‚½‚çÁ‚¦‚é

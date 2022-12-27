@@ -49,8 +49,9 @@ namespace {
 
 Enemy::Enemy(ObjModel* model, const DirectX::XMFLOAT3& position)
 	:GameObject(model, position), phase(std::bind(&Enemy::PhaseApproach, this)) {
-	// Shot(ObjModel::LoadFromObj("rat"),1);
 	bulletModel.reset(ObjModel::LoadFromObj("enemyBullet"));
+	bulletScale = 1.f;
+
 	nowShotFrame = shotInterval;
 
 	hp = 2;
@@ -165,7 +166,7 @@ void Enemy::Draw()
 void Enemy::Shot(ObjModel* model, float scale)
 {
 	bullet.emplace_back(model, obj->GetPosition());
-	bullet.back().SetScale({ scale / 3,scale / 3 ,scale });
+	bullet.back().SetScale({ scale ,scale ,scale });
 	bullet.back().SetParent(obj->GetParent());
 	XMFLOAT3 vel = { 0.f,0.f,-0.8f };
 
@@ -254,7 +255,7 @@ void Enemy::PhaseApproach()
 
 	// 0‚É‚È‚Á‚½‚çŒ‚‚Â
 	if (nowShotFrame-- == 0) {
-		Shot(bulletModel.get(), 1);
+		Shot(bulletModel.get(), bulletScale);
 		// ‰Šú‰»
 		nowShotFrame = shotInterval;
 	}
@@ -293,7 +294,7 @@ void Enemy::Direction() {
 
 	// 0‚É‚È‚Á‚½‚çŒ‚‚Â
 	if (nowShotFrame-- == 0) {
-		Shot(bulletModel.get(), 1);
+		Shot(bulletModel.get(), bulletScale);
 		// ‰Šú‰»
 		nowShotFrame = shotInterval;
 	}

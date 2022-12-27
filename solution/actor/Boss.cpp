@@ -139,6 +139,7 @@ void Boss::PhaseAttack()
 	}
 }
 
+// ägéUíeÇåÇÇ¬ÉtÉFÅ[ÉY
 void Boss::PhaseSpreadAttack()
 {
 	if (nowShotFrame-- == 0) {
@@ -154,6 +155,7 @@ void Boss::PhaseSpreadAttack()
 	}
 }
 
+// ägéUíeÇåÇÇ¬
 void Boss::meleeAttack()
 {
 	// ägéUó¶
@@ -164,15 +166,13 @@ void Boss::meleeAttack()
 	}
 }
 
+// ägéUíe
 void Boss::spreadBullet(ObjModel* model, float scale, float angle)
 {
 	bullet.emplace_back(model, obj->GetPosition());
-	bullet.back().SetScale({ scale / 3,scale / 3 ,scale });
+	bullet.back().SetScale({ scale, scale ,scale });
 	bullet.back().SetParent(obj->GetParent());
 	XMFLOAT3 vel = { 0.f,0.f,-0.4f };
-
-	/*vel.x = cos(angle) * 0.4f;
-	vel.z = sin(angle) * 0.4f;*/
 
 	// ê›íËÇ≥ÇÍÇƒÇ¢ÇΩÇÁ
 	if (shotTarget != nullptr) {
@@ -196,6 +196,10 @@ void Boss::spreadBullet(ObjModel* model, float scale, float angle)
 		// FLOAT3Ç…ïœä∑
 		XMStoreFloat3(&vel, vectorVel);
 
+		// ïWìIÇ…å¸ÇØÇÈ
+		float rotx = atan2f(vel.y, vel.z);
+		float roty = atan2f(vel.x, vel.z);
+		bullet.back().SetRotation(XMFLOAT3(XMConvertToDegrees(rotx), XMConvertToDegrees(roty), 0));
 	}
 
 	bullet.back().SetVel(vel);
