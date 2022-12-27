@@ -5,6 +5,8 @@
 #include "ObjObject3d.h"
 #include "DirectXCommon.h"
 
+#include <unordered_map>
+
 /// <summary>
 /// タイトルシーン
 /// </summary>
@@ -30,9 +32,14 @@ public:
 	/// 描画
 	/// </summary>
 	void Draw(DirectXCommon* dxcommon) override;
+	void DrawFrontSprite(DirectXCommon* dxcommon) override;
 
 private:
-	// std::vector<Sprite*> sprites;
-	Sprite* sprite = nullptr;
+	// フレーム
+	UINT frame;
+
+	// タイトル画面
+	std::unordered_map<std::string, std::unique_ptr<Sprite>> title;
+
 };
 

@@ -65,6 +65,7 @@ public:
 	inline const DirectX::XMFLOAT2& GetSize() { return size; };
 	inline const DirectX::XMFLOAT2& GetTexSize() { return texSize; };
 	inline const DirectX::XMFLOAT3& GetPosition() { return position; }
+    inline const DirectX::XMFLOAT4& GetColor() { return color; }
 	inline bool GetIsInvisible() { return isInvisible; }
 
 private:
