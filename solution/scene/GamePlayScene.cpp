@@ -14,6 +14,17 @@
 
 using namespace DirectX;
 
+namespace {
+	XMFLOAT3 lerp(const XMFLOAT3& a, const XMFLOAT3& b, float t)
+	{
+		XMFLOAT3 ret;
+		ret.x = a.x + t * (b.x - a.x);
+		ret.y = a.y + t * (b.y - a.y);
+		ret.z = a.z + t * (b.z - a.z);
+		return ret;
+	}
+}
+
 void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 {
 	// マウスカーソルを消す
@@ -62,6 +73,13 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 										0.f
 		});
 
+	// ESC以外の操作説明を非表示にする
+	for (auto& i : operationSprite) {
+		if (i.first != "ESC_Pause") {
+			i.second->SetIsInvisible(true);
+		}
+	}
+
 	// スプライトの生成
 	aim.reset(Sprite::Create(2));
 
@@ -85,8 +103,11 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 
 	// カメラの初期化
 	camera.reset(new TrackingCamera());
+	normalCamera.reset(new Camera(WinApp::window_width, WinApp::window_height));
 
-	ObjObject3d::SetCamera(camera.get());
+	// カメラをセット
+	nowCamera = normalCamera.get();
+	ObjObject3d::SetCamera(normalCamera.get());
 
 	// レーン
 	lane.reset(new GameObject(nullptr));
@@ -129,6 +150,11 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 	// プレイヤーの体力を設定
 	player->SetHp(playerHpMax);
 
+	playerEntryStartPos = { 0,0,-100 };
+	playerEntryEndPos = { 0,0,0 };
+
+	player->SetPosition(playerEntryStartPos);
+
 	// カメラをレーンの位置にセット
 	camera->SetTrackingTarget(player.get());
 	camera->SetTarget(lane->GetPosition());
@@ -136,6 +162,15 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 	eye.z -= 50;
 	eye.y += 10;
 	camera->SetEye(eye);
+
+	eye.x += 25.f;
+	normalCamera->SetEye(eye);
+	normalCamera->SetUp({ 0,1,0 });
+	XMFLOAT3 targetPos = lane->GetPosition();
+	targetPos.x += player->GetPosition().x;
+	targetPos.y += player->GetPosition().y;
+	targetPos.z += player->GetPosition().z;
+	normalCamera->SetTarget(targetPos);
 
 	// 敵
 	enemy.resize(0);
@@ -256,7 +291,7 @@ void GamePlayScene::Update()
 		// パーティクル更新
 		ParticleManager::GetInstance()->Update();
 
-		camera->Update();
+		nowCamera->Update();
 		lane->Update();
 
 		//fbxObj->Update();
@@ -338,20 +373,64 @@ void GamePlayScene::start()
 	// モザイクをかける時間
 	constexpr UINT mosaicFrameMax = 50;
 
-	// モザイクの時間が最大までいったらplay関数に変える
+	// モザイクの時間が最大までいったら
 	if (++mosaicFrame > mosaicFrameMax) {
+		// モザイクの細かさをもとに戻す
 		PostEffect::GetInstance()->SetMosaicNum({ WinApp::window_width ,WinApp::window_height });
-		// updateProcessにplay関数をセット
-		updateProcess = std::bind(&GamePlayScene::play, this);
+
+		// updateProcessにentryPlayer関数をセット
+		updateProcess = std::bind(&GamePlayScene::entryPlayer, this);
+
+		// モザイクのフレーム数をリセット
 		mosaicFrame = 0;
 	}
 	else {
+		// 経過フレーム数に応じてモザイクをかける
 		XMFLOAT2 mosaicLevel = {};
 		float rate = (float)mosaicFrame / mosaicFrameMax;
 		mosaicLevel.x = WinApp::window_width * rate;
 		mosaicLevel.y = WinApp::window_height * rate;
 		PostEffect::GetInstance()->SetMosaicNum(mosaicLevel);
 	}
+}
+
+void GamePlayScene::entryPlayer()
+{
+	constexpr UINT frameMax = 180;
+
+	if (++playerEntryFrame > frameMax) {
+		// カメラを変更
+		nowCamera = camera.get();
+		ObjObject3d::SetCamera(camera.get());
+
+		// updateProcessにplay関数をセット
+		updateProcess = std::bind(&GamePlayScene::play, this);
+
+		// プレイヤー登場演出のフレーム数をリセット
+		playerEntryFrame = 0;
+
+		player->SetPosition(playerEntryEndPos);
+
+		// ESC以外の操作説明を表示に戻す
+		for (auto& i : operationSprite) {
+			if (i.first != "ESC_Pause") {
+				i.second->SetIsInvisible(false);
+			}
+		}
+	}
+	else {
+		// プレイヤーの位置を変更
+		XMFLOAT3 playerPos = lerp(playerEntryStartPos, playerEntryEndPos, (float)playerEntryFrame / frameMax);
+		player->SetPosition(playerPos);
+
+		// カメラ注視点の位置を変更
+		XMFLOAT3 targetPos = lane->GetPosition();
+		targetPos.x += player->GetPosition().x;
+		targetPos.y += player->GetPosition().y;
+		targetPos.z += player->GetPosition().z;
+		normalCamera->SetTarget(targetPos);
+	}
+
 }
 
 void GamePlayScene::play()

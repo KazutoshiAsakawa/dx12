@@ -44,10 +44,18 @@ public:
 	void start();
 
 	/// <summary>
+	/// プレイヤーの登場演出
+	/// </summary>
+	void entryPlayer();
+
+	/// <summary>
 	/// プレイ画面
 	/// </summary>
 	void play();
 
+	/// <summary>
+	/// 終わったときの演出
+	/// </summary>
 	void end();
 
 	/// <summary>
@@ -121,6 +129,8 @@ private:
 	float enemyScale = 2;
 	// カメラ
 	std::unique_ptr<TrackingCamera> camera;
+	std::unique_ptr<Camera> normalCamera;
+	Camera* nowCamera = nullptr;
 
 	// レーンの真ん中
 	std::unique_ptr<GameObject> lane;
@@ -131,6 +141,10 @@ private:
 	UINT avoidFrame = 0;
 	UINT avoidFrameMax = 60;
 
+	// 登場演出の座標
+	DirectX::XMFLOAT3 playerEntryStartPos;
+	DirectX::XMFLOAT3 playerEntryEndPos;
+
 	// 敵
 	std::list<std::unique_ptr<Enemy>> enemy;
 
@@ -140,6 +154,9 @@ private:
 	// モザイク
 	bool mosaicFlag = false;
 	UINT mosaicFrame = 0;
+
+	// 開始演出
+	UINT playerEntryFrame = 0;
 
 	// RGBずらし
 	UINT shiftNowFrame = 0;
