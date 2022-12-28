@@ -118,6 +118,10 @@ private:
 	std::unique_ptr<Sprite> bossHpSprite;
 	std::unique_ptr<Sprite> bossHpSlide;
 
+	// ƒ{ƒX‚Ì–¼‘O‰æ‘œ
+	std::unique_ptr<Sprite> bossText;
+
+
 	bool killBossFlag = false;
 
 	std::function<void()> updateProcess;

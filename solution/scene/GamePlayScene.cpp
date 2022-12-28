@@ -734,38 +734,25 @@ void GamePlayScene::Draw(DirectXCommon* dxcommon)
 void GamePlayScene::DrawFrontSprite(DirectXCommon* dxcommon) {
 	SpriteCommon::GetInstance()->PreDraw();
 
-	// 体力
+	// 体力描画
 	if (player->GetHp() > 0) {
 		playerHpSprite->Draw();
 	}
 	playerHpSlide->Draw();
 
+	// 操作説明描画
 	for (auto& i : operationSprite)
 	{
 		i.second->Draw();
 	}
 
+	// 照準描画
 	aim->Draw();
-
-	ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_WindowBg, ImVec4(0.5f, 0.5f, 0.5f, 0.5f));
-	ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_TitleBgActive, ImVec4(0.5f, 0.125f, 0.125f, 1.f));
 
 	if (operationSprite["ESC_Pause"]->GetIsInvisible()) {
 		// ポーズ画面描画
 		pouseSprite[pouse]->Draw();
 	}
-	else {
-		ImGui::SetNextWindowSize(ImVec2(100, 200));
-		ImGui::Begin(u8"説明", nullptr, ImGuiWindowFlags_NoSavedSettings);
-		ImGui::Text(u8"スペース:回避");
-
-		ImGui::SetNextWindowPos(ImVec2(ImGui::GetWindowPos().x,
-			ImGui::GetWindowPos().y + ImGui::GetWindowSize().y));
-		ImGui::End();
-	}
-
-	ImGui::PopStyleColor();
-	ImGui::PopStyleColor();
 }
 
 XMVECTOR GamePlayScene::SplinePosition(const std::vector<XMVECTOR>& posints, size_t startIndex, float t)

@@ -40,6 +40,8 @@ void BossScene::Initialize(DirectXCommon* dxcommon)
 
 	SpriteCommon::GetInstance()->LoadTexture(9, L"Resources/operation/ESC_Pause.png");
 
+	SpriteCommon::GetInstance()->LoadTexture(10, L"Resources/bossText.png");
+
 	// スプライトの生成
 	aim.reset(Sprite::Create(2));
 	aim->SetPosition({ WinApp::window_width / 2.f ,WinApp::window_height / 2.f, 0.f });
@@ -134,12 +136,15 @@ void BossScene::Initialize(DirectXCommon* dxcommon)
 	bossScale = 2.f;
 	boss->SetScale({ bossScale,bossScale,bossScale });
 
-	// ボスの体力
-	boss->SetHp(bossHpMax);
 
 	boss->SetAlive(false);
 
 	bossEntryNowFrame = 0;
+
+#pragma region ボスHP
+
+	// ボスの体力
+	boss->SetHp(bossHpMax);
 
 	// ボスHPスプライト
 	bossHpSpriteSize = { 430.f, 30.f };
@@ -159,6 +164,25 @@ void BossScene::Initialize(DirectXCommon* dxcommon)
 
 	bossHpSprite->Update();
 	bossHpSlide->Update();
+
+#pragma endregion ボスHP
+
+#pragma region ボス名前
+
+	// ボスの名前スプライト
+	bossText.reset(Sprite::Create(10, { 0.5f, 0.5f }));
+	bossText->SetPosition({ (float)WinApp::window_width / 2.f, (float)WinApp::window_height / 4.f * 3.f, 0.f });
+
+	constexpr float texSizeX = WinApp::window_width * (3.f / 4.f);	// 画像横幅は画面横幅の3/4
+	float texRate = bossText->GetTexSize().y / bossText->GetTexSize().x;	// 縦は横の何倍か
+	bossText->SetSize({ texSizeX, texSizeX * texRate });
+
+	bossText->SetIsInvisible(true);
+
+	bossText->TransferVertexBuffer();
+	bossText->Update();
+
+#pragma endregion ボス名前
 
 #pragma endregion ボス
 
@@ -259,6 +283,7 @@ void BossScene::start()
 		camera->SetTrackingTarget(boss.get());
 		updateProcess = std::bind(&BossScene::bossEntry, this);
 		mosaicFrame = 0;
+		bossText->SetIsInvisible(false);
 	}
 	else {
 		XMFLOAT2 mosaicLevel = {};
@@ -305,6 +330,9 @@ void BossScene::bossEntry()
 		bossHpSprite->SetSize(bossHpSpriteSize);
 		bossHpSprite->TransferVertexBuffer();
 		bossHpSprite->Update();
+
+		// ボスの名前非表示
+		bossText->SetIsInvisible(true);
 	}
 	else {
 		// 進行度
@@ -334,12 +362,10 @@ void BossScene::bossEntry()
 		// 今のカメラの距離をセット
 		camera->SetEyeToCameraTargetLength(cameraLength);
 
-		// ボスの名前(イメージ)
-		DebugText::GetInstance()->Print("boss: obake",
-			WinApp::window_width / DebugText::fontWidth,
-			(WinApp::window_height / 3) * 2,
-			10.f,
-			{ 1.f, 1.f, 1.f, 1.f - (rate * rate * rate * rate) });
+		// ボスの名前
+		bossText->SetColor({ 1.f, 1.f, 1.f, 1.f - (rate * rate * rate * rate) });
+
+		bossText->Update();
 	}
 }
 
@@ -347,10 +373,8 @@ void BossScene::play()
 {
 	Input* input = Input::GetInstance();
 
-	// レーンの位置
-	{
-		skyDomeObj->SetPosition(player->GetPosition());
-	}
+	// スカイドームの位置
+	skyDomeObj->SetPosition(player->GetPosition());
 
 	// プレイヤーの移動と回避
 	{
@@ -723,27 +747,13 @@ void BossScene::DrawFrontSprite(DirectXCommon* dxcommon) {
 	}
 	bossHpSlide->Draw();
 
+	bossText->Draw();
 
 	aim->Draw();
-
-	ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_WindowBg, ImVec4(0.5f, 0.5f, 0.5f, 0.5f));
-	ImGui::PushStyleColor(ImGuiCol_::ImGuiCol_TitleBgActive, ImVec4(0.5f, 0.125f, 0.125f, 1.f));
 
 	if (operationSprite["ESC_Pause"]->GetIsInvisible()) {
 		pouseSprite[pouse]->Draw();
 	}
-	else {
-		ImGui::SetNextWindowSize(ImVec2(200, 200));
-		ImGui::Begin(u8"説明", nullptr, ImGuiWindowFlags_NoSavedSettings);
-		ImGui::Text(u8"スペース:回避");
-
-		ImGui::SetNextWindowPos(ImVec2(ImGui::GetWindowPos().x,
-			ImGui::GetWindowPos().y + ImGui::GetWindowSize().y));
-		ImGui::End();
-	}
-
-	ImGui::PopStyleColor();
-	ImGui::PopStyleColor();
 }
 
 XMVECTOR BossScene::SplinePosition(const std::vector<XMVECTOR>& posints, size_t startIndex, float t)
