@@ -582,10 +582,11 @@ void BossScene::play()
 					player->Damage(1);				// プレイヤーにダメージ
 					shiftFlag = true;				// RGBずらしをする
 					nowFrame = 0;
-					if (player->GetHp() == 0) {		// 体力が0になったら
-						player->SetAlive(false);
 
-						updateProcess = std::bind(&BossScene::end, this, "GAMEOVER");
+					if (player->GetHp() == 0) {		// 体力が0になったら
+						shiftFlag = false;	// RGBずらしはしない
+						// プレイヤー死亡演出へ移動
+						updateProcess = std::bind(&BossScene::deathPlayer, this);
 					}
 				}
 			}
@@ -678,6 +679,32 @@ void BossScene::killEffect()
 		// 大きさをセット
 		boss->SetScale({ scale, scale, scale });
 	}
+}
+
+void BossScene::deathPlayer()
+{
+	XMFLOAT3 rota = player->GetRotation();
+	rota.z += 1.f;
+
+	float scale = player->GetScale().z;
+	scale -= 0.01f;
+
+	if (rota.z > 90.f || scale < 0.f)
+	{
+		scale = 0.f;
+		player->SetAlive(false);
+		updateProcess = std::bind(&BossScene::end, this, "GAMEOVER");
+	}
+	player->SetRotation(rota);
+	player->SetScale({ scale, scale, scale });
+
+	// 地面まで落ちる
+	XMFLOAT3 pos = player->GetPosition();
+	if (pos.y > -4.f) {
+		pos.y -= 0.1f;
+		player->SetPosition(pos);
+	}
+
 }
 
 void BossScene::end(const std::string& nextScene)

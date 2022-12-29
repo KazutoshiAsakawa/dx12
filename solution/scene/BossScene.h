@@ -38,11 +38,36 @@ public:
 	/// </summary>
 	void Update() override;
 
-	void start();	// 開始
-	void bossEntry();	// ボス登場
-	void play();	// ゲーム本編
-	void killEffect();	// ボスを倒したエフェクト
-	void end(const std::string& nextScene);	// 終了
+	/// <summary>
+	/// 開始
+	/// </summary>
+	void start();
+
+	/// <summary>
+	/// ボス登場
+	/// </summary>
+	void bossEntry();
+
+	/// <summary>
+	/// ゲーム本編
+	/// </summary>
+	void play();
+
+	/// <summary>
+	/// ボスを倒したエフェクト
+	/// </summary>
+	void killEffect();
+
+	/// <summary>
+	/// プレイヤーの死亡演出
+	/// </summary>
+	void deathPlayer();
+
+	/// <summary>
+	///	終わったときの演出
+	/// </summary>
+	/// <param name="nextScene">次のシーン</param>
+	void end(const std::string& nextScene);
 
 	/// <summary>
 	/// 描画
