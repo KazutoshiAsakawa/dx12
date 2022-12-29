@@ -53,6 +53,12 @@ public:
 	/// </summary>
 	void play();
 
+
+	/// <summary>
+	/// プレイヤーの退場演出
+	/// </summary>
+	void exitPlayer();
+
 	/// <summary>
 	/// 終わったときの演出
 	/// </summary>
@@ -141,9 +147,6 @@ private:
 	UINT avoidFrame = 0;
 	UINT avoidFrameMax = 60;
 
-	// 登場演出の座標
-	DirectX::XMFLOAT3 playerEntryStartPos;
-	DirectX::XMFLOAT3 playerEntryEndPos;
 
 	// 敵
 	std::list<std::unique_ptr<Enemy>> enemy;
@@ -157,6 +160,15 @@ private:
 
 	// 開始演出
 	UINT playerEntryFrame = 0;
+	// 登場演出の座標
+	DirectX::XMFLOAT3 playerEntryStartPos;
+	DirectX::XMFLOAT3 playerEntryEndPos;
+
+	// 退場演出
+	UINT playerExitFrame = 0;
+	// 登場演出の座標
+	DirectX::XMFLOAT3 playerExitStartPos;
+	DirectX::XMFLOAT3 playerExitEndPos;
 
 	// RGBずらし
 	UINT shiftNowFrame = 0;

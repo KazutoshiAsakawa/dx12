@@ -133,7 +133,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 	// 自機の読み込み
 	pBulletModel.reset(ObjModel::LoadFromObj("playerBullet"));
 	// 敵の読み込み
-	enemyModel.reset(ObjModel::LoadFromObj("butterfly"));// enemy2
+	enemyModel.reset(ObjModel::LoadFromObj("butterfly")); // enemy2
 
 	//デバイスをセット
 	FbxObject3d::SetDevice(dxcommon->GetDev());
@@ -150,9 +150,10 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 	// プレイヤーの体力を設定
 	player->SetHp(playerHpMax);
 
+	// プレイヤー登場演出の開始時座標
 	playerEntryStartPos = { 0,0,-100 };
+	// プレイヤー登場演出の終了時座標
 	playerEntryEndPos = { 0,0,0 };
-
 	player->SetPosition(playerEntryStartPos);
 
 	// カメラをレーンの位置にセット
@@ -181,8 +182,8 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 	// 更新処理の関数を入れる
 	updateProcess = std::bind(&GamePlayScene::start, this);
 
-	// 音声読み込み
-	Audio::GetInstance()->LoadWave("Alarm01.wav");
+	// SE読み込み
+	Audio::GetInstance()->LoadWave("sound/Kagura_Suzu02-1.wav");
 
 	// スプライン曲線
 	csv = Enemy::LoadCsv("Resources/spline.csv");
@@ -439,6 +440,13 @@ void GamePlayScene::play()
 
 	skyDomeObj->SetPosition(lane->GetPosition());
 
+#ifdef _DEBUG
+	// ボスシーンに行く
+	if (input->TriggerKey(DIK_F)) {
+		updateProcess = std::bind(&GamePlayScene::end, this);
+	}
+#endif //_DEBUG
+
 	// プレイヤーの移動と回避
 	{
 		const bool hitW = Input::GetInstance()->PushKey(DIK_W);
@@ -510,12 +518,24 @@ void GamePlayScene::play()
 
 	enemyFrame.remove_if([&](std::pair<UINT, UINT>& i) {return i.first <= frame; });
 
-	// 敵が全部居なくなったらエンドシーンに行く
-	{
-		if (enemyFrame.empty() && enemy.empty()) {
+	// 敵が全部居なくなったら次のシーンに行く
+	if (enemyFrame.empty() && enemy.empty()) {
+		// 退場演出の位置を保存
+		playerExitStartPos = player->GetPosition();
 
-			updateProcess = std::bind(&GamePlayScene::end, this);
-		}
+		playerExitEndPos = playerExitStartPos;
+		playerExitEndPos.z += 100.f;
+
+		// カメラを変更
+		ObjObject3d::SetCamera(normalCamera.get());
+		nowCamera = normalCamera.get();
+		XMFLOAT3 pos = lane->GetPosition();
+		pos.x += player->GetPosition().x;
+		pos.y += player->GetPosition().y;
+		pos.z += player->GetPosition().z;
+		normalCamera->SetEye(pos);
+
+		updateProcess = std::bind(&GamePlayScene::exitPlayer, this);
 	}
 
 
@@ -628,6 +648,9 @@ void GamePlayScene::play()
 
 						// パーティクルの発生
 						ParticleManager::GetInstance()->CreateParticle(pos, 100, 4, 10);
+
+						// SEを再生
+						Audio::GetInstance()->PlayWave("sound/Kagura_Suzu02-1.wav");
 					}
 
 					// パーティクルの場所を設定
@@ -685,13 +708,6 @@ void GamePlayScene::play()
 		}
 	}
 
-#ifdef _DEBUG
-	// ボスシーンに行く
-	if (input->TriggerKey(DIK_F)) {
-		updateProcess = std::bind(&GamePlayScene::end, this);
-	}
-#endif //_DEBUG
-
 	if (shiftFlag) {
 
 		DamageEffect(shiftMaxFrame, shiftNowFrame);
@@ -745,6 +761,39 @@ void GamePlayScene::play()
 		}
 	}
 	frame++;
+}
+
+void GamePlayScene::exitPlayer()
+{
+	constexpr UINT frameMax = 120;
+
+	// 時間が来たら
+	if (++playerExitFrame > frameMax)
+	{
+		updateProcess = std::bind(&GamePlayScene::end, this);
+
+		// プレイヤー退場演出のフレーム数をリセット
+		playerEntryFrame = 0;
+	}
+	else
+	{
+		float rate = (float)playerExitFrame / frameMax;
+
+		// プレイヤーの今の位置
+		XMFLOAT3 nowPos = lerp(playerExitStartPos, playerExitEndPos, rate);
+		player->SetPosition(nowPos);
+
+		// カメラの注視点
+		nowPos.x += lane->GetPosition().x;
+		nowPos.y += lane->GetPosition().y;
+		nowPos.z += lane->GetPosition().z;
+		normalCamera->SetTarget(nowPos);
+
+		// プレイヤーをだんだん小さくする(遠近法)
+		rate = 1.f - rate;
+		player->SetScale({ rate, rate, rate });
+	}
+
 }
 
 void GamePlayScene::end()
