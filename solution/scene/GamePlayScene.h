@@ -59,10 +59,16 @@ public:
 	/// </summary>
 	void exitPlayer();
 
+
+	/// <summary>
+	/// プレイヤーの死亡演出
+	/// </summary>
+	void deathPlayer();
+
 	/// <summary>
 	/// 終わったときの演出
 	/// </summary>
-	void end();
+	void end(const std::string& sceneName);
 
 	/// <summary>
 	/// 描画

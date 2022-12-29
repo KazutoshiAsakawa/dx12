@@ -443,7 +443,7 @@ void GamePlayScene::play()
 #ifdef _DEBUG
 	// ボスシーンに行く
 	if (input->TriggerKey(DIK_F)) {
-		updateProcess = std::bind(&GamePlayScene::end, this);
+		updateProcess = std::bind(&GamePlayScene::end, this, "BOSSPLAY");
 	}
 #endif //_DEBUG
 
@@ -696,10 +696,11 @@ void GamePlayScene::play()
 						player->Damage(1);				// プレイヤーにダメージ
 						shiftFlag = true;				// RGBずらしをする
 						shiftNowFrame = 0;
-						if (player->GetHp() == 0) {		// 体力が0になったら
-							player->SetAlive(false);
 
-							SceneManager::GetInstance()->ChangeScene("GAMEOVER");
+						if (player->GetHp() == 0) {		// 体力が0になったら
+							shiftFlag = false;	// RGBずらしはしない
+							// プレイヤー死亡演出へ移動
+							updateProcess = std::bind(&GamePlayScene::deathPlayer, this);
 						}
 						break;
 					}
@@ -770,7 +771,7 @@ void GamePlayScene::exitPlayer()
 	// 時間が来たら
 	if (++playerExitFrame > frameMax)
 	{
-		updateProcess = std::bind(&GamePlayScene::end, this);
+		updateProcess = std::bind(&GamePlayScene::end, this, "BOSSPLAY");
 
 		// プレイヤー退場演出のフレーム数をリセット
 		playerEntryFrame = 0;
@@ -796,7 +797,32 @@ void GamePlayScene::exitPlayer()
 
 }
 
-void GamePlayScene::end()
+void GamePlayScene::deathPlayer()
+{
+	XMFLOAT3 rota = player->GetRotation();
+	rota.z += 1.f;
+
+	float scale = player->GetScale().z;
+	scale -= 0.01f;
+
+	if (rota.z > 90.f || scale < 0.f)
+	{
+		scale = 0.f;
+		player->SetAlive(false);
+		updateProcess = std::bind(&GamePlayScene::end, this, "GAMEOVER");
+	}
+	player->SetRotation(rota);
+	player->SetScale({ scale, scale, scale });
+
+	// 地面まで落ちる
+	XMFLOAT3 pos = player->GetPosition();
+	if (pos.y > -4.f) {
+		pos.y -= 0.1f;
+		player->SetPosition(pos);
+	}
+}
+
+void GamePlayScene::end(const std::string& sceneName)
 {
 	Input* input = Input::GetInstance();
 	// モザイクをかける時間
@@ -804,9 +830,8 @@ void GamePlayScene::end()
 
 	// モザイクの時間が最大までいったらplay関数に変える
 	if (++mosaicFrame > mosaicFrameMax) {
-		//PostEffect::GetInstance()->SetMosaicNum({ WinApp::window_width ,WinApp::window_height });
 		// ボスシーンへ
-		SceneManager::GetInstance()->ChangeScene("BOSSPLAY");
+		SceneManager::GetInstance()->ChangeScene(sceneName);
 	}
 	else {
 		XMFLOAT2 mosaicLevel = {};
