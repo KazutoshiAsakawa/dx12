@@ -147,11 +147,6 @@ float4 main(VSOutput input) : SV_TARGET
 	// vignatte
 	float vignVal = vignette(mosaicUv, 0.4f);
 
-	// 少し明るくする
-	float4 tmp = RgbShiftGaussianBlur(tex0, input.uv, shiftR, shiftG, shiftB);
-	tmp.rgb = pow(tmp.rgb, 1.f / 8.f);
-	retColor.rgb += tmp / 3.f;
-
 	// 高光度部分をぼかしたもの
 	float3 highLumi = GaussianBlurHighLumi(tex0, input.uv).rgb;
 
