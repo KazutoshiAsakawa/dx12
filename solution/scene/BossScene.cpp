@@ -14,8 +14,7 @@
 
 using namespace DirectX;
 
-XMFLOAT3 lerp(const XMFLOAT3& a, const XMFLOAT3& b, float t)
-{
+XMFLOAT3 lerp(const XMFLOAT3& a, const XMFLOAT3& b, float t) {
 	XMFLOAT3 ret;
 	ret.x = a.x + t * (b.x - a.x);
 	ret.y = a.y + t * (b.y - a.y);
@@ -23,8 +22,7 @@ XMFLOAT3 lerp(const XMFLOAT3& a, const XMFLOAT3& b, float t)
 	return ret;
 }
 
-void BossScene::Initialize(DirectXCommon* dxcommon)
-{
+void BossScene::Initialize(DirectXCommon* dxcommon) {
 	// マウスカーソルを消す
 	ShowCursor(false);
 
@@ -196,16 +194,14 @@ void BossScene::Initialize(DirectXCommon* dxcommon)
 	Audio::GetInstance()->LoadWave("Alarm01.wav");
 }
 
-void BossScene::Finalize()
-{
+void BossScene::Finalize() {
 	DamageEffect(1, 1);
 
 	// マウスカーソルを出す
 	ShowCursor(true);
 }
 
-void BossScene::Update()
-{
+void BossScene::Update() {
 	if (Input::GetInstance()->TriggerKey(DIK_ESCAPE)) {
 		bool invisibleFlag = operationSprite["ESC_Pause"]->GetIsInvisible();
 		operationSprite["ESC_Pause"]->SetIsInvisible(!invisibleFlag);
@@ -241,8 +237,7 @@ void BossScene::Update()
 		// スプライト更新
 		aim->Update();
 		operationSprite["ESC_Pause"]->Update();
-	}
-	else {
+	} else {
 		pouseSprite[pouse]->Update();
 		if (Input::GetInstance()->TriggerKey(DIK_W)) {
 			if (--pouse <= -1) {
@@ -258,11 +253,9 @@ void BossScene::Update()
 		if (Input::GetInstance()->TriggerKey(DIK_SPACE)) {
 			if (pouse == 0) {
 				operationSprite["ESC_Pause"]->SetIsInvisible(false);
-			}
-			else if (pouse == 1) {
+			} else if (pouse == 1) {
 				SceneManager::GetInstance()->ChangeScene("TITLE");
-			}
-			else if (pouse == 2) {
+			} else if (pouse == 2) {
 				PostQuitMessage(0); //OSに対して、アプリの終了を伝える
 			}
 		}
@@ -270,8 +263,7 @@ void BossScene::Update()
 }
 
 // シーン遷移
-void BossScene::start()
-{
+void BossScene::start() {
 	Input* input = Input::GetInstance();
 	// モザイクをかける時間
 	constexpr UINT mosaicFrameMax = 120;
@@ -284,8 +276,7 @@ void BossScene::start()
 		updateProcess = std::bind(&BossScene::bossEntry, this);
 		mosaicFrame = 0;
 		bossText->SetIsInvisible(false);
-	}
-	else {
+	} else {
 		XMFLOAT2 mosaicLevel = {};
 		float rate = (float)mosaicFrame / mosaicFrameMax;
 		mosaicLevel.x = WinApp::window_width * rate;
@@ -310,8 +301,7 @@ void BossScene::start()
 	}
 }
 
-void BossScene::bossEntry()
-{
+void BossScene::bossEntry() {
 	constexpr UINT frameMax = 360;
 
 	// フレームが最大まで行ったら次の関数へ
@@ -333,8 +323,7 @@ void BossScene::bossEntry()
 
 		// ボスの名前非表示
 		bossText->SetIsInvisible(true);
-	}
-	else {
+	} else {
 		// 進行度
 		float rate = (float)bossEntryNowFrame / (float)frameMax;
 
@@ -369,8 +358,7 @@ void BossScene::bossEntry()
 	}
 }
 
-void BossScene::play()
-{
+void BossScene::play() {
 	Input* input = Input::GetInstance();
 
 	// スカイドームの位置
@@ -395,8 +383,10 @@ void BossScene::play()
 			auto pos = player->GetPosition();
 			float moveSpeed = 0.2f;
 
+			// 回避
 			if (hitSpace && avoidFrame == 0) {
 				moveSpeed *= 10;
+				// クールタイム
 				avoidFrame = avoidFrameMax;
 			}
 
@@ -433,7 +423,6 @@ void BossScene::play()
 				pos.y -= forward.y;
 				pos.z -= forward.z;
 			}
-
 			if (hitD) {
 				pos.x += right.x;
 				pos.y += right.y;
@@ -473,8 +462,7 @@ void BossScene::play()
 		player->SetRotation(playerRot);
 	}
 
-	if (boss->GetAlive())
-	{
+	if (boss->GetAlive()) {
 		// 画像の左上と右下
 		XMFLOAT2 aimLT = { aim->GetPosition().x - aim->GetSize().x / 2,
 		 aim->GetPosition().y - aim->GetSize().y / 2 };
@@ -501,22 +489,21 @@ void BossScene::play()
 
 		if (flag) {
 			aim->SetColor({ 1,0,0,1 });
-			// 照準が合っていたら左クリック
-			if (input->TriggerMouse(Input::LEFT)) {
-				// 自機の弾の発射
-				player->Shot(pBulletModel.get(), pBulletScale);
-			}
-		}
-		else {
+		} else {
 			aim->SetColor({ 1,1,1,1 });
+		}
 
-			if (input->TriggerMouse(Input::LEFT)) {
+		// 左クリックしていたら
+		if (input->PushMouse(Input::LEFT)) {
+			// 一定間隔で弾を出す
+			if (++shotInterval >= shotIntervalMax) {
+				shotInterval = 0;
 				// 自機の弾の発射
 				player->Shot(pBulletModel.get(), pBulletScale);
 			}
+
 		}
-	}
-	else if (killBossFlag) {// ボスが死んだら
+	} else if (killBossFlag) {// ボスが死んだら
 		updateProcess = std::bind(&BossScene::end, this, "CLEAR");
 	}
 
@@ -542,8 +529,7 @@ void BossScene::play()
 				pb.SetAlive(false);
 				aim->SetColor({ 1,1,1,1 });
 
-				if (boss->GetHp() == 0)
-				{
+				if (boss->GetHp() == 0) {
 					boss->SetAlive(false);
 					killBossFlag = true;
 
@@ -651,16 +637,12 @@ void BossScene::play()
 	frame++;
 }
 
-void BossScene::killEffect()
-{
+void BossScene::killEffect() {
 	constexpr UINT effectFrameMax = 180;
 
-	if (++nowEffectFrame > effectFrameMax)
-	{
+	if (++nowEffectFrame > effectFrameMax) {
 		updateProcess = std::bind(&BossScene::end, this, "CLEAR");
-	}
-	else
-	{
+	} else {
 		// パーティクルの発生
 		ParticleManager::GetInstance()->CreateParticle(boss->GetPosition(), 10, 1, 5);
 
@@ -681,16 +663,14 @@ void BossScene::killEffect()
 	}
 }
 
-void BossScene::deathPlayer()
-{
+void BossScene::deathPlayer() {
 	XMFLOAT3 rota = player->GetRotation();
 	rota.z += 1.f;
 
 	float scale = player->GetScale().z;
 	scale -= 0.01f;
 
-	if (rota.z > 90.f || scale < 0.f)
-	{
+	if (rota.z > 90.f || scale < 0.f) {
 		scale = 0.f;
 		player->SetAlive(false);
 		updateProcess = std::bind(&BossScene::end, this, "GAMEOVER");
@@ -707,8 +687,7 @@ void BossScene::deathPlayer()
 
 }
 
-void BossScene::end(const std::string& nextScene)
-{
+void BossScene::end(const std::string& nextScene) {
 	Input* input = Input::GetInstance();
 	// モザイクをかける時間
 	constexpr UINT mosaicFrameMax = 50;
@@ -717,8 +696,7 @@ void BossScene::end(const std::string& nextScene)
 	if (++mosaicFrame > mosaicFrameMax) {
 		// ボスシーンへ
 		SceneManager::GetInstance()->ChangeScene(nextScene);
-	}
-	else {
+	} else {
 		XMFLOAT2 mosaicLevel = {};
 		float rate = (float)mosaicFrame / mosaicFrameMax;
 		rate = 1 - rate;// 1から0
@@ -729,8 +707,7 @@ void BossScene::end(const std::string& nextScene)
 	}
 }
 
-void BossScene::Draw(DirectXCommon* dxcommon)
-{
+void BossScene::Draw(DirectXCommon* dxcommon) {
 	// 3Dオブジェクト描画前処理
 	ObjObject3d::PreDraw();
 
@@ -783,8 +760,7 @@ void BossScene::DrawFrontSprite(DirectXCommon* dxcommon) {
 	}
 }
 
-XMVECTOR BossScene::SplinePosition(const std::vector<XMVECTOR>& posints, size_t startIndex, float t)
-{
+XMVECTOR BossScene::SplinePosition(const std::vector<XMVECTOR>& posints, size_t startIndex, float t) {
 	size_t n = posints.size() - 2;
 
 	if (startIndex > n)return posints[n];

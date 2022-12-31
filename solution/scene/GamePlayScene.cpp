@@ -15,8 +15,7 @@
 using namespace DirectX;
 
 namespace {
-	XMFLOAT3 lerp(const XMFLOAT3& a, const XMFLOAT3& b, float t)
-	{
+	XMFLOAT3 lerp(const XMFLOAT3& a, const XMFLOAT3& b, float t) {
 		XMFLOAT3 ret;
 		ret.x = a.x + t * (b.x - a.x);
 		ret.y = a.y + t * (b.y - a.y);
@@ -25,8 +24,7 @@ namespace {
 	}
 }
 
-void GamePlayScene::Initialize(DirectXCommon* dxcommon)
-{
+void GamePlayScene::Initialize(DirectXCommon* dxcommon) {
 	// マウスカーソルを消す
 	ShowCursor(false);
 
@@ -237,7 +235,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 			wallObj[i][x] = ObjObject3d::Create();
 			wallObj[i][x]->Initialize();
 			wallObj[i][x]->SetModel(wallModel.get());
-			wallObj[i][x]->SetScale(XMFLOAT3(4, 4, 50));
+			wallObj[i][x]->SetScale(XMFLOAT3(4, 4, 1));
 			XMFLOAT3 pos;
 			XMStoreFloat3(&pos, points[i]);
 			pos.x -= 40.f;
@@ -260,8 +258,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 			if (y[0] == "POPPOSITION") {
 				// 敵を出す
 				enemyPos.emplace_back(std::stof(y[1]), std::stof(y[2]), std::stof(y[3]));
-			}
-			else if (y[0] == "POPTIME") {
+			} else if (y[0] == "POPTIME") {
 				// 指定時間
 				nowframe += std::stoul(y[1]);
 				enemyFrame.emplace_back(nowframe, nowframe + 60 * 39);// (敵が出る時間,敵が消える時間)
@@ -270,16 +267,14 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon)
 	}
 }
 
-void GamePlayScene::Finalize()
-{
+void GamePlayScene::Finalize() {
 	DamageEffect(1, 1);
 
 	// マウスカーソルを出す
 	ShowCursor(true);
 }
 
-void GamePlayScene::Update()
-{
+void GamePlayScene::Update() {
 	if (Input::GetInstance()->TriggerKey(DIK_ESCAPE)) {
 		bool invisibleFlag = operationSprite["ESC_Pause"]->GetIsInvisible();
 		operationSprite["ESC_Pause"]->SetIsInvisible(!invisibleFlag);
@@ -334,8 +329,7 @@ void GamePlayScene::Update()
 
 			playerHpSlide->Update();
 
-			for (auto& i : operationSprite)
-			{
+			for (auto& i : operationSprite) {
 				i.second->Update();
 			}
 		}
@@ -356,11 +350,9 @@ void GamePlayScene::Update()
 		if (Input::GetInstance()->TriggerKey(DIK_SPACE)) {
 			if (pouse == 0) {
 				operationSprite["ESC_Pause"]->SetIsInvisible(false);
-			}
-			else if (pouse == 1) {
+			} else if (pouse == 1) {
 				SceneManager::GetInstance()->ChangeScene("TITLE");
-			}
-			else if (pouse == 2) {
+			} else if (pouse == 2) {
 				PostQuitMessage(0); //OSに対して、アプリの終了を伝える
 			}
 		}
@@ -368,8 +360,7 @@ void GamePlayScene::Update()
 }
 
 // シーン遷移
-void GamePlayScene::start()
-{
+void GamePlayScene::start() {
 	Input* input = Input::GetInstance();
 	// モザイクをかける時間
 	constexpr UINT mosaicFrameMax = 50;
@@ -384,8 +375,7 @@ void GamePlayScene::start()
 
 		// モザイクのフレーム数をリセット
 		mosaicFrame = 0;
-	}
-	else {
+	} else {
 		// 経過フレーム数に応じてモザイクをかける
 		XMFLOAT2 mosaicLevel = {};
 		float rate = (float)mosaicFrame / mosaicFrameMax;
@@ -395,8 +385,7 @@ void GamePlayScene::start()
 	}
 }
 
-void GamePlayScene::entryPlayer()
-{
+void GamePlayScene::entryPlayer() {
 	constexpr UINT frameMax = 180;
 
 	if (++playerEntryFrame > frameMax) {
@@ -418,8 +407,7 @@ void GamePlayScene::entryPlayer()
 				i.second->SetIsInvisible(false);
 			}
 		}
-	}
-	else {
+	} else {
 		// プレイヤーの位置を変更
 		XMFLOAT3 playerPos = lerp(playerEntryStartPos, playerEntryEndPos, (float)playerEntryFrame / frameMax);
 		player->SetPosition(playerPos);
@@ -434,8 +422,7 @@ void GamePlayScene::entryPlayer()
 
 }
 
-void GamePlayScene::play()
-{
+void GamePlayScene::play() {
 	Input* input = Input::GetInstance();
 
 	skyDomeObj->SetPosition(lane->GetPosition());
@@ -563,8 +550,7 @@ void GamePlayScene::play()
 	enemy.remove_if([&](std::unique_ptr<Enemy>& i) {return i->GetLifeSpan() <= frame; });
 
 	// 敵が居たら照準と敵の当たり判定をする
-	if (!enemy.empty())
-	{
+	if (!enemy.empty()) {
 		// 画像の左上と右下
 		XMFLOAT2 aimLT = { (float)input->GetMousePos().x - aim->GetSize().x / 2,
 		(float)input->GetMousePos().y - aim->GetSize().y / 2 };
@@ -592,23 +578,28 @@ void GamePlayScene::play()
 			}
 		}
 
+		++shotInterval;
+
 		if (flag) {
 			aim->SetColor({ 1,0,0,1 });
-			// 照準が合っていたら左クリック
-			if (input->TriggerMouse(Input::LEFT)) {
-				// 自機の弾の発射
-				player->Shot(pBulletModel.get(), pBulletScale);
+			// 照準が合っていた場合、左クリックしていたら一定間隔で弾を出す
+			if (input->PushMouse(Input::LEFT)) {
+				if (shotInterval >= shotIntervalMax) {
+					shotInterval = 0;
 
-				XMFLOAT3 pos = lane->GetPosition();
-				pos.x += player->GetPosition().x;
-				pos.y += player->GetPosition().y;
-				pos.z += player->GetPosition().z;
+					// 自機の弾の発射
+					player->Shot(pBulletModel.get(), pBulletScale);
 
-				// 操作説明を消す
-				operationSprite["L_Click"]->SetIsInvisible(true);
+					XMFLOAT3 pos = lane->GetPosition();
+					pos.x += player->GetPosition().x;
+					pos.y += player->GetPosition().y;
+					pos.z += player->GetPosition().z;
+
+					// 操作説明を消す
+					operationSprite["L_Click"]->SetIsInvisible(true);
+				}
 			}
-		}
-		else {
+		} else {
 			// 照準が白
 			aim->SetColor({ 1,1,1,1 });
 		}
@@ -723,15 +714,12 @@ void GamePlayScene::play()
 	{
 		splineFrame++;
 		float timeRate = (float)splineFrame / 120.f;
-		if (timeRate >= 1.0f)
-		{
+		if (timeRate >= 1.0f) {
 			if (splineStartIndex < points.size() - 3) {
 				splineStartIndex++;
 				timeRate -= 1.0f;
 				splineFrame = 0;
-			}
-			else
-			{
+			} else {
 				timeRate = 1.0f;
 			}
 		}
@@ -764,20 +752,16 @@ void GamePlayScene::play()
 	frame++;
 }
 
-void GamePlayScene::exitPlayer()
-{
+void GamePlayScene::exitPlayer() {
 	constexpr UINT frameMax = 120;
 
 	// 時間が来たら
-	if (++playerExitFrame > frameMax)
-	{
+	if (++playerExitFrame > frameMax) {
 		updateProcess = std::bind(&GamePlayScene::end, this, "BOSSPLAY");
 
 		// プレイヤー退場演出のフレーム数をリセット
 		playerEntryFrame = 0;
-	}
-	else
-	{
+	} else {
 		float rate = (float)playerExitFrame / frameMax;
 
 		// プレイヤーの今の位置
@@ -797,16 +781,14 @@ void GamePlayScene::exitPlayer()
 
 }
 
-void GamePlayScene::deathPlayer()
-{
+void GamePlayScene::deathPlayer() {
 	XMFLOAT3 rota = player->GetRotation();
 	rota.z += 1.f;
 
 	float scale = player->GetScale().z;
 	scale -= 0.01f;
 
-	if (rota.z > 90.f || scale < 0.f)
-	{
+	if (rota.z > 90.f || scale < 0.f) {
 		scale = 0.f;
 		player->SetAlive(false);
 		updateProcess = std::bind(&GamePlayScene::end, this, "GAMEOVER");
@@ -822,8 +804,7 @@ void GamePlayScene::deathPlayer()
 	}
 }
 
-void GamePlayScene::end(const std::string& sceneName)
-{
+void GamePlayScene::end(const std::string& sceneName) {
 	Input* input = Input::GetInstance();
 	// モザイクをかける時間
 	constexpr UINT mosaicFrameMax = 50;
@@ -832,8 +813,7 @@ void GamePlayScene::end(const std::string& sceneName)
 	if (++mosaicFrame > mosaicFrameMax) {
 		// ボスシーンへ
 		SceneManager::GetInstance()->ChangeScene(sceneName);
-	}
-	else {
+	} else {
 		XMFLOAT2 mosaicLevel = {};
 		float rate = (float)mosaicFrame / mosaicFrameMax;
 		rate = 1 - rate;// 1から0
@@ -843,8 +823,7 @@ void GamePlayScene::end(const std::string& sceneName)
 	}
 }
 
-void GamePlayScene::Draw(DirectXCommon* dxcommon)
-{
+void GamePlayScene::Draw(DirectXCommon* dxcommon) {
 	// 3Dオブジェクト描画前処理
 	ObjObject3d::PreDraw();
 
@@ -894,8 +873,7 @@ void GamePlayScene::DrawFrontSprite(DirectXCommon* dxcommon) {
 	playerHpSlide->Draw();
 
 	// 操作説明描画
-	for (auto& i : operationSprite)
-	{
+	for (auto& i : operationSprite) {
 		i.second->Draw();
 	}
 
@@ -908,8 +886,7 @@ void GamePlayScene::DrawFrontSprite(DirectXCommon* dxcommon) {
 	}
 }
 
-XMVECTOR GamePlayScene::SplinePosition(const std::vector<XMVECTOR>& posints, size_t startIndex, float t)
-{
+XMVECTOR GamePlayScene::SplinePosition(const std::vector<XMVECTOR>& posints, size_t startIndex, float t) {
 	size_t n = posints.size() - 2;
 
 	if (startIndex > n)return posints[n];
@@ -927,8 +904,7 @@ XMVECTOR GamePlayScene::SplinePosition(const std::vector<XMVECTOR>& posints, siz
 	return position;
 }
 
-std::unique_ptr<Enemy>& GamePlayScene::EnemyAdd(XMFLOAT3 pos, XMFLOAT3 vel)
-{
+std::unique_ptr<Enemy>& GamePlayScene::EnemyAdd(XMFLOAT3 pos, XMFLOAT3 vel) {
 	enemy.emplace_back();
 	auto& e = enemy.back();
 

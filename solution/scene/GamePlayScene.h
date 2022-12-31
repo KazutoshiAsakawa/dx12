@@ -153,6 +153,8 @@ private:
 	UINT avoidFrame = 0;
 	UINT avoidFrameMax = 60;
 
+	UINT shotInterval = 0;
+	UINT shotIntervalMax = 15;
 
 	// “G
 	std::list<std::unique_ptr<Enemy>> enemy;

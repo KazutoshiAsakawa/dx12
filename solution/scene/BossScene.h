@@ -132,6 +132,9 @@ private:
 	// 回避のクールタイム
 	UINT avoidFrame = 0;
 	UINT avoidFrameMax = 60;
+	
+	UINT shotInterval = 0;
+	UINT shotIntervalMax = 15;
 
 	// ボス
 	std::unique_ptr<Boss> boss;
