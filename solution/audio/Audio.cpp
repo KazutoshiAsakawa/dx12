@@ -5,16 +5,14 @@
 
 #pragma comment(lib,"xaudio2.lib")
 
-Audio* Audio::GetInstance()
-{
+Audio* Audio::GetInstance() {
 	static Audio instance;
 	return &instance;
 }
 
-void Audio::Initialize(const std::string& directoryPath)
-{
+void Audio::Initialize(const std::string& directoryPath) {
 	this->directoryPath = directoryPath;
-	
+
 	HRESULT result;
 	IXAudio2MasteringVoice* masterVoice;
 
@@ -27,23 +25,21 @@ void Audio::Initialize(const std::string& directoryPath)
 	assert(SUCCEEDED(result));
 }
 
-void Audio::Finalize()
-{
+void Audio::Finalize() {
 	// XAudio2解放
 	xAudio2.Reset();
 	// 音声データ解放
-	std::map<std::string,SoundData>::iterator it = soundDatas.begin();
+	std::map<std::string, SoundData>::iterator it = soundDatas.begin();
 
 
-	for (;it != soundDatas.end(); ++it) {
-		
+	for (; it != soundDatas.end(); ++it) {
+
 		Unload(&it->second);
 	}
 	soundDatas.clear();
 }
 
-void Audio::LoadWave(const std::string filename)
-{
+void Audio::LoadWave(const std::string filename) {
 	if (soundDatas.find(filename) != soundDatas.end()) {
 		// 重複読み込みなので、何もせず抜ける
 		return;
@@ -109,13 +105,14 @@ void Audio::LoadWave(const std::string filename)
 	soundData.wfex = format.fmt;
 	soundData.pBuffer = reinterpret_cast<BYTE*>(pBuffer);
 	soundData.bufferSize = data.size;
+	HRESULT result = xAudio2->CreateSourceVoice(&soundData.pSourceVoice, &soundData.wfex);
+	assert(SUCCEEDED(result));
 
 	// サウンドデータを連想配列に格納
 	soundDatas.insert(std::make_pair(filename, soundData));
 }
 
-void Audio::Unload(SoundData* soundData)
-{
+void Audio::Unload(SoundData* soundData) {
 	// バッファのメモリを解放
 	delete[] soundData->pBuffer;
 
@@ -124,29 +121,43 @@ void Audio::Unload(SoundData* soundData)
 	soundData->wfex = {};
 }
 
-void Audio::PlayWave(const std::string filename, float volume)
-{
+void Audio::PlayWave(const std::string filename, float volume) {
 	HRESULT result;
 
-	std::map<std::string,SoundData>::iterator it = soundDatas.find(filename);
+	// 該当するイテレータを取得
+	std::map<std::string, SoundData>::iterator it = soundDatas.find(filename);
 	// 未読み込みの検出
+	// (読み込み済みのみ許可する)
 	assert(it != soundDatas.end());
-	// サウンドデータの参照を取得
+	//////////////////////////////////////////////
+	// イテレータからサウンドデータの参照を取得 //
+	//////////////////////////////////////////////
 	SoundData& soundData = it->second;
 
 	// 波形フォーマットを元にSourceVoiceの生成
-	IXAudio2SourceVoice* pSourceVoice = nullptr;
-	result = xAudio2->CreateSourceVoice(&pSourceVoice, &soundData.wfex);
+	result = xAudio2->CreateSourceVoice(&soundData.pSourceVoice, &soundData.wfex);
 	assert(SUCCEEDED(result));
 
 	// 再生する波形データの設定
+	// todo メンバ変数にする
+	UINT32 loopCount = XAUDIO2_LOOP_INFINITE;
+
 	XAUDIO2_BUFFER buf{};
 	buf.pAudioData = soundData.pBuffer;
 	buf.AudioBytes = soundData.bufferSize;
 	buf.Flags = XAUDIO2_END_OF_STREAM;
+	buf.LoopCount = loopCount;
 
 	// 波形データの再生
-	result = pSourceVoice->SubmitSourceBuffer(&buf);
-	result = pSourceVoice->SetVolume(volume);
-	result = pSourceVoice->Start();
+	result = soundData.pSourceVoice->SubmitSourceBuffer(&buf);
+	result = soundData.pSourceVoice->SetVolume(volume);
+	result = soundData.pSourceVoice->Start();
+}
+
+void Audio::StopWave(SoundData* soundData) {
+	HRESULT result = soundData->pSourceVoice->Stop();
+	assert(SUCCEEDED(result));
+
+	result = soundData->pSourceVoice->FlushSourceBuffers();
+	assert(SUCCEEDED(result));
 }

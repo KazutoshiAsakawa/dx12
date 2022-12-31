@@ -43,6 +43,8 @@ public:
 		BYTE* pBuffer;
 		// バッファのサイズ
 		unsigned int bufferSize;
+
+		IXAudio2SourceVoice* pSourceVoice = nullptr;
 	};
 
 	static Audio* GetInstance();
@@ -50,6 +52,7 @@ public:
 	/// <summary>
 	/// 初期化
 	/// </summary>
+	/// <param name="">ファイルパス(Resources/に続く)</param>
 	void Initialize(const std::string& directoryPath = "Resources/");
 
 	/// <summary>
@@ -74,6 +77,21 @@ public:
 	/// </summary>
 	/// <param name="">サウンドデータ名</param>
 	void PlayWave(const std::string filename,float volume = 0.5);
+
+	/// <summary>
+	/// 音声停止
+	/// </summary>
+	/// <param name="soundData">サウンドデータ</param>
+	void StopWave(SoundData* soundData);
+
+	/// <summary>
+	/// 音声データを取得
+	/// </summary>
+	/// <param name="filename">サウンドデータ名</param>
+	/// <returns>音声データ</returns>
+	inline SoundData& GetSoundData(const std::string& filename){
+		return soundDatas[filename];
+	}
 
 private:
 	// XAudio2のインスタンス

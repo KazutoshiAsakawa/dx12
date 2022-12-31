@@ -183,6 +183,11 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon) {
 	// SE読み込み
 	Audio::GetInstance()->LoadWave("sound/Kagura_Suzu02-1.wav");
 
+	// BGM読み込み
+	Audio::GetInstance()->LoadWave("sound/Gap-Ver.2.wav");
+	// BGMを再生
+	Audio::GetInstance()->PlayWave("sound/Gap-Ver.2.wav", 0.05f);
+
 	// スプライン曲線
 	csv = Enemy::LoadCsv("Resources/spline.csv");
 
@@ -269,6 +274,8 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon) {
 
 void GamePlayScene::Finalize() {
 	DamageEffect(1, 1);
+
+	Audio::GetInstance()->StopWave(&Audio::GetInstance()->GetSoundData("sound/Gap-Ver.2.wav"));
 
 	// マウスカーソルを出す
 	ShowCursor(true);
