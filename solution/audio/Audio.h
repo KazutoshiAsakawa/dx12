@@ -10,33 +10,28 @@
 /// <summary>
 /// オーディオ
 /// </summary>
-class Audio
-{
+class Audio {
 public:
 	// チャンクヘッダ
-	struct ChunkHeader
-	{
+	struct ChunkHeader {
 		char id[4]; // チャンク毎のID
 		int32_t size;  // チャンクサイズ
 	};
 
 	// RIFFヘッダチャンク
-	struct RiffHeader
-	{
+	struct RiffHeader {
 		ChunkHeader chunk;   // "RIFF"
 		char type[4]; // "WAVE"
 	};
 
 	// FMTチャンク
-	struct FormatChunk
-	{
+	struct FormatChunk {
 		ChunkHeader chunk; // "fmt "
 		WAVEFORMATEX fmt; // 波形フォーマット
 	};
 
 	// 音声データ
-	struct SoundData
-	{
+	struct SoundData {
 		// 波形フォーマット
 		WAVEFORMATEX wfex;
 		// バッファの先頭アドレス
@@ -76,7 +71,9 @@ public:
 	/// 音声再生
 	/// </summary>
 	/// <param name="">サウンドデータ名</param>
-	void PlayWave(const std::string filename,float volume = 0.5);
+	/// <param volume="">音量</param>
+	/// <param loopCount="">ループ回数。XAUDIO2_LOOP_INFINITE(255)で無限ループ</param>
+	void PlayWave(const std::string filename, float volume = 0.5f, UINT loopCount = XAUDIO2_LOOP_INFINITE);
 
 	/// <summary>
 	/// 音声停止
@@ -89,7 +86,7 @@ public:
 	/// </summary>
 	/// <param name="filename">サウンドデータ名</param>
 	/// <returns>音声データ</returns>
-	inline SoundData& GetSoundData(const std::string& filename){
+	inline SoundData& GetSoundData(const std::string& filename) {
 		return soundDatas[filename];
 	}
 
@@ -97,7 +94,7 @@ private:
 	// XAudio2のインスタンス
 	Microsoft::WRL::ComPtr<IXAudio2> xAudio2;
 	// サウンドデータの連想配列
-	std::map<std::string,SoundData> soundDatas;
+	std::map<std::string, SoundData> soundDatas;
 	// サウンド格納ディレクトリ
 	std::string directoryPath;
 };

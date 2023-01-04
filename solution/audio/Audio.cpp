@@ -121,7 +121,7 @@ void Audio::Unload(SoundData* soundData) {
 	soundData->wfex = {};
 }
 
-void Audio::PlayWave(const std::string filename, float volume) {
+void Audio::PlayWave(const std::string filename, float volume, UINT loopCount) {
 	HRESULT result;
 
 	// 該当するイテレータを取得
@@ -129,18 +129,12 @@ void Audio::PlayWave(const std::string filename, float volume) {
 	// 未読み込みの検出
 	// (読み込み済みのみ許可する)
 	assert(it != soundDatas.end());
-	//////////////////////////////////////////////
-	// イテレータからサウンドデータの参照を取得 //
-	//////////////////////////////////////////////
+	// イテレータからサウンドデータの参照を取得
 	SoundData& soundData = it->second;
 
 	// 波形フォーマットを元にSourceVoiceの生成
 	result = xAudio2->CreateSourceVoice(&soundData.pSourceVoice, &soundData.wfex);
 	assert(SUCCEEDED(result));
-
-	// 再生する波形データの設定
-	// todo メンバ変数にする
-	UINT32 loopCount = XAUDIO2_LOOP_INFINITE;
 
 	XAUDIO2_BUFFER buf{};
 	buf.pAudioData = soundData.pBuffer;

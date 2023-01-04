@@ -648,7 +648,7 @@ void GamePlayScene::play() {
 						ParticleManager::GetInstance()->CreateParticle(pos, 100, 4, 10);
 
 						// SEを再生
-						Audio::GetInstance()->PlayWave("sound/Kagura_Suzu02-1.wav");
+						Audio::GetInstance()->PlayWave("sound/Kagura_Suzu02-1.wav", 0.5f, 0);
 					}
 
 					// パーティクルの場所を設定
