@@ -7,7 +7,7 @@
 void Framework::Run()
 {
 	// ゲームの初期化
-	Initialize();
+	//Initialize();
 
 	while (true)  // ゲームループ
 	{
@@ -22,7 +22,7 @@ void Framework::Run()
 		Draw();
 	}
 	// ゲームの終了
-	Finalize();
+	// Finalize();
 }
 
 void Framework::Initialize()
@@ -40,7 +40,7 @@ void Framework::Initialize()
 	// デバッグテキスト
 	debugText = DebugText::GetInstance();
 	// デバッグテキスト用のテクスチャ番号を指定
-	const int debugTextTexNumber = 0;
+	constexpr int debugTextTexNumber = 0;
 	// デバッグテキスト用のテクスチャ読み込み
 	spriteCommon->LoadTexture(debugTextTexNumber, L"Resources/debugfont.png");
 	// デバッグテキスト初期化
@@ -65,9 +65,6 @@ void Framework::Initialize()
 
 void Framework::Finalize()
 {
-	// FBXの解放
-	//FbxLoader::GetInstance()->Finalize();
-
 	// デバッグテキスト解放
 	debugText->Finalize();
 	// オーディオ解放
@@ -87,15 +84,6 @@ void Framework::Update()
 	input->Update();
 	// シーンの更新
 	SceneManager::GetInstance()->Update(dxCommon);
-
-	/*if (input->TriggerKey(DIK_R)) {
-		if (shaderNum == 0u) {
-			shaderNum = 1u;
-		}
-		else {
-			shaderNum = 0u;
-		}
-	}*/
 }
 
 void Framework::Draw()

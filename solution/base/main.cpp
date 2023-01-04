@@ -4,11 +4,7 @@
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 {
 
-	Framework* game = new Game();
-
-	game->Run();
-
-	delete game;
+	Game::GetInstance()->Run();
 
 	return 0;
 }

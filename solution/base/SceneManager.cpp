@@ -1,5 +1,5 @@
 #include "SceneManager.h"
-#include<cassert>
+#include <cassert>
 
 SceneManager::~SceneManager()
 {

@@ -61,11 +61,7 @@ public:
 	/// <param name="filename">WAVファイル名</param>
 	void LoadWave(const std::string filename);
 
-	/// <summary>
-	/// サウンドデータの解放
-	/// </summary>
-	/// <param name="soundData">サウンドデータ</param>
-	void Unload(SoundData* soundData);
+	
 
 	/// <summary>
 	/// 音声再生
@@ -79,7 +75,7 @@ public:
 	/// 音声停止
 	/// </summary>
 	/// <param name="soundData">サウンドデータ</param>
-	void StopWave(SoundData* soundData);
+	void StopWave(const std::string filename);
 
 	/// <summary>
 	/// 音声データを取得
@@ -91,6 +87,13 @@ public:
 	}
 
 private:
+
+	/// <summary>
+	/// サウンドデータの解放
+	/// </summary>
+	/// <param name="soundData">サウンドデータ</param>
+	void Unload(SoundData* soundData);
+
 	// XAudio2のインスタンス
 	Microsoft::WRL::ComPtr<IXAudio2> xAudio2;
 	// サウンドデータの連想配列

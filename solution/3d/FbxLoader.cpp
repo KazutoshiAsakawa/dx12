@@ -30,6 +30,9 @@ void FbxLoader::ConvertMatrixFromFbx(DirectX::XMMATRIX* dst, const FbxMatrix& sr
 void FbxLoader::Initialize(ID3D12Device* device)
 {
 	// 再初期化チェック
+	// assert: 引数の条件がtrueの場合のみ処理が次に進む
+	// fbxManagerがnullptrの場合のみプログラムの処理が次に進む
+	// fbxManagerに何か入っている(既に初期化されている)のは想定外なのでプログラムを停止する
 	assert(fbxManager == nullptr);
 	// 引数からメンバ変数に代入
 	this->device = device;

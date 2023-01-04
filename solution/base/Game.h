@@ -7,9 +7,22 @@
 /// <summary>
 /// ゲーム固有のクラス
 /// </summary>
-class Game : public Framework
-{
+class Game : public Framework {
+private:
+	// privateなコンストラクタ（シングルトンパターン）
+	Game();
+	// privateなデストラクタ（シングルトンパターン）
+	~Game();
+	// コピーコンストラクタを禁止（シングルトンパターン）
+	Game(const Game& obj) = delete;
+	// コピー代入演算子を禁止（シングルトンパターン）
+	void operator=(const Game& obj) = delete;
+
 public:
+	static Game* GetInstance();
+
+	inline void SetEndRequest(bool endRequest) { this->endRequest = endRequest; }
+
 	/// <summary>
 	/// 初期化
 	/// </summary>

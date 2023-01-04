@@ -1,8 +1,20 @@
 #include "Game.h"
 #include "SceneFactory.h"
 
-void Game::Initialize()
-{
+Game::Game() {
+	Initialize();
+}
+
+Game::~Game() {
+	Finalize();
+}
+
+Game* Game::GetInstance() {
+	static Game obj;
+	return &obj;
+}
+
+void Game::Initialize() {
 	// 基底クラスの初期化
 	Framework::Initialize();
 
@@ -17,20 +29,17 @@ void Game::Initialize()
 #pragma endregion シーン初期化処理
 }
 
-void Game::Finalize()
-{
+void Game::Finalize() {
 	// 基底クラスの終了処理
 	Framework::Finalize();
 }
 
-void Game::Update()
-{
+void Game::Update() {
 	// 基底クラスの更新処理
 	Framework::Update();
 }
 
-void Game::Draw()
-{
+void Game::Draw() {
 	// 基底クラスの更新処理
 	Framework::Draw();
 }

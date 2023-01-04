@@ -11,6 +11,7 @@
 #include "ParticleManager.h"
 
 #include "PostEffect.h"
+#include "Game.h"
 
 using namespace DirectX;
 
@@ -275,8 +276,6 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon) {
 void GamePlayScene::Finalize() {
 	DamageEffect(1, 1);
 
-	Audio::GetInstance()->StopWave(&Audio::GetInstance()->GetSoundData("sound/Gap-Ver.2.wav"));
-
 	// マウスカーソルを出す
 	ShowCursor(true);
 }
@@ -360,7 +359,7 @@ void GamePlayScene::Update() {
 			} else if (pouse == 1) {
 				SceneManager::GetInstance()->ChangeScene("TITLE");
 			} else if (pouse == 2) {
-				PostQuitMessage(0); //OSに対して、アプリの終了を伝える
+				Game::GetInstance()->SetEndRequest(true);
 			}
 		}
 	}
@@ -426,7 +425,6 @@ void GamePlayScene::entryPlayer() {
 		targetPos.z += player->GetPosition().z;
 		normalCamera->SetTarget(targetPos);
 	}
-
 }
 
 void GamePlayScene::play() {
@@ -816,8 +814,11 @@ void GamePlayScene::end(const std::string& sceneName) {
 	// モザイクをかける時間
 	constexpr UINT mosaicFrameMax = 50;
 
-	// モザイクの時間が最大までいったらplay関数に変える
+	// モザイクの時間が最大までいったら
 	if (++mosaicFrame > mosaicFrameMax) {
+		// BGM止める
+		Audio::GetInstance()->StopWave("sound/Gap-Ver.2.wav");
+
 		// ボスシーンへ
 		SceneManager::GetInstance()->ChangeScene(sceneName);
 	} else {

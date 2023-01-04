@@ -148,10 +148,18 @@ void Audio::PlayWave(const std::string filename, float volume, UINT loopCount) {
 	result = soundData.pSourceVoice->Start();
 }
 
-void Audio::StopWave(SoundData* soundData) {
-	HRESULT result = soundData->pSourceVoice->Stop();
+void Audio::StopWave(const std::string filename) {
+	// 該当するイテレータを取得
+	std::map<std::string, SoundData>::iterator it = soundDatas.find(filename);
+	// 未読み込みの検出
+	// (読み込み済みのみ許可する)
+	assert(it != soundDatas.end());
+	// イテレータからサウンドデータの参照を取得
+	SoundData& soundData = it->second;
+
+	HRESULT result = soundData.pSourceVoice->Stop();
 	assert(SUCCEEDED(result));
 
-	result = soundData->pSourceVoice->FlushSourceBuffers();
+	result = soundData.pSourceVoice->FlushSourceBuffers();
 	assert(SUCCEEDED(result));
 }
