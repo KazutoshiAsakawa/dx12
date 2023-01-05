@@ -130,6 +130,9 @@ private:
 	std::unique_ptr<ObjModel> groundModel;
 	std::unique_ptr<ObjObject3d> groundObj;
 
+	// _Ğ
+	std::unique_ptr<ObjObject3d> shrineObj;
+
 	// ’e
 	std::unique_ptr<ObjModel> pBulletModel = nullptr;
 	// ’e‚Ì‘å‚«‚³

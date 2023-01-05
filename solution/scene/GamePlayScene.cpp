@@ -155,6 +155,15 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon) {
 	playerEntryEndPos = { 0,0,0 };
 	player->SetPosition(playerEntryStartPos);
 
+	// 神社
+	shrineObj = ObjObject3d::Create();
+	shrineObj->SetModel(ObjModel::LoadFromObj("shrine"));
+	shrineObj->SetScale({ 3,3,3 });
+	shrineObj->SetRotation({ 0,180,0 });
+	XMFLOAT3 shrinePos = playerEntryStartPos;
+	shrinePos.z -= player->GetScale().z * 2.f;	// 後ろにずらす
+	shrineObj->SetPosition(shrinePos);
+
 	// カメラをレーンの位置にセット
 	camera->SetTrackingTarget(player.get());
 	camera->SetTarget(lane->GetPosition());
@@ -317,6 +326,7 @@ void GamePlayScene::Update() {
 
 		groundObj->Update();
 		skyDomeObj->Update();
+		shrineObj->Update();
 
 		// スプライト更新
 		aim->SetPosition({ (float)Input::GetInstance()->GetMousePos().x,(float)Input::GetInstance()->GetMousePos().y,0 });
@@ -846,6 +856,9 @@ void GamePlayScene::Draw(DirectXCommon* dxcommon) {
 			x->Draw();
 		}
 	}
+
+	// 神社
+	shrineObj->Draw();
 
 	// 地面
 	groundObj->Draw();
