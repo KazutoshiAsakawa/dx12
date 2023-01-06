@@ -7,8 +7,7 @@
 using namespace DirectX;
 using namespace Microsoft::WRL;
 
-static const DirectX::XMFLOAT3 operator+(const DirectX::XMFLOAT3& lhs, const DirectX::XMFLOAT3& rhs)
-{
+static const DirectX::XMFLOAT3 operator+(const DirectX::XMFLOAT3& lhs, const DirectX::XMFLOAT3& rhs) {
 	XMFLOAT3 result;
 	result.x = lhs.x + rhs.x;
 	result.y = lhs.y + rhs.y;
@@ -16,8 +15,7 @@ static const DirectX::XMFLOAT3 operator+(const DirectX::XMFLOAT3& lhs, const Dir
 	return result;
 }
 
-static const DirectX::XMFLOAT3 operator-(const DirectX::XMFLOAT3& lhs, const DirectX::XMFLOAT3& rhs)
-{
+static const DirectX::XMFLOAT3 operator-(const DirectX::XMFLOAT3& lhs, const DirectX::XMFLOAT3& rhs) {
 	XMFLOAT3 result;
 	result.x = lhs.x - rhs.x;
 	result.y = lhs.y - rhs.y;
@@ -25,8 +23,7 @@ static const DirectX::XMFLOAT3 operator-(const DirectX::XMFLOAT3& lhs, const Dir
 	return result;
 }
 
-const DirectX::XMFLOAT3 operator/(const DirectX::XMFLOAT3& lhs, const float rhs)
-{
+const DirectX::XMFLOAT3 operator/(const DirectX::XMFLOAT3& lhs, const float rhs) {
 	XMFLOAT3 result;
 	result.x = lhs.x / rhs;
 	result.y = lhs.y / rhs;
@@ -34,14 +31,12 @@ const DirectX::XMFLOAT3 operator/(const DirectX::XMFLOAT3& lhs, const float rhs)
 	return result;
 }
 
-ParticleManager* ParticleManager::GetInstance()
-{
+ParticleManager* ParticleManager::GetInstance() {
 	static ParticleManager instance;
 	return &instance;
 }
 
-void ParticleManager::Initialize(ID3D12Device* device)
-{
+void ParticleManager::Initialize(ID3D12Device* device) {
 	// nullptrチェック
 	assert(device);
 
@@ -74,8 +69,7 @@ void ParticleManager::Initialize(ID3D12Device* device)
 	}
 }
 
-void ParticleManager::Update()
-{
+void ParticleManager::Update() {
 	HRESULT result;
 
 	// 寿命が尽きたパーティクルを全削除
@@ -105,6 +99,9 @@ void ParticleManager::Update()
 
 		// スケールの線形補間
 		it->rotation = it->s_rotation + (it->e_rotation - it->s_rotation) / f;
+
+		// 色の線形補間
+		it->color = it->s_color + (it->e_color - it->s_color) / f;
 	}
 
 	// 頂点バッファへデータ転送
@@ -120,6 +117,8 @@ void ParticleManager::Update()
 			vertMap->pos = it->position;
 			// スケール
 			vertMap->scale = it->scale;
+			// 色
+			vertMap->color = { it->color.x, it->color.y, it->color.z, 1.f };
 			// 次の頂点へ
 			vertMap++;
 			if (++vertCount >= vertexCount) {
@@ -137,8 +136,7 @@ void ParticleManager::Update()
 	constBuff->Unmap(0, nullptr);
 }
 
-void ParticleManager::Draw(ID3D12GraphicsCommandList* cmdList)
-{
+void ParticleManager::Draw(ID3D12GraphicsCommandList* cmdList) {
 	UINT drawNum = (UINT)std::distance(particles.begin(), particles.end());
 	if (drawNum > vertexCount) {
 		drawNum = vertexCount;
@@ -174,8 +172,7 @@ void ParticleManager::Draw(ID3D12GraphicsCommandList* cmdList)
 	cmdList->DrawInstanced(drawNum, 1, 0, 0);
 }
 
-void ParticleManager::Add(int life, XMFLOAT3 position, XMFLOAT3 velocity, XMFLOAT3 accel, float start_scale, float end_scale)
-{
+void ParticleManager::Add(int life, XMFLOAT3 position, XMFLOAT3 velocity, XMFLOAT3 accel, float start_scale, float end_scale, XMFLOAT3 start_col, XMFLOAT3 end_col) {
 	// リストに要素を追加
 	particles.emplace_front();
 	// 追加した要素の参照
@@ -186,10 +183,11 @@ void ParticleManager::Add(int life, XMFLOAT3 position, XMFLOAT3 velocity, XMFLOA
 	p.s_scale = start_scale;
 	p.e_scale = end_scale;
 	p.num_frame = life;
+	p.s_color = start_col;
+	p.e_color = end_col;
 }
 
-void ParticleManager::InitializeDescriptorHeap()
-{
+void ParticleManager::InitializeDescriptorHeap() {
 	HRESULT result = S_FALSE;
 
 	// デスクリプタヒープを生成	
@@ -206,8 +204,7 @@ void ParticleManager::InitializeDescriptorHeap()
 	descriptorHandleIncrementSize = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 }
 
-void ParticleManager::InitializeGraphicsPipeline()
-{
+void ParticleManager::InitializeGraphicsPipeline() {
 	HRESULT result = S_FALSE;
 	ComPtr<ID3DBlob> vsBlob; // 頂点シェーダオブジェクト
 	ComPtr<ID3DBlob> psBlob;	// ピクセルシェーダオブジェクト
@@ -292,6 +289,11 @@ void ParticleManager::InitializeGraphicsPipeline()
 		},
 		{ // スケール
 			"TEXCOORD", 0, DXGI_FORMAT_R32_FLOAT, 0,
+			D3D12_APPEND_ALIGNED_ELEMENT,
+			D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
+		},
+		{ // 色
+			"COLOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,
 			D3D12_APPEND_ALIGNED_ELEMENT,
 			D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
 		},
@@ -383,8 +385,7 @@ void ParticleManager::InitializeGraphicsPipeline()
 	}
 }
 
-void ParticleManager::LoadTexture()
-{
+void ParticleManager::LoadTexture() {
 	HRESULT result = S_FALSE;
 
 	// WICテクスチャのロード
@@ -451,8 +452,7 @@ void ParticleManager::LoadTexture()
 	);
 }
 
-void ParticleManager::CreateModel()
-{
+void ParticleManager::CreateModel() {
 	HRESULT result = S_FALSE;
 
 	// 頂点バッファ生成
@@ -474,8 +474,7 @@ void ParticleManager::CreateModel()
 	vbView.StrideInBytes = sizeof(VertexPos);
 }
 
-void ParticleManager::CreateParticle(const XMFLOAT3& pos, UINT particleNum, float startScale, float vel)
-{
+void ParticleManager::CreateParticle(const XMFLOAT3& pos, UINT particleNum, float startScale, float vel, XMFLOAT3 start_col, XMFLOAT3 end_col) {
 	for (UINT i = 0; i <= particleNum; i++) {
 		const float thata = rand() % 180 / 180.f * XM_PI;
 		const float phi = rand() % 360 / 360.f * XM_PI;
@@ -486,7 +485,7 @@ void ParticleManager::CreateParticle(const XMFLOAT3& pos, UINT particleNum, floa
 	r * cosf(thata),
 	r * sinf(thata) * sinf(phi) };
 
-		Add(15, pos, vel, XMFLOAT3(vel.x / -10, vel.y / -10, vel.z / -10), startScale, 0);
+		Add(15, pos, vel, XMFLOAT3(vel.x / -10, vel.y / -10, vel.z / -10), startScale, 0, start_col, end_col);
 	}
 
 }

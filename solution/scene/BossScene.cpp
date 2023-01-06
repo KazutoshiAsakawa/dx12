@@ -503,10 +503,12 @@ void BossScene::play() {
 			aim->SetColor({ 1,1,1,1 });
 		}
 
+		++shotInterval;
+
 		// 左クリックしていたら
 		if (input->PushMouse(Input::LEFT)) {
 			// 一定間隔で弾を出す
-			if (++shotInterval >= shotIntervalMax) {
+			if (shotInterval >= shotIntervalMax) {
 				shotInterval = 0;
 				// 自機の弾の発射
 				player->Shot(pBulletModel.get(), pBulletScale);
@@ -551,7 +553,7 @@ void BossScene::play() {
 				}
 
 				// パーティクルの発生
-				ParticleManager::GetInstance()->CreateParticle(boss->GetPosition(), 10, 4, 5);
+				ParticleManager::GetInstance()->CreateParticle(boss->GetPosition(), 10, 4, 5, { 1,0,0 }, { 0.5f,0,0 });
 			}
 		}
 	}

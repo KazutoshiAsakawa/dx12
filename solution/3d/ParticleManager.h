@@ -12,8 +12,7 @@
 /// <summary>
 /// パーティクルマネージャ
 /// </summary>
-class ParticleManager
-{
+class ParticleManager {
 private: // エイリアス
 	// Microsoft::WRL::を省略
 	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
@@ -25,22 +24,20 @@ private: // エイリアス
 
 public: // サブクラス
 	// 頂点データ構造体
-	struct VertexPos
-	{
+	struct VertexPos {
 		XMFLOAT3 pos; // xyz座標
 		float scale; // スケール
+		XMFLOAT4 color;
 	};
 
 	// 定数バッファ用データ構造体
-	struct ConstBufferData
-	{
+	struct ConstBufferData {
 		XMMATRIX mat;	// ビュープロジェクション行列
 		XMMATRIX matBillboard;	// ビルボード行列
 	};
 
 	// パーティクル1粒
-	class Particle
-	{
+	class Particle {
 		// Microsoft::WRL::を省略
 		template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
 		// DirectX::を省略
@@ -96,7 +93,7 @@ public: // メンバ関数
 	/// <summary>
 	/// 描画
 	/// </summary>
-	void Draw(ID3D12GraphicsCommandList * cmdList);
+	void Draw(ID3D12GraphicsCommandList* cmdList);
 
 	/// <summary>
 	/// カメラのセット
@@ -113,7 +110,7 @@ public: // メンバ関数
 	/// <param name="accel">加速度</param>
 	/// <param name="start_scale">開始時スケール</param>
 	/// <param name="end_scale">終了時スケール</param>
-	void Add(int life, XMFLOAT3 position, XMFLOAT3 velocity, XMFLOAT3 accel, float start_scale, float end_scale );
+	void Add(int life, XMFLOAT3 position, XMFLOAT3 velocity, XMFLOAT3 accel, float start_scale, float end_scale, XMFLOAT3 start_col = { 1,1,1 }, XMFLOAT3 end_col = { 1,1,1 });
 
 	/// <summary>
 	/// デスクリプタヒープの初期化
@@ -138,7 +135,7 @@ public: // メンバ関数
 	/// </summary>
 	void CreateModel();
 
-	void CreateParticle(const XMFLOAT3& pos,UINT particleNum,float startScale,float vel);
+	void CreateParticle(const XMFLOAT3& pos, UINT particleNum, float startScale, float vel, XMFLOAT3 start_col = { 1,1,1 }, XMFLOAT3 end_col = { 1,1,1 });
 
 private: // メンバ変数
 	// デバイス

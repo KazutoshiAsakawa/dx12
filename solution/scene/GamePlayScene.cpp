@@ -671,7 +671,7 @@ void GamePlayScene::play() {
 					e->SetHitStop(true);
 
 					// パーティクルの発生
-					ParticleManager::GetInstance()->CreateParticle(pos, 10, 4, 5);
+					ParticleManager::GetInstance()->CreateParticle(pos, 10, 4, 5, { 1,0,1 }, { 0.5f,0,0.5f });
 					break;
 				}
 			}
