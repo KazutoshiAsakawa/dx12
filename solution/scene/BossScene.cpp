@@ -190,8 +190,18 @@ void BossScene::Initialize(DirectXCommon* dxcommon) {
 	// 更新処理の関数を入れる
 	updateProcess = std::bind(&BossScene::start, this);
 
-	// 音声読み込み
-	Audio::GetInstance()->LoadWave("Alarm01.wav");
+#pragma region 音
+
+	// Resources/に続くファイルパス
+	bgmFileName = "sound/zensen he totugekiseyo.wav";
+
+	// BGM読み込み
+	Audio::GetInstance()->LoadWave(bgmFileName);
+	// BGMを再生
+	Audio::GetInstance()->PlayWave(bgmFileName, 0.06f, XAUDIO2_LOOP_INFINITE);
+
+#pragma endregion 音
+
 }
 
 void BossScene::Finalize() {
@@ -694,7 +704,10 @@ void BossScene::end(const std::string& nextScene) {
 
 	// モザイクの時間が最大までいったらplay関数に変える
 	if (++mosaicFrame > mosaicFrameMax) {
-		// ボスシーンへ
+
+		// BGM止める
+		Audio::GetInstance()->StopWave(bgmFileName);
+		// 指定のエンド画面へ
 		SceneManager::GetInstance()->ChangeScene(nextScene);
 	} else {
 		XMFLOAT2 mosaicLevel = {};

@@ -66,9 +66,9 @@ public:
 	/// <summary>
 	/// 音声再生
 	/// </summary>
-	/// <param name="">サウンドデータ名</param>
-	/// <param volume="">音量</param>
-	/// <param loopCount="">ループ回数。XAUDIO2_LOOP_INFINITE(255)で無限ループ</param>
+	/// <param name="filename">サウンドデータ名</param>
+	/// <param name="volume">音量</param>
+	/// <param name="loopCount">ループ回数。XAUDIO2_LOOP_INFINITE(255)で無限ループ</param>
 	void PlayWave(const std::string filename, float volume = 0.5f, UINT loopCount = XAUDIO2_LOOP_INFINITE);
 
 	/// <summary>

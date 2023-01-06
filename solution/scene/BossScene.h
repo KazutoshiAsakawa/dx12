@@ -171,4 +171,6 @@ private:
 	UINT nowEffectFrame = 0;
 
 	UINT bossEntryNowFrame = 0;
+
+	std::string bgmFileName;
 };
