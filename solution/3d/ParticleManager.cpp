@@ -392,8 +392,9 @@ void ParticleManager::LoadTexture() {
 	TexMetadata metadata{};
 	ScratchImage scratchImg{};
 
+	// パーティクルの画像を読み込む
 	result = LoadFromWICFile(
-		L"Resources/effect1.png", WIC_FLAGS_NONE,
+		L"Resources/blood.png", WIC_FLAGS_NONE,
 		&metadata, scratchImg);
 	if (FAILED(result)) {
 		assert(0);

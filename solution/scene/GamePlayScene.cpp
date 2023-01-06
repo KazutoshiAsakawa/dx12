@@ -196,7 +196,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon) {
 	// BGM“Ç‚İ‚İ
 	Audio::GetInstance()->LoadWave("sound/Gap-Ver.2.wav");
 	// BGM‚ğÄ¶
-	Audio::GetInstance()->PlayWave("sound/Gap-Ver.2.wav", 0.05f);
+	Audio::GetInstance()->PlayWave("sound/Gap-Ver.2.wav", 0.04f);
 
 	// ƒXƒvƒ‰ƒCƒ“‹Èü
 	csv = Enemy::LoadCsv("Resources/spline.csv");
