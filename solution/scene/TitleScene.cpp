@@ -10,11 +10,13 @@ void TitleScene::Initialize(DirectXCommon* dxcommon)
 	SpriteCommon::GetInstance()->LoadTexture(1, L"Resources/title/back.png");
 	SpriteCommon::GetInstance()->LoadTexture(2, L"Resources/title/kitsunebi.png");
 	SpriteCommon::GetInstance()->LoadTexture(3, L"Resources/title/pressS.png");
+	SpriteCommon::GetInstance()->LoadTexture(4, L"Resources/title/credit.png");
 
 	// スプライトの生成
 	title["back"].reset(Sprite::Create(1, { 0.f, 0.f }));
 	title["kitsunebi"].reset(Sprite::Create(2, { 0.0f, 0.0f }, false, false));
 	title["pressS"].reset(Sprite::Create(3, { 0.0f, 0.0f }, false, false));
+	title["credit"].reset(Sprite::Create(4, { 0.0f, 0.0f }, false, false));
 }
 
 void TitleScene::Finalize()

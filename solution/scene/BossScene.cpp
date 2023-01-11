@@ -333,6 +333,8 @@ void BossScene::bossEntry() {
 
 		// ボスの名前非表示
 		bossText->SetIsInvisible(true);
+		// プレイヤーの照準を表示
+		aim->SetIsInvisible(false);
 	} else {
 		// 進行度
 		float rate = (float)bossEntryNowFrame / (float)frameMax;
@@ -365,6 +367,9 @@ void BossScene::bossEntry() {
 		bossText->SetColor({ 1.f, 1.f, 1.f, 1.f - (rate * rate * rate * rate) });
 
 		bossText->Update();
+
+		// プレイヤーの照準を表示
+		aim->SetIsInvisible(true);
 	}
 }
 
