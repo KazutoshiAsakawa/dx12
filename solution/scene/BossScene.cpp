@@ -29,34 +29,19 @@ void BossScene::Initialize(DirectXCommon* dxcommon) {
 	// マウスカーソルを消す
 	ShowCursor(false);
 
-	// スプライト共通テクスチャ読み込み
-	SpriteCommon::GetInstance()->LoadTexture(1, L"Resources/gameplay.png");
-	SpriteCommon::GetInstance()->LoadTexture(2, L"Resources/aim.png");
-	SpriteCommon::GetInstance()->LoadTexture(3, L"Resources/hp/hp.png");
-	SpriteCommon::GetInstance()->LoadTexture(4, L"Resources/hp/hpSlide.png");
-
-	SpriteCommon::GetInstance()->LoadTexture(6, L"Resources/pause/pauseBack.png");
-	SpriteCommon::GetInstance()->LoadTexture(7, L"Resources/pause/pauseTitle.png");
-	SpriteCommon::GetInstance()->LoadTexture(8, L"Resources/pause/pauseClose.png");
-
-	SpriteCommon::GetInstance()->LoadTexture(9, L"Resources/operation/ESC_Pause.png");
-
-	SpriteCommon::GetInstance()->LoadTexture(10, L"Resources/bossText.png");
-
 	// スプライトの生成
-	aim.reset(Sprite::Create(2));
+	aim.reset(Sprite::Create(SpriteCommon::GetInstance()->LoadTexture(L"Resources/aim.png")));
 	aim->SetPosition({ WinApp::window_width / 2.f ,WinApp::window_height / 2.f, 0.f });
 
-	operationSprite["ESC_Pause"].reset(Sprite::Create(9, { 0.f, 0.f }, false, false));
+	operationSprite["ESC_Pause"].reset(Sprite::Create(SpriteCommon::GetInstance()->LoadTexture(L"Resources/operation/ESC_Pause.png"), { 0.f, 0.f }, false, false));
 	// 最初は表示する
 	operationSprite["ESC_Pause"]->SetIsInvisible(false);
 
 	// ポーズ画面の画像を作る
 	pauseSprite.resize(pauseMax);
-	for (UINT i = 0; i < pauseMax; i++) {
-		// hp画像のtexNumberの最初が6
-		pauseSprite[i].reset(Sprite::Create(i + 6, { 0,0 }));
-	}
+	pauseSprite[0].reset(Sprite::Create(SpriteCommon::GetInstance()->LoadTexture(L"Resources/pause/pauseBack.png"), { 0.f, 0.f }));
+	pauseSprite[1].reset(Sprite::Create(SpriteCommon::GetInstance()->LoadTexture(L"Resources/pause/pauseTitle.png"), { 0.f, 0.f }));
+	pauseSprite[2].reset(Sprite::Create(SpriteCommon::GetInstance()->LoadTexture(L"Resources/pause/pauseClose.png"), { 0.f, 0.f }));
 
 	// カメラの初期化
 	camera.reset(new TrackingCamera());
@@ -99,10 +84,10 @@ void BossScene::Initialize(DirectXCommon* dxcommon) {
 
 	// hp画像
 	playerHpSpriteSize = { 330.f, 30.f };
-	playerHpSprite.reset(Sprite::Create(3, { 0,1 }));
+	playerHpSprite.reset(Sprite::Create(SpriteCommon::GetInstance()->LoadTexture(L"Resources/hp/hp.png"), { 0,1 }));
 	playerHpSprite->SetPosition(XMFLOAT3(35, WinApp::window_height - 35, 0));
 	playerHpSprite->SetSize({ 0.f,playerHpSpriteSize.y });
-	playerHpSlide.reset(Sprite::Create(4, { 0,1 }));
+	playerHpSlide.reset(Sprite::Create(SpriteCommon::GetInstance()->LoadTexture(L"Resources/hp/hpSlide.png"), { 0,1 }));
 	playerHpSlide->SetPosition(XMFLOAT3(35, WinApp::window_height - 35, 0));
 	playerHpSlide->SetSize(playerHpSpriteSize);
 
@@ -149,8 +134,8 @@ void BossScene::Initialize(DirectXCommon* dxcommon) {
 
 	// ボスHPスプライト
 	bossHpSpriteSize = { 430.f, 30.f };
-	bossHpSprite.reset(Sprite::Create(3, { 0.5f, 0.f }));
-	bossHpSlide.reset(Sprite::Create(4, { 0.5f, 0.f }));
+	bossHpSprite.reset(Sprite::Create(SpriteCommon::GetInstance()->LoadTexture( L"Resources/hp/hp.png") , { 0.5f, 0.f }));
+	bossHpSlide.reset(Sprite::Create(SpriteCommon::GetInstance()->LoadTexture( L"Resources/hp/hpSlide.png"), { 0.5f, 0.f }));
 
 	bossHpSprite->SetPosition({ (float)WinApp::window_width / 2.f, 5.f, 0.f });
 	bossHpSlide->SetPosition({ (float)WinApp::window_width / 2.f, 5.f, 0.f });
@@ -171,7 +156,7 @@ void BossScene::Initialize(DirectXCommon* dxcommon) {
 #pragma region ボス名前
 
 	// ボスの名前スプライト
-	bossText.reset(Sprite::Create(10, { 0.5f, 0.5f }));
+	bossText.reset(Sprite::Create(SpriteCommon::GetInstance()->LoadTexture(L"Resources/bossText.png"), { 0.5f, 0.5f }));
 	bossText->SetPosition({ (float)WinApp::window_width / 2.f, (float)WinApp::window_height / 4.f * 3.f, 0.f });
 
 	constexpr float texSizeX = WinApp::window_width * (3.f / 4.f);	// 画像横幅は画面横幅の3/4

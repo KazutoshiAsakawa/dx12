@@ -6,17 +6,11 @@
 
 void TitleScene::Initialize(DirectXCommon* dxcommon)
 {
-	// スプライト共通テクスチャ読み込み
-	SpriteCommon::GetInstance()->LoadTexture(1, L"Resources/title/back.png");
-	SpriteCommon::GetInstance()->LoadTexture(2, L"Resources/title/kitsunebi.png");
-	SpriteCommon::GetInstance()->LoadTexture(3, L"Resources/title/pressS.png");
-	SpriteCommon::GetInstance()->LoadTexture(4, L"Resources/title/credit.png");
-
 	// スプライトの生成
-	title["back"].reset(Sprite::Create(1, { 0.f, 0.f }));
-	title["kitsunebi"].reset(Sprite::Create(2, { 0.0f, 0.0f }, false, false));
-	title["pressS"].reset(Sprite::Create(3, { 0.0f, 0.0f }, false, false));
-	title["credit"].reset(Sprite::Create(4, { 0.0f, 0.0f }, false, false));
+	title["back"].reset(Sprite::Create(SpriteCommon::GetInstance()->LoadTexture(L"Resources/title/back.png"), { 0.f, 0.f }));
+	title["kitsunebi"].reset(Sprite::Create(SpriteCommon::GetInstance()->LoadTexture(L"Resources/title/kitsunebi.png"), { 0.0f, 0.0f }, false, false));
+	title["pressS"].reset(Sprite::Create(SpriteCommon::GetInstance()->LoadTexture(L"Resources/title/pressS.png"), { 0.0f, 0.0f }, false, false));
+	title["credit"].reset(Sprite::Create(SpriteCommon::GetInstance()->LoadTexture(L"Resources/title/credit.png"), { 0.0f, 0.0f }, false, false));
 }
 
 void TitleScene::Finalize()

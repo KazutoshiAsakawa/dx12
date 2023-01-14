@@ -26,32 +26,25 @@ namespace {
 }
 
 void GamePlayScene::Initialize(DirectXCommon* dxcommon) {
+
+	// Inputクラスはシングルトンクラス
+	// 【シングルトンクラス】オブジェクトを一つしか作れないクラス
+	// 【インスタンス】クラス型の変数のこと
+	// 【Input::GetInstance関数】Inputクラスのインスタンス(のポインタ)を取得する関数
+	
+	// Inputクラスのインスタンス(へのポインタ)を変数に入れておく
+	input = Input::GetInstance();
+
 	// マウスカーソルを消す
 	ShowCursor(false);
 
-	// スプライト共通テクスチャ読み込み
-	SpriteCommon::GetInstance()->LoadTexture(1, L"Resources/gameplay.png");
-	SpriteCommon::GetInstance()->LoadTexture(2, L"Resources/aim.png");
-	SpriteCommon::GetInstance()->LoadTexture(3, L"Resources/hp/hp.png");
-	SpriteCommon::GetInstance()->LoadTexture(4, L"Resources/hp/hpSlide.png");
-
-	SpriteCommon::GetInstance()->LoadTexture(6, L"Resources/pause/pauseBack.png");
-	SpriteCommon::GetInstance()->LoadTexture(7, L"Resources/pause/pauseTitle.png");
-	SpriteCommon::GetInstance()->LoadTexture(8, L"Resources/pause/pauseClose.png");
-
-	SpriteCommon::GetInstance()->LoadTexture(9, L"Resources/operation/W.png");
-	SpriteCommon::GetInstance()->LoadTexture(10, L"Resources/operation/S.png");
-	SpriteCommon::GetInstance()->LoadTexture(11, L"Resources/operation/A.png");
-	SpriteCommon::GetInstance()->LoadTexture(12, L"Resources/operation/D.png");
-	SpriteCommon::GetInstance()->LoadTexture(13, L"Resources/operation/L_Click.png");
-	SpriteCommon::GetInstance()->LoadTexture(14, L"Resources/operation/ESC_Pause.png");
-
-	operationSprite["W"].reset(Sprite::Create(9, { 0.5f, 0.5f }, false, false));
-	operationSprite["S"].reset(Sprite::Create(10, { 0.5f, 0.5f }, false, false));
-	operationSprite["A"].reset(Sprite::Create(11, { 0.5f, 0.5f }, false, false));
-	operationSprite["D"].reset(Sprite::Create(12, { 0.5f, 0.5f }, false, false));
-	operationSprite["L_Click"].reset(Sprite::Create(13, { 0.f, 0.f }, false, false));
-	operationSprite["ESC_Pause"].reset(Sprite::Create(14, { 0.f, 0.f }, false, false));
+	// 操作説明のスプライト
+	operationSprite["W"].reset(Sprite::Create(SpriteCommon::GetInstance()->LoadTexture(L"Resources/operation/W.png"), { 0.5f, 0.5f }, false, false));
+	operationSprite["S"].reset(Sprite::Create(SpriteCommon::GetInstance()->LoadTexture(L"Resources/operation/S.png"), { 0.5f, 0.5f }, false, false));
+	operationSprite["A"].reset(Sprite::Create(SpriteCommon::GetInstance()->LoadTexture(L"Resources/operation/A.png"), { 0.5f, 0.5f }, false, false));
+	operationSprite["D"].reset(Sprite::Create(SpriteCommon::GetInstance()->LoadTexture(L"Resources/operation/D.png"), { 0.5f, 0.5f }, false, false));
+	operationSprite["L_Click"].reset(Sprite::Create(SpriteCommon::GetInstance()->LoadTexture(L"Resources/operation/L_Click.png"), { 0.f, 0.f }, false, false));
+	operationSprite["ESC_Pause"].reset(Sprite::Create(SpriteCommon::GetInstance()->LoadTexture(L"Resources/operation/ESC_Pause.png"), { 0.f, 0.f }, false, false));
 	// 最初は表示する
 	operationSprite["ESC_Pause"]->SetIsInvisible(false);
 
@@ -80,25 +73,24 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon) {
 	}
 
 	// スプライトの生成
-	aim.reset(Sprite::Create(2));
+	aim.reset(Sprite::Create(SpriteCommon::GetInstance()->LoadTexture(L"Resources/aim.png")));
 
 	// hp画像
 	playerHpSpriteSize = { 330.f, 30.f };
 
-	playerHpSprite.reset(Sprite::Create(3, { 0,1 }));
+	playerHpSprite.reset(Sprite::Create(SpriteCommon::GetInstance()->LoadTexture(L"Resources/hp/hp.png"), { 0,1 }));
 	playerHpSprite->SetPosition(XMFLOAT3(35, WinApp::window_height - 35, 0));
 
-	playerHpSlide.reset(Sprite::Create(4, { 0,1 }));
+	playerHpSlide.reset(Sprite::Create(SpriteCommon::GetInstance()->LoadTexture(L"Resources/hp/hpSlide.png"), { 0,1 }));
 	playerHpSlide->SetPosition(XMFLOAT3(35, WinApp::window_height - 35, 0));
 	playerHpSlide->SetSize(playerHpSpriteSize);
 	playerHpSlide->TransferVertexBuffer();
 
 	// ポーズ画面の画像を作る
 	pauseSprite.resize(pauseMax);
-	for (UINT i = 0; i < pauseMax; i++) {
-		// hp画像のtexNumberの最初が6
-		pauseSprite[i].reset(Sprite::Create(i + 6, { 0,0 }));
-	}
+	pauseSprite[0].reset(Sprite::Create(SpriteCommon::GetInstance()->LoadTexture(L"Resources/pause/pauseBack.png"), { 0.f, 0.f }));
+	pauseSprite[1].reset(Sprite::Create(SpriteCommon::GetInstance()->LoadTexture(L"Resources/pause/pauseTitle.png"), { 0.f, 0.f }));
+	pauseSprite[2].reset(Sprite::Create(SpriteCommon::GetInstance()->LoadTexture(L"Resources/pause/pauseClose.png"), { 0.f, 0.f }));
 
 	// カメラの初期化
 	camera.reset(new TrackingCamera());
@@ -377,7 +369,6 @@ void GamePlayScene::Update() {
 
 // シーン遷移
 void GamePlayScene::start() {
-	Input* input = Input::GetInstance();
 	// モザイクをかける時間
 	constexpr UINT mosaicFrameMax = 50;
 
@@ -438,8 +429,6 @@ void GamePlayScene::entryPlayer() {
 }
 
 void GamePlayScene::play() {
-	Input* input = Input::GetInstance();
-
 	skyDomeObj->SetPosition(lane->GetPosition());
 
 #ifdef _DEBUG
@@ -612,7 +601,6 @@ void GamePlayScene::deathPlayer() {
 }
 
 void GamePlayScene::end(const std::string& sceneName) {
-	Input* input = Input::GetInstance();
 	// モザイクをかける時間
 	constexpr UINT mosaicFrameMax = 50;
 
@@ -805,6 +793,7 @@ void GamePlayScene::PlayerMove() {
 
 // 照準と敵のスクリーン座標の当たり判定
 void GamePlayScene::CollisionAimAndEnemyScreenPos() {
+
 	// 画像の左上と右下
 	XMFLOAT2 aimLT = { (float)input->GetMousePos().x - aim->GetSize().x / 2,
 	(float)input->GetMousePos().y - aim->GetSize().y / 2 };

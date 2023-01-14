@@ -10,15 +10,13 @@
 using namespace DirectX;
 using namespace Microsoft::WRL;
 
-SpriteCommon* SpriteCommon::GetInstance()
-{
+SpriteCommon* SpriteCommon::GetInstance() {
 	static SpriteCommon instance;
 
 	return &instance;
 }
 
-void SpriteCommon::Initialize(ID3D12Device* device, ID3D12GraphicsCommandList* commandList, int window_width, int window_height)
-{
+void SpriteCommon::Initialize(ID3D12Device* device, ID3D12GraphicsCommandList* commandList, int window_width, int window_height) {
 	// nullポインタチェック
 	assert(device);
 	HRESULT result = S_FALSE;
@@ -42,8 +40,7 @@ void SpriteCommon::Initialize(ID3D12Device* device, ID3D12GraphicsCommandList* c
 	result = device->CreateDescriptorHeap(&descHeapDesc, IID_PPV_ARGS(&descHeap));
 }
 
-void SpriteCommon::PreDraw()
-{
+void SpriteCommon::PreDraw() {
 	// パイプラインステートの設定
 	commandList->SetPipelineState(pipelineSet.pipelinestate.Get());
 	// ルートシグネチャの設定
@@ -56,10 +53,10 @@ void SpriteCommon::PreDraw()
 	commandList->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);
 }
 
-void SpriteCommon::LoadTexture(UINT texnumber, const wchar_t* filename)
-{
-	// 異常な番号の指定を検出
-	assert(texnumber <= kSpriteSRVCount - 1);
+UINT SpriteCommon::LoadTexture(const wchar_t* filename) {
+	texBuff.emplace_back();
+
+	auto& buff = texBuff.back();
 
 	HRESULT result = S_FALSE;
 
@@ -89,10 +86,10 @@ void SpriteCommon::LoadTexture(UINT texnumber, const wchar_t* filename)
 		&texresDesc,
 		D3D12_RESOURCE_STATE_GENERIC_READ, // テクスチャ用指定
 		nullptr,
-		IID_PPV_ARGS(&texBuff[texnumber]));
+		IID_PPV_ARGS(&buff));
 
 	// テクスチャバッファにデータ転送
-	result = texBuff[texnumber]->WriteToSubresource(
+	result = buff->WriteToSubresource(
 		0,
 		nullptr, // 全領域へコピー
 		img->pixels,    // 元データアドレス
@@ -107,16 +104,21 @@ void SpriteCommon::LoadTexture(UINT texnumber, const wchar_t* filename)
 	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;//2Dテクスチャ
 	srvDesc.Texture2D.MipLevels = 1;
 
-	// ヒープのtexnumber番目にシェーダーリソースビュー作成
+	UINT retNum = (UINT)texBuff.size() - 1u;
+
+	// ヒープにシェーダーリソースビュー作成
 	device->CreateShaderResourceView(
-		texBuff[texnumber].Get(), //ビューと関連付けるバッファ
+		buff.Get(), //ビューと関連付けるバッファ
 		&srvDesc, //テクスチャ設定情報
-		CD3DX12_CPU_DESCRIPTOR_HANDLE(descHeap->GetCPUDescriptorHandleForHeapStart(), texnumber, device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV))
+		CD3DX12_CPU_DESCRIPTOR_HANDLE(descHeap->GetCPUDescriptorHandleForHeapStart(),
+			(int)retNum,
+			device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV))
 	);
+
+	return retNum;
 }
 
-void SpriteCommon::SetGraphicsRootDescriptorTable(UINT rootParameterIndex, UINT texNumber)
-{
+void SpriteCommon::SetGraphicsRootDescriptorTable(UINT rootParameterIndex, UINT texNumber) {
 	commandList->SetGraphicsRootDescriptorTable(rootParameterIndex,
 		CD3DX12_GPU_DESCRIPTOR_HANDLE(
 			descHeap->GetGPUDescriptorHandleForHeapStart(),
@@ -124,15 +126,13 @@ void SpriteCommon::SetGraphicsRootDescriptorTable(UINT rootParameterIndex, UINT 
 			device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)));
 }
 
-ID3D12Resource* SpriteCommon::GetTexBuff(int texNumber)
-{
-	assert(0 <= texNumber && texNumber < kSpriteSRVCount);
+ID3D12Resource* SpriteCommon::GetTexBuff(UINT texNumber) {
+	assert(texNumber < kSpriteSRVCount);
 
 	return texBuff[texNumber].Get();
 }
 
-void SpriteCommon::CreateGraphicsPipeline()
-{
+void SpriteCommon::CreateGraphicsPipeline() {
 	HRESULT result;
 
 	ComPtr<ID3DBlob> vsBlob = nullptr; // 頂点シェーダオブジェクト

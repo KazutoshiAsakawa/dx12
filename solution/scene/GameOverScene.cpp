@@ -10,12 +10,12 @@ using namespace DirectX;
 void GameOverScene::Initialize(DirectXCommon* dxcommon)
 {
 	// スプライト共通テクスチャ読み込み
-	SpriteCommon::GetInstance()->LoadTexture(1, L"Resources/die.png");
+	int dieGrNum = SpriteCommon::GetInstance()->LoadTexture(L"Resources/die.png");
 
 	PostEffect::GetInstance()->SetMosaicNum(XMFLOAT2(WinApp::window_width, WinApp::window_height));
 
 	// スプライトの生成
-	sprite = Sprite::Create(1, { 0,0 }, false, false);
+	sprite = Sprite::Create(dieGrNum, { 0,0 }, false, false);
 }
 
 void GameOverScene::Finalize()

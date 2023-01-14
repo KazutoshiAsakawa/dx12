@@ -39,12 +39,8 @@ void Framework::Initialize()
 
 	// デバッグテキスト
 	debugText = DebugText::GetInstance();
-	// デバッグテキスト用のテクスチャ番号を指定
-	constexpr int debugTextTexNumber = 0;
-	// デバッグテキスト用のテクスチャ読み込み
-	spriteCommon->LoadTexture(debugTextTexNumber, L"Resources/debugfont.png");
 	// デバッグテキスト初期化
-	debugText->Initialize(spriteCommon, debugTextTexNumber);
+	debugText->Initialize(spriteCommon, spriteCommon->LoadTexture(L"Resources/debugfont.png"));
 
 	//入力の初期化
 	input = Input::GetInstance();

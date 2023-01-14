@@ -120,7 +120,7 @@ public:
 	void CollisionPlayerAndEnemyBullet();
 
 private:
-	Input* input = nullptr;
+	Input* input;
 
 	// 照準スプライト
 	std::unique_ptr<Sprite> aim;

@@ -1,6 +1,7 @@
 #pragma once
 #include"PipelineSet.h"
 #include<DirectXMath.h>
+#include <vector>
 
 /// <summary>
 /// スプライト共通部分
@@ -30,7 +31,8 @@ public:
 	/// <summary>
 	/// テクスチャ読み込み
 	/// </summary>
-	void LoadTexture(UINT texnumber, const wchar_t* filename);
+	/// <returns>番号</returns>
+	UINT LoadTexture(const wchar_t* filename);
 
 	/// <summary>
 	/// ルートディスクリプタテーブルの設定
@@ -44,7 +46,7 @@ public:
 	/// </summary>
 	/// <param name="texNumber">テクスチャ番号</param>
 	/// <returns>テクスチャリソース</returns>
-	ID3D12Resource* GetTexBuff(int texNumber);
+	ID3D12Resource* GetTexBuff(UINT texNumber);
 
 	const DirectX::XMMATRIX& GetMatProjection() { return matProjection; }
 	ID3D12Device* GetDevice() { return device; }
@@ -60,7 +62,7 @@ private:
 	// テクスチャ用デスクリプタヒープの生成
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> descHeap;
 	// テクスチャリソース（テクスチャバッファ）の配列
-	Microsoft::WRL::ComPtr<ID3D12Resource> texBuff[kSpriteSRVCount];
+	std::vector<Microsoft::WRL::ComPtr<ID3D12Resource>> texBuff;
 	// デバイス(借りてくる)
 	ID3D12Device* device = nullptr;
 	// コマンドリスト(借りてくる)
