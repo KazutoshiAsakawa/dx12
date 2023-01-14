@@ -35,9 +35,9 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon) {
 	SpriteCommon::GetInstance()->LoadTexture(3, L"Resources/hp/hp.png");
 	SpriteCommon::GetInstance()->LoadTexture(4, L"Resources/hp/hpSlide.png");
 
-	SpriteCommon::GetInstance()->LoadTexture(6, L"Resources/pouse/pauseBack.png");
-	SpriteCommon::GetInstance()->LoadTexture(7, L"Resources/pouse/pauseTitle.png");
-	SpriteCommon::GetInstance()->LoadTexture(8, L"Resources/pouse/pauseClose.png");
+	SpriteCommon::GetInstance()->LoadTexture(6, L"Resources/pause/pauseBack.png");
+	SpriteCommon::GetInstance()->LoadTexture(7, L"Resources/pause/pauseTitle.png");
+	SpriteCommon::GetInstance()->LoadTexture(8, L"Resources/pause/pauseClose.png");
 
 	SpriteCommon::GetInstance()->LoadTexture(9, L"Resources/operation/W.png");
 	SpriteCommon::GetInstance()->LoadTexture(10, L"Resources/operation/S.png");
@@ -94,10 +94,10 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon) {
 	playerHpSlide->TransferVertexBuffer();
 
 	// ポーズ画面の画像を作る
-	pouseSprite.resize(pouseMax);
-	for (UINT i = 0; i < pouseMax; i++) {
+	pauseSprite.resize(pauseMax);
+	for (UINT i = 0; i < pauseMax; i++) {
 		// hp画像のtexNumberの最初が6
-		pouseSprite[i].reset(Sprite::Create(i + 6, { 0,0 }));
+		pauseSprite[i].reset(Sprite::Create(i + 6, { 0,0 }));
 	}
 
 	// カメラの初期化
@@ -351,24 +351,24 @@ void GamePlayScene::Update() {
 		}
 	}// ポーズ画面
 	else {
-		pouseSprite[pouse]->Update();
+		pauseSprite[pause]->Update();
 		if (Input::GetInstance()->TriggerKey(DIK_W)) {
-			if (--pouse <= -1) {
-				pouse = 2;
+			if (--pause <= -1) {
+				pause = 2;
 			}
 		}
 		if (Input::GetInstance()->TriggerKey(DIK_S)) {
-			if (++pouse >= 3) {
-				pouse = 0;
+			if (++pause >= 3) {
+				pause = 0;
 			}
 		}
 
 		if (Input::GetInstance()->TriggerKey(DIK_SPACE)) {
-			if (pouse == 0) {
+			if (pause == 0) {
 				operationSprite["ESC_Pause"]->SetIsInvisible(false);
-			} else if (pouse == 1) {
+			} else if (pause == 1) {
 				SceneManager::GetInstance()->ChangeScene("TITLE");
-			} else if (pouse == 2) {
+			} else if (pause == 2) {
 				Game::GetInstance()->SetEndRequest(true);
 			}
 		}
@@ -450,57 +450,7 @@ void GamePlayScene::play() {
 #endif //_DEBUG
 
 	// プレイヤーの移動と回避
-	{
-		const bool hitW = Input::GetInstance()->PushKey(DIK_W);
-		const bool hitS = Input::GetInstance()->PushKey(DIK_S);
-		const bool hitA = Input::GetInstance()->PushKey(DIK_A);
-		const bool hitD = Input::GetInstance()->PushKey(DIK_D);
-		const bool hitZ = Input::GetInstance()->PushKey(DIK_Z);
-		const bool hitX = Input::GetInstance()->PushKey(DIK_X);
-
-		const bool hitSpace = Input::GetInstance()->TriggerKey(DIK_SPACE);
-
-		if (avoidFrame >= 1) {
-			avoidFrame--;
-		}
-
-		if (hitW || hitS || hitA || hitD || hitZ || hitX) {
-			auto pos = player->GetPosition();
-			float moveSpeed = 0.2f;
-			XMFLOAT3 rot{};
-
-			if (hitSpace && avoidFrame == 0) {
-				moveSpeed *= 10;
-				avoidFrame = avoidFrameMax;
-			}
-
-			if (hitW && pos.y < 8.f) {
-				pos.y += moveSpeed;
-				rot.x -= 4.f;
-				operationSprite["W"]->SetIsInvisible(true);
-
-			}
-			if (hitS && pos.y > -4.f) {
-				pos.y -= moveSpeed;
-				rot.x += 4.f;
-				operationSprite["S"]->SetIsInvisible(true);
-			}
-
-			if (hitD && pos.x < 10.f) {
-				pos.x += moveSpeed;
-				rot.z -= 4.f;
-				operationSprite["D"]->SetIsInvisible(true);
-			}
-			if (hitA && pos.x > -10.f) {
-				pos.x -= moveSpeed;
-				rot.z += 4.f;
-				operationSprite["A"]->SetIsInvisible(true);
-			}
-
-			player->SetPosition(pos);
-			player->SetRotation(rot);
-		}
-	}
+	PlayerMove();
 
 	// 操作説明
 	{
@@ -540,7 +490,7 @@ void GamePlayScene::play() {
 		updateProcess = std::bind(&GamePlayScene::exitPlayer, this);
 	}
 
-
+	// 敵が範囲外になったら行動を変える
 	for (auto& i : enemy) {
 		// 敵がZ軸0に行ったら行動パターンをleaveに変える
 		if (i->GetPosition().z < 0) {
@@ -566,157 +516,19 @@ void GamePlayScene::play() {
 
 	// 敵が居たら照準と敵の当たり判定をする
 	if (!enemy.empty()) {
-		// 画像の左上と右下
-		XMFLOAT2 aimLT = { (float)input->GetMousePos().x - aim->GetSize().x / 2,
-		(float)input->GetMousePos().y - aim->GetSize().y / 2 };
-
-		XMFLOAT2 aimRB = { (float)input->GetMousePos().x + aim->GetSize().x / 2,
-		(float)input->GetMousePos().y + aim->GetSize().y / 2 };
-
-		// 敵の場所
-		XMFLOAT2 enemyPos;
-
-		bool flag = false;
-
 		// 照準と敵のスクリーン座標の当たり判定
-		player->SetShotTarget(nullptr);
-		for (auto& i : enemy) {
-			if (!i->GetAlive())continue;
-			enemyPos = { i->GetFloat2ScreenPos().x,i->GetFloat2ScreenPos().y };
-
-			// 当たり判定
-			if (aimLT.x <= enemyPos.x && aimLT.y <= enemyPos.y &&
-				aimRB.x >= enemyPos.x && aimRB.y >= enemyPos.y) {
-				flag = true;
-
-				player->SetShotTarget(i.get());
-			}
-		}
-
-		++shotInterval;
-
-		if (flag) {
-			aim->SetColor({ 1,0,0,1 });
-			// 照準が合っていた場合、左クリックしていたら一定間隔で弾を出す
-			if (input->PushMouse(Input::LEFT)) {
-				if (shotInterval >= shotIntervalMax) {
-					shotInterval = 0;
-
-					// 自機の弾の発射
-					player->Shot(pBulletModel.get(), pBulletScale);
-
-					XMFLOAT3 pos = lane->GetPosition();
-					pos.x += player->GetPosition().x;
-					pos.y += player->GetPosition().y;
-					pos.z += player->GetPosition().z;
-
-					// 操作説明を消す
-					operationSprite["L_Click"]->SetIsInvisible(true);
-				}
-			}
-		} else {
-			// 照準が白
-			aim->SetColor({ 1,1,1,1 });
-		}
+		CollisionAimAndEnemyScreenPos();
 	}
-
 
 	// 敵と自機の弾の当たり判定
-	{
-		Sphere pBulletShape;
+	CollisionEnemyAndPlayerBullet();
 
-		for (auto& pb : player->GetBullet()) {
-			if (!pb.GetAlive())continue;
-			pBulletShape.center = XMLoadFloat3(&pb.GetPosition());
-			pBulletShape.radius = pb.GetScale().x;
+	// 自機と敵の弾の当たり判定
+	CollisionPlayerAndEnemyBullet();
 
-			// 衝突判定をする
-			for (auto& e : enemy) {
-				if (!e->GetAlive())continue;
-				Sphere enemyShape;
-				enemyShape.center = XMLoadFloat3(&e->GetPosition());
-				enemyShape.radius = e->GetScale().x;
-
-				// 当たったら
-				if (Collision::CheckSphere2Sphere(pBulletShape, enemyShape)) {
-					pb.SetAlive(false);
-
-					e->Damage(1);				// 敵にダメージ
-
-					if (e->GetHp() <= 0) {		// 体力が0以下になったら
-						e->SetAlive(false);
-
-						// パーティクルの場所を設定
-						XMFLOAT3 pos = lane->GetPosition();
-						pos.x += e->GetPosition().x;
-						pos.y += e->GetPosition().y;
-						pos.z += e->GetPosition().z;
-
-						// パーティクルの発生
-						ParticleManager::GetInstance()->CreateParticle(pos, 100, 4, 10);
-
-						// SEを再生
-						Audio::GetInstance()->PlayWave("sound/Kagura_Suzu02-1.wav", 0.5f, 0);
-					}
-
-					// パーティクルの場所を設定
-					XMFLOAT3 pos = lane->GetPosition();
-					pos.x += e->GetPosition().x;
-					pos.y += e->GetPosition().y;
-					pos.z += e->GetPosition().z;
-
-					// 振動
-					e->SetShake(true);
-					// ヒットストップ
-					e->SetHitStop(true);
-
-					// パーティクルの発生
-					ParticleManager::GetInstance()->CreateParticle(pos, 10, 4, 5, { 1,0,1 }, { 0.5f,0,0.5f });
-					break;
-				}
-			}
-		}
-		// 敵を消す
-		enemy.erase(std::remove_if(enemy.begin(), enemy.end(),
-			[](const std::unique_ptr <Enemy>& i) {return !i->GetAlive() && i->GetBullet().empty(); }), enemy.end());
-	}
-
-	// 敵の弾と自機の当たり判定
-	{
-		Sphere playerShape;
-
-		playerShape.center = XMLoadFloat3(&player->GetPosition());
-		playerShape.radius = player->GetScale().z;
-
-		// 衝突判定をする
-		if (player->GetAlive()) {
-			for (auto& e : enemy) {
-				for (auto& eb : e->GetBullet()) {
-					Sphere eBulletShape;
-					eBulletShape.center = XMLoadFloat3(&eb.GetPosition());
-					eBulletShape.radius = eb.GetScale().z;
-
-					// 当たったら消える
-					if (Collision::CheckSphere2Sphere(playerShape, eBulletShape)) {
-						eb.SetAlive(false);				// 敵の弾を消す
-						player->Damage(1);				// プレイヤーにダメージ
-						shiftFlag = true;				// RGBずらしをする
-						shiftNowFrame = 0;
-
-						if (player->GetHp() == 0) {		// 体力が0になったら
-							shiftFlag = false;	// RGBずらしはしない
-							// プレイヤー死亡演出へ移動
-							updateProcess = std::bind(&GamePlayScene::deathPlayer, this);
-						}
-						break;
-					}
-				}
-			}
-		}
-	}
-
+	// RGBずらしのフラグ管理
 	if (shiftFlag) {
-
+		// 自機のダメージエフェクト
 		DamageEffect(shiftMaxFrame, shiftNowFrame);
 		shiftNowFrame++;
 		if (shiftMaxFrame < shiftNowFrame) {
@@ -744,26 +556,6 @@ void GamePlayScene::play() {
 		lane->SetPosition(splineFloat);
 	}
 
-	// モザイク切り替え
-	{
-		const bool TriggerP = input->TriggerKey(DIK_P);
-		if (TriggerP) {
-			// モザイクの細かさ
-			// ウインドウサイズと同じ細かさのモザイク = モザイクなし
-			DirectX::XMFLOAT2 mosaicNum{ WinApp::window_width, WinApp::window_height };
-
-			// モザイクをかける場合は、細かさを変更
-			if (mosaicFlag) {
-				mosaicNum = DirectX::XMFLOAT2(100, 100);
-			}
-
-			// モザイクをかける
-			PostEffect::GetInstance()->SetMosaicNum(mosaicNum);
-
-			// フラグを反転
-			mosaicFlag = !mosaicFlag;
-		}
-	}
 	frame++;
 }
 
@@ -903,7 +695,7 @@ void GamePlayScene::DrawFrontSprite(DirectXCommon* dxcommon) {
 
 	if (operationSprite["ESC_Pause"]->GetIsInvisible()) {
 		// ポーズ画面描画
-		pouseSprite[pouse]->Draw();
+		pauseSprite[pause]->Draw();
 	}
 }
 
@@ -953,4 +745,213 @@ void GamePlayScene::DamageEffect(UINT maxFrame, UINT nowFrame) {
 	float shiftNum = easeRate * 0.1f;
 
 	PostEffect::GetInstance()->SetShiftG({ shiftNum,0.f });
+}
+
+// プレイヤー移動
+void GamePlayScene::PlayerMove() {
+
+	{
+		const bool hitW = Input::GetInstance()->PushKey(DIK_W);
+		const bool hitS = Input::GetInstance()->PushKey(DIK_S);
+		const bool hitA = Input::GetInstance()->PushKey(DIK_A);
+		const bool hitD = Input::GetInstance()->PushKey(DIK_D);
+		const bool hitZ = Input::GetInstance()->PushKey(DIK_Z);
+		const bool hitX = Input::GetInstance()->PushKey(DIK_X);
+
+		const bool hitSpace = Input::GetInstance()->TriggerKey(DIK_SPACE);
+
+		if (avoidFrame >= 1) {
+			avoidFrame--;
+		}
+
+		if (hitW || hitS || hitA || hitD || hitZ || hitX) {
+			auto pos = player->GetPosition();
+			float moveSpeed = 0.2f;
+			XMFLOAT3 rot{};
+
+			if (hitSpace && avoidFrame == 0) {
+				moveSpeed *= 10;
+				avoidFrame = avoidFrameMax;
+			}
+
+			if (hitW && pos.y < 8.f) {
+				pos.y += moveSpeed;
+				rot.x -= 4.f;
+				operationSprite["W"]->SetIsInvisible(true);
+
+			}
+			if (hitS && pos.y > -4.f) {
+				pos.y -= moveSpeed;
+				rot.x += 4.f;
+				operationSprite["S"]->SetIsInvisible(true);
+			}
+
+			if (hitD && pos.x < 10.f) {
+				pos.x += moveSpeed;
+				rot.z -= 4.f;
+				operationSprite["D"]->SetIsInvisible(true);
+			}
+			if (hitA && pos.x > -10.f) {
+				pos.x -= moveSpeed;
+				rot.z += 4.f;
+				operationSprite["A"]->SetIsInvisible(true);
+			}
+
+			player->SetPosition(pos);
+			player->SetRotation(rot);
+		}
+	}
+}
+
+// 照準と敵のスクリーン座標の当たり判定
+void GamePlayScene::CollisionAimAndEnemyScreenPos() {
+	// 画像の左上と右下
+	XMFLOAT2 aimLT = { (float)input->GetMousePos().x - aim->GetSize().x / 2,
+	(float)input->GetMousePos().y - aim->GetSize().y / 2 };
+
+	XMFLOAT2 aimRB = { (float)input->GetMousePos().x + aim->GetSize().x / 2,
+	(float)input->GetMousePos().y + aim->GetSize().y / 2 };
+
+	// 敵の場所
+	XMFLOAT2 enemyPos;
+
+	bool flag = false;
+
+	// 照準と敵のスクリーン座標の当たり判定
+	player->SetShotTarget(nullptr);
+	for (auto& i : enemy) {
+		if (!i->GetAlive())continue;
+		enemyPos = { i->GetFloat2ScreenPos().x,i->GetFloat2ScreenPos().y };
+
+		// 当たり判定
+		if (aimLT.x <= enemyPos.x && aimLT.y <= enemyPos.y &&
+			aimRB.x >= enemyPos.x && aimRB.y >= enemyPos.y) {
+			flag = true;
+
+			player->SetShotTarget(i.get());
+		}
+	}
+
+	++shotInterval;
+
+	if (flag) {
+		aim->SetColor({ 1,0,0,1 });
+		// 照準が合っていた場合、左クリックしていたら一定間隔で弾を出す
+		if (input->PushMouse(Input::LEFT)) {
+			if (shotInterval >= shotIntervalMax) {
+				shotInterval = 0;
+
+				// 自機の弾の発射
+				player->Shot(pBulletModel.get(), pBulletScale);
+
+				XMFLOAT3 pos = lane->GetPosition();
+				pos.x += player->GetPosition().x;
+				pos.y += player->GetPosition().y;
+				pos.z += player->GetPosition().z;
+
+				// 操作説明を消す
+				operationSprite["L_Click"]->SetIsInvisible(true);
+			}
+		}
+	} else {
+		// 照準が白
+		aim->SetColor({ 1,1,1,1 });
+	}
+}
+
+// 敵と自機の弾の当たり判定
+void GamePlayScene::CollisionEnemyAndPlayerBullet() {
+	{
+		Sphere pBulletShape;
+
+		for (auto& pb : player->GetBullet()) {
+			if (!pb.GetAlive())continue;
+			pBulletShape.center = XMLoadFloat3(&pb.GetPosition());
+			pBulletShape.radius = pb.GetScale().x;
+
+			// 衝突判定をする
+			for (auto& e : enemy) {
+				if (!e->GetAlive())continue;
+				Sphere enemyShape;
+				enemyShape.center = XMLoadFloat3(&e->GetPosition());
+				enemyShape.radius = e->GetScale().x;
+
+				// 当たったら
+				if (Collision::CheckSphere2Sphere(pBulletShape, enemyShape)) {
+					pb.SetAlive(false);
+
+					e->Damage(1);				// 敵にダメージ
+
+					if (e->GetHp() <= 0) {		// 体力が0以下になったら
+						e->SetAlive(false);
+
+						// パーティクルの場所を設定
+						XMFLOAT3 pos = lane->GetPosition();
+						pos.x += e->GetPosition().x;
+						pos.y += e->GetPosition().y;
+						pos.z += e->GetPosition().z;
+
+						// パーティクルの発生
+						ParticleManager::GetInstance()->CreateParticle(pos, 100, 4, 10);
+
+						// SEを再生
+						Audio::GetInstance()->PlayWave("sound/Kagura_Suzu02-1.wav", 0.5f, 0);
+					}
+
+					// パーティクルの場所を設定
+					XMFLOAT3 pos = lane->GetPosition();
+					pos.x += e->GetPosition().x;
+					pos.y += e->GetPosition().y;
+					pos.z += e->GetPosition().z;
+
+					// 振動
+					e->SetShake(true);
+					// ヒットストップ
+					e->SetHitStop(true);
+
+					// パーティクルの発生
+					ParticleManager::GetInstance()->CreateParticle(pos, 10, 4, 5, { 1,0,1 }, { 0.5f,0,0.5f });
+					break;
+				}
+			}
+		}
+		// 敵を消す
+		enemy.erase(std::remove_if(enemy.begin(), enemy.end(),
+			[](const std::unique_ptr <Enemy>& i) {return !i->GetAlive() && i->GetBullet().empty(); }), enemy.end());
+	}
+}
+// 自機と敵の弾の当たり判定
+void GamePlayScene::CollisionPlayerAndEnemyBullet() {
+	{
+		Sphere playerShape;
+
+		playerShape.center = XMLoadFloat3(&player->GetPosition());
+		playerShape.radius = player->GetScale().z;
+
+		// 衝突判定をする
+		if (player->GetAlive()) {
+			for (auto& e : enemy) {
+				for (auto& eb : e->GetBullet()) {
+					Sphere eBulletShape;
+					eBulletShape.center = XMLoadFloat3(&eb.GetPosition());
+					eBulletShape.radius = eb.GetScale().z;
+
+					// 当たったら消える
+					if (Collision::CheckSphere2Sphere(playerShape, eBulletShape)) {
+						eb.SetAlive(false);				// 敵の弾を消す
+						player->Damage(1);				// プレイヤーにダメージ
+						shiftFlag = true;				// RGBずらしをする
+						shiftNowFrame = 0;
+
+						if (player->GetHp() == 0) {		// 体力が0になったら
+							shiftFlag = false;	// RGBずらしはしない
+							// プレイヤー死亡演出へ移動
+							updateProcess = std::bind(&GamePlayScene::deathPlayer, this);
+						}
+						break;
+					}
+				}
+			}
+		}
+	}
 }

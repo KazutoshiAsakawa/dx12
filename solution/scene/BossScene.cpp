@@ -23,6 +23,9 @@ XMFLOAT3 lerp(const XMFLOAT3& a, const XMFLOAT3& b, float t) {
 }
 
 void BossScene::Initialize(DirectXCommon* dxcommon) {
+	// Inputのインスタンスを取得
+	Input* input = Input::GetInstance();
+
 	// マウスカーソルを消す
 	ShowCursor(false);
 
@@ -32,9 +35,9 @@ void BossScene::Initialize(DirectXCommon* dxcommon) {
 	SpriteCommon::GetInstance()->LoadTexture(3, L"Resources/hp/hp.png");
 	SpriteCommon::GetInstance()->LoadTexture(4, L"Resources/hp/hpSlide.png");
 
-	SpriteCommon::GetInstance()->LoadTexture(6, L"Resources/pouse/pauseBack.png");
-	SpriteCommon::GetInstance()->LoadTexture(7, L"Resources/pouse/pauseTitle.png");
-	SpriteCommon::GetInstance()->LoadTexture(8, L"Resources/pouse/pauseClose.png");
+	SpriteCommon::GetInstance()->LoadTexture(6, L"Resources/pause/pauseBack.png");
+	SpriteCommon::GetInstance()->LoadTexture(7, L"Resources/pause/pauseTitle.png");
+	SpriteCommon::GetInstance()->LoadTexture(8, L"Resources/pause/pauseClose.png");
 
 	SpriteCommon::GetInstance()->LoadTexture(9, L"Resources/operation/ESC_Pause.png");
 
@@ -49,10 +52,10 @@ void BossScene::Initialize(DirectXCommon* dxcommon) {
 	operationSprite["ESC_Pause"]->SetIsInvisible(false);
 
 	// ポーズ画面の画像を作る
-	pouseSprite.resize(pouseMax);
-	for (UINT i = 0; i < pouseMax; i++) {
+	pauseSprite.resize(pauseMax);
+	for (UINT i = 0; i < pauseMax; i++) {
 		// hp画像のtexNumberの最初が6
-		pouseSprite[i].reset(Sprite::Create(i + 6, { 0,0 }));
+		pauseSprite[i].reset(Sprite::Create(i + 6, { 0,0 }));
 	}
 
 	// カメラの初期化
@@ -248,24 +251,24 @@ void BossScene::Update() {
 		aim->Update();
 		operationSprite["ESC_Pause"]->Update();
 	} else {
-		pouseSprite[pouse]->Update();
+		pauseSprite[pause]->Update();
 		if (Input::GetInstance()->TriggerKey(DIK_W)) {
-			if (--pouse <= -1) {
-				pouse = 2;
+			if (--pause <= -1) {
+				pause = 2;
 			}
 		}
 		if (Input::GetInstance()->TriggerKey(DIK_S)) {
-			if (++pouse >= 3) {
-				pouse = 0;
+			if (++pause >= 3) {
+				pause = 0;
 			}
 		}
 
 		if (Input::GetInstance()->TriggerKey(DIK_SPACE)) {
-			if (pouse == 0) {
+			if (pause == 0) {
 				operationSprite["ESC_Pause"]->SetIsInvisible(false);
-			} else if (pouse == 1) {
+			} else if (pause == 1) {
 				SceneManager::GetInstance()->ChangeScene("TITLE");
-			} else if (pouse == 2) {
+			} else if (pause == 2) {
 				PostQuitMessage(0); //OSに対して、アプリの終了を伝える
 			}
 		}
@@ -274,7 +277,6 @@ void BossScene::Update() {
 
 // シーン遷移
 void BossScene::start() {
-	Input* input = Input::GetInstance();
 	// モザイクをかける時間
 	constexpr UINT mosaicFrameMax = 120;
 
@@ -374,89 +376,12 @@ void BossScene::bossEntry() {
 }
 
 void BossScene::play() {
-	Input* input = Input::GetInstance();
 
 	// スカイドームの位置
 	skyDomeObj->SetPosition(player->GetPosition());
 
 	// プレイヤーの移動と回避
-	{
-		const bool hitW = Input::GetInstance()->PushKey(DIK_W);
-		const bool hitS = Input::GetInstance()->PushKey(DIK_S);
-		const bool hitA = Input::GetInstance()->PushKey(DIK_A);
-		const bool hitD = Input::GetInstance()->PushKey(DIK_D);
-		const bool hitZ = Input::GetInstance()->PushKey(DIK_Z);
-		const bool hitX = Input::GetInstance()->PushKey(DIK_X);
-
-		const bool hitSpace = Input::GetInstance()->TriggerKey(DIK_SPACE);
-
-		if (avoidFrame >= 1) {
-			avoidFrame--;
-		}
-
-		if (hitW || hitS || hitA || hitD || hitZ || hitX || hitSpace) {
-			auto pos = player->GetPosition();
-			float moveSpeed = 0.2f;
-
-			// 回避
-			if (hitSpace && avoidFrame == 0) {
-				moveSpeed *= 10;
-				// クールタイム
-				avoidFrame = avoidFrameMax;
-			}
-
-			// 前方向と右方向の単位ベクトルを作る
-			XMVECTOR forwardVec = XMVectorSet(0, 0, 1, 1);
-			XMVECTOR rightVec = XMVectorSet(1, 0, 0, 1);
-			// プレイヤーの回転に合わせて回転させる
-			forwardVec = XMVector3Rotate(forwardVec, XMQuaternionRotationRollPitchYaw(
-				XMConvertToRadians(player->GetRotation().x),
-				XMConvertToRadians(player->GetRotation().y),
-				XMConvertToRadians(player->GetRotation().z)));
-
-			rightVec = XMVector3Rotate(rightVec, XMQuaternionRotationRollPitchYaw(
-				XMConvertToRadians(player->GetRotation().x),
-				XMConvertToRadians(player->GetRotation().y),
-				XMConvertToRadians(player->GetRotation().z)));
-			// 大きさをmoveSpeedにする
-			forwardVec = XMVectorScale(forwardVec, moveSpeed);
-			rightVec = XMVectorScale(rightVec, moveSpeed);
-
-			XMFLOAT3 forward;
-			XMStoreFloat3(&forward, forwardVec);
-
-			XMFLOAT3 right;
-			XMStoreFloat3(&right, rightVec);
-
-			if (hitW) {
-				pos.x += forward.x;
-				pos.y += forward.y;
-				pos.z += forward.z;
-			}
-			if (hitS) {
-				pos.x -= forward.x;
-				pos.y -= forward.y;
-				pos.z -= forward.z;
-			}
-			if (hitD) {
-				pos.x += right.x;
-				pos.y += right.y;
-				pos.z += right.z;
-			}
-			if (hitA) {
-				pos.x -= right.x;
-				pos.y -= right.y;
-				pos.z -= right.z;
-			}
-
-			// 移動制限(地面)
-			if (0 > pos.y) {
-				pos.y = 0;
-			}
-
-			player->SetPosition(pos);
-		}
-	}
+	PlayerMove();
 
 	// プレイヤーの回転
 	{
@@ -478,124 +403,19 @@ void BossScene::play() {
 	}
 
 	if (boss->GetAlive()) {
-		// 画像の左上と右下
-		XMFLOAT2 aimLT = { aim->GetPosition().x - aim->GetSize().x / 2,
-		 aim->GetPosition().y - aim->GetSize().y / 2 };
-
-		XMFLOAT2 aimRB = { aim->GetPosition().x + aim->GetSize().x / 2,
-		 aim->GetPosition().y + aim->GetSize().y / 2 };
-
-		// 敵の場所
-		XMFLOAT2 enemyPos;
-
-		bool flag = false;
-
 		// 照準と敵のスクリーン座標の当たり判定
-		player->SetShotTarget(nullptr);
-
-		enemyPos = { boss->GetFloat2ScreenPos().x,boss->GetFloat2ScreenPos().y };
-
-		// 当たり判定
-		if (aimLT.x <= enemyPos.x && aimLT.y <= enemyPos.y &&
-			aimRB.x >= enemyPos.x && aimRB.y >= enemyPos.y) {
-			flag = true;
-			player->SetShotTarget(boss.get());
-		}
-
-		if (flag) {
-			aim->SetColor({ 1,0,0,1 });
-		} else {
-			aim->SetColor({ 1,1,1,1 });
-		}
-
-		++shotInterval;
-
-		// 左クリックしていたら
-		if (input->PushMouse(Input::LEFT)) {
-			// 一定間隔で弾を出す
-			if (shotInterval >= shotIntervalMax) {
-				shotInterval = 0;
-				// 自機の弾の発射
-				player->Shot(pBulletModel.get(), pBulletScale);
-			}
-
-		}
+		CollisionAimAndEnemyScreenPos();
 	} else if (killBossFlag) {// ボスが死んだら
 		updateProcess = std::bind(&BossScene::end, this, "CLEAR");
 	}
 
 	// 敵と自機の弾の当たり判定
-	{
-		Sphere pBulletShape;
+	CollisionEnemyAndPlayerBullet();
 
-		for (auto& pb : player->GetBullet()) {
-			if (!pb.GetAlive())continue;
-			pBulletShape.center = XMLoadFloat3(&pb.GetPosition());
-			pBulletShape.radius = pb.GetScale().x;
-
-			// 衝突判定をする
-			Sphere enemyShape;
-			enemyShape.center = XMLoadFloat3(&boss->GetPosition());
-			enemyShape.radius = boss->GetScale().x;
-
-			if (!boss->GetAlive()) break;
-
-			// 当たったら消える
-			if (Collision::CheckSphere2Sphere(pBulletShape, enemyShape)) {
-				boss->Damage(1);
-				pb.SetAlive(false);
-				aim->SetColor({ 1,1,1,1 });
-
-				if (boss->GetHp() == 0) {
-					boss->SetAlive(false);
-					killBossFlag = true;
-
-					camera->SetTrackingTarget(boss.get());
-					updateProcess = std::bind(&BossScene::killEffect, this);
-					XMFLOAT3 angle = camera->GetAngle();
-					angle.y += 180.f;
-					camera->SetAngle(angle);
-				}
-
-				// パーティクルの発生
-				ParticleManager::GetInstance()->CreateParticle(boss->GetPosition(), 10, 4, 5, { 1,0,0 }, { 0.5f,0,0 });
-			}
-		}
-	}
-
-	// 敵の弾と自機の当たり判定
-	{
-		Sphere playerShape;
-
-		playerShape.center = XMLoadFloat3(&player->GetPosition());
-		playerShape.radius = player->GetScale().z;
-
-		// 衝突判定をする
-		if (player->GetAlive()) {
-			for (auto& eb : boss->GetBullet()) {
-				if (!eb.GetAlive())continue;
-				Sphere eBulletShape;
-				eBulletShape.center = XMLoadFloat3(&eb.GetPosition());
-				// 敵弾のZ軸の大きさ
-				eBulletShape.radius = eb.GetScale().z;
-
-				// 当たったら消える
-				if (Collision::CheckSphere2Sphere(playerShape, eBulletShape)) {
-					eb.SetAlive(false);				// 敵の弾を消す
-					player->Damage(1);				// プレイヤーにダメージ
-					shiftFlag = true;				// RGBずらしをする
-					nowFrame = 0;
-
-					if (player->GetHp() == 0) {		// 体力が0になったら
-						shiftFlag = false;	// RGBずらしはしない
-						// プレイヤー死亡演出へ移動
-						updateProcess = std::bind(&BossScene::deathPlayer, this);
-					}
-				}
-			}
-		}
-	}
-
+	// 自機と敵の弾の当たり判定
+	CollisionPlayerAndEnemyBullet();
+	
+	// RGBずらしのフラグ管理
 	if (shiftFlag) {
 
 		DamageEffect(maxFrame, nowFrame);
@@ -705,7 +525,6 @@ void BossScene::deathPlayer() {
 }
 
 void BossScene::end(const std::string& nextScene) {
-	Input* input = Input::GetInstance();
 	// モザイクをかける時間
 	constexpr UINT mosaicFrameMax = 50;
 
@@ -776,7 +595,7 @@ void BossScene::DrawFrontSprite(DirectXCommon* dxcommon) {
 	aim->Draw();
 
 	if (operationSprite["ESC_Pause"]->GetIsInvisible()) {
-		pouseSprite[pouse]->Draw();
+		pauseSprite[pause]->Draw();
 	}
 }
 
@@ -808,4 +627,208 @@ void BossScene::DamageEffect(UINT maxFrame, UINT nowFrame) {
 	float shiftNum = easeRate * 0.1f;
 
 	PostEffect::GetInstance()->SetShiftG({ shiftNum,0.f });
+}
+
+// プレイヤーの移動と回避
+void BossScene::PlayerMove() {
+	{
+		const bool hitW = Input::GetInstance()->PushKey(DIK_W);
+		const bool hitS = Input::GetInstance()->PushKey(DIK_S);
+		const bool hitA = Input::GetInstance()->PushKey(DIK_A);
+		const bool hitD = Input::GetInstance()->PushKey(DIK_D);
+		const bool hitZ = Input::GetInstance()->PushKey(DIK_Z);
+		const bool hitX = Input::GetInstance()->PushKey(DIK_X);
+
+		const bool hitSpace = Input::GetInstance()->TriggerKey(DIK_SPACE);
+
+		if (avoidFrame >= 1) {
+			avoidFrame--;
+		}
+
+		if (hitW || hitS || hitA || hitD || hitZ || hitX || hitSpace) {
+			auto pos = player->GetPosition();
+			float moveSpeed = 0.2f;
+
+			// 回避
+			if (hitSpace && avoidFrame == 0) {
+				moveSpeed *= 10;
+				// クールタイム
+				avoidFrame = avoidFrameMax;
+			}
+
+			// 前方向と右方向の単位ベクトルを作る
+			XMVECTOR forwardVec = XMVectorSet(0, 0, 1, 1);
+			XMVECTOR rightVec = XMVectorSet(1, 0, 0, 1);
+			// プレイヤーの回転に合わせて回転させる
+			forwardVec = XMVector3Rotate(forwardVec, XMQuaternionRotationRollPitchYaw(
+				XMConvertToRadians(player->GetRotation().x),
+				XMConvertToRadians(player->GetRotation().y),
+				XMConvertToRadians(player->GetRotation().z)));
+
+			rightVec = XMVector3Rotate(rightVec, XMQuaternionRotationRollPitchYaw(
+				XMConvertToRadians(player->GetRotation().x),
+				XMConvertToRadians(player->GetRotation().y),
+				XMConvertToRadians(player->GetRotation().z)));
+			// 大きさをmoveSpeedにする
+			forwardVec = XMVectorScale(forwardVec, moveSpeed);
+			rightVec = XMVectorScale(rightVec, moveSpeed);
+
+			XMFLOAT3 forward;
+			XMStoreFloat3(&forward, forwardVec);
+
+			XMFLOAT3 right;
+			XMStoreFloat3(&right, rightVec);
+
+			if (hitW) {
+				pos.x += forward.x;
+				pos.y += forward.y;
+				pos.z += forward.z;
+			}
+			if (hitS) {
+				pos.x -= forward.x;
+				pos.y -= forward.y;
+				pos.z -= forward.z;
+			}
+			if (hitD) {
+				pos.x += right.x;
+				pos.y += right.y;
+				pos.z += right.z;
+			}
+			if (hitA) {
+				pos.x -= right.x;
+				pos.y -= right.y;
+				pos.z -= right.z;
+			}
+
+			// 移動制限(地面)
+			if (0 > pos.y) {
+				pos.y = 0;
+			}
+
+			player->SetPosition(pos);
+		}
+	}
+}
+
+// 照準と敵のスクリーン座標の当たり判定
+void BossScene::CollisionAimAndEnemyScreenPos() {
+
+	// 画像の左上と右下
+	XMFLOAT2 aimLT = { aim->GetPosition().x - aim->GetSize().x / 2,
+	 aim->GetPosition().y - aim->GetSize().y / 2 };
+
+	XMFLOAT2 aimRB = { aim->GetPosition().x + aim->GetSize().x / 2,
+	 aim->GetPosition().y + aim->GetSize().y / 2 };
+
+	// 敵の場所
+	XMFLOAT2 enemyPos;
+
+	bool flag = false;
+
+	// 照準と敵のスクリーン座標の当たり判定
+	player->SetShotTarget(nullptr);
+
+	enemyPos = { boss->GetFloat2ScreenPos().x,boss->GetFloat2ScreenPos().y };
+
+	// 当たり判定
+	if (aimLT.x <= enemyPos.x && aimLT.y <= enemyPos.y &&
+		aimRB.x >= enemyPos.x && aimRB.y >= enemyPos.y) {
+		flag = true;
+		player->SetShotTarget(boss.get());
+	}
+
+	if (flag) {
+		aim->SetColor({ 1,0,0,1 });
+	} else {
+		aim->SetColor({ 1,1,1,1 });
+	}
+
+	++shotInterval;
+
+	// 左クリックしていたら
+	if (input->PushMouse(Input::LEFT)) {
+		// 一定間隔で弾を出す
+		if (shotInterval >= shotIntervalMax) {
+			shotInterval = 0;
+			// 自機の弾の発射
+			player->Shot(pBulletModel.get(), pBulletScale);
+		}
+
+	}
+}
+
+// 敵と自機の弾の当たり判定
+void BossScene::CollisionEnemyAndPlayerBullet() {
+	{
+		Sphere pBulletShape;
+
+		for (auto& pb : player->GetBullet()) {
+			if (!pb.GetAlive())continue;
+			pBulletShape.center = XMLoadFloat3(&pb.GetPosition());
+			pBulletShape.radius = pb.GetScale().x;
+
+			// 衝突判定をする
+			Sphere enemyShape;
+			enemyShape.center = XMLoadFloat3(&boss->GetPosition());
+			enemyShape.radius = boss->GetScale().x;
+
+			if (!boss->GetAlive()) break;
+
+			// 当たったら消える
+			if (Collision::CheckSphere2Sphere(pBulletShape, enemyShape)) {
+				boss->Damage(1);
+				pb.SetAlive(false);
+				aim->SetColor({ 1,1,1,1 });
+
+				if (boss->GetHp() == 0) {
+					boss->SetAlive(false);
+					killBossFlag = true;
+
+					camera->SetTrackingTarget(boss.get());
+					updateProcess = std::bind(&BossScene::killEffect, this);
+					XMFLOAT3 angle = camera->GetAngle();
+					angle.y += 180.f;
+					camera->SetAngle(angle);
+				}
+
+				// パーティクルの発生
+				ParticleManager::GetInstance()->CreateParticle(boss->GetPosition(), 10, 4, 5, { 1,0,0 }, { 0.5f,0,0 });
+			}
+		}
+	}
+}
+
+// 自機と敵の弾の当たり判定
+void BossScene::CollisionPlayerAndEnemyBullet() {
+	{
+		Sphere playerShape;
+
+		playerShape.center = XMLoadFloat3(&player->GetPosition());
+		playerShape.radius = player->GetScale().z;
+
+		// 衝突判定をする
+		if (player->GetAlive()) {
+			for (auto& eb : boss->GetBullet()) {
+				if (!eb.GetAlive())continue;
+				Sphere eBulletShape;
+				eBulletShape.center = XMLoadFloat3(&eb.GetPosition());
+				// 敵弾のZ軸の大きさ
+				eBulletShape.radius = eb.GetScale().z;
+
+				// 当たったら消える
+				if (Collision::CheckSphere2Sphere(playerShape, eBulletShape)) {
+					eb.SetAlive(false);				// 敵の弾を消す
+					player->Damage(1);				// プレイヤーにダメージ
+					shiftFlag = true;				// RGBずらしをする
+					nowFrame = 0;
+
+					if (player->GetHp() == 0) {		// 体力が0になったら
+						shiftFlag = false;	// RGBずらしはしない
+						// プレイヤー死亡演出へ移動
+						updateProcess = std::bind(&BossScene::deathPlayer, this);
+					}
+				}
+			}
+		}
+	}
 }

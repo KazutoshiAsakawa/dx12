@@ -99,15 +99,37 @@ public:
 	/// <param name="nowFrame">現在のフレーム</param>
 	void DamageEffect(UINT maxFrame, UINT nowFrame);
 
+	/// <summary>
+	/// プレイヤーの移動と回避
+	/// </summary>
+	void PlayerMove();
+
+	/// <summary>
+	/// 照準と敵のスクリーン座標の当たり判定
+	/// </summary>
+	void CollisionAimAndEnemyScreenPos();
+
+	/// <summary>
+	/// 敵と自機の弾の当たり判定
+	/// </summary>
+	void CollisionEnemyAndPlayerBullet();
+
+	/// <summary>
+	/// 自機と敵の弾の当たり判定
+	/// </summary>
+	void CollisionPlayerAndEnemyBullet();
+
 private:
+	Input* input = nullptr;
+
 	// 照準スプライト
 	std::unique_ptr<Sprite> aim;
 
 	// ポーズ画面の枚数
-	UINT pouseMax = 3;
+	UINT pauseMax = 3;
 	// ポーズ画面の配列
-	std::vector<std::unique_ptr<Sprite>> pouseSprite;
-	int pouse = 0;
+	std::vector<std::unique_ptr<Sprite>> pauseSprite;
+	int pause = 0;
 
 	// 自機HP最大値
 	UINT playerHpMax = 10;
@@ -211,7 +233,7 @@ private:
 
 	std::vector< std::vector<std::string>> splineCsv;
 
-	// 敵の座標
+	// 敵の発生座標
 	std::vector<DirectX::XMFLOAT3> enemyPos;
 
 	// 増やした敵の数

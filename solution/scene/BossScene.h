@@ -20,8 +20,7 @@
 /// <summary>
 /// ゲームプレイシーン
 /// </summary>
-class BossScene : public BaseScene
-{
+class BossScene : public BaseScene {
 public:
 	/// <summary>
 	/// 初期化
@@ -84,7 +83,29 @@ public:
 
 	void DamageEffect(UINT maxFrame, UINT nowFrame);
 
+	/// <summary>
+	/// プレイヤーの移動と回避
+	/// </summary>
+	void PlayerMove();
+
+	/// <summary>
+	/// 照準と敵のスクリーン座標の当たり判定
+	/// </summary>
+	void CollisionAimAndEnemyScreenPos();
+
+	/// <summary>
+	/// 敵と自機の弾の当たり判定
+	/// </summary>
+	void CollisionEnemyAndPlayerBullet();
+
+	/// <summary>
+	/// 自機と敵の弾の当たり判定
+	/// </summary>
+	void CollisionPlayerAndEnemyBullet();
+
 private:
+	Input* input = nullptr;
+
 	// マウス
 	POINT mousePosDiff{};
 
@@ -102,10 +123,10 @@ private:
 	std::unique_ptr<ObjObject3d> groundObj;
 
 	// ポーズ画面の枚数
-	UINT pouseMax = 3;
+	UINT pauseMax = 3;
 	// ポーズ画面の配列
-	std::vector<std::unique_ptr<Sprite>> pouseSprite;
-	int pouse = 0;
+	std::vector<std::unique_ptr<Sprite>> pauseSprite;
+	int pause = 0;
 
 	// 自機HP最大値
 	UINT playerHpMax = 30;
@@ -132,7 +153,7 @@ private:
 	// 回避のクールタイム
 	UINT avoidFrame = 0;
 	UINT avoidFrameMax = 60;
-	
+
 	UINT shotInterval = 0;
 	UINT shotIntervalMax = 15;
 
