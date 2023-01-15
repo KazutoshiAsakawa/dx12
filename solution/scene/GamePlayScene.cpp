@@ -31,7 +31,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon) {
 	// 【シングルトンクラス】オブジェクトを一つしか作れないクラス
 	// 【インスタンス】クラス型の変数のこと
 	// 【Input::GetInstance関数】Inputクラスのインスタンス(のポインタ)を取得する関数
-	
+
 	// Inputクラスのインスタンス(へのポインタ)を変数に入れておく
 	input = Input::GetInstance();
 
@@ -282,7 +282,7 @@ void GamePlayScene::Finalize() {
 }
 
 void GamePlayScene::Update() {
-	if (Input::GetInstance()->TriggerKey(DIK_ESCAPE)) {
+	if (input->TriggerKey(DIK_ESCAPE)) {
 		bool invisibleFlag = operationSprite["ESC_Pause"]->GetIsInvisible();
 		operationSprite["ESC_Pause"]->SetIsInvisible(!invisibleFlag);
 	}
@@ -321,7 +321,7 @@ void GamePlayScene::Update() {
 		shrineObj->Update();
 
 		// スプライト更新
-		aim->SetPosition({ (float)Input::GetInstance()->GetMousePos().x,(float)Input::GetInstance()->GetMousePos().y,0 });
+		aim->SetPosition({ (float)input->GetMousePos().x,(float)input->GetMousePos().y,0 });
 		aim->Update();
 
 		if (player->GetHp() > 0) {
@@ -344,22 +344,24 @@ void GamePlayScene::Update() {
 	}// ポーズ画面
 	else {
 		pauseSprite[pause]->Update();
-		if (Input::GetInstance()->TriggerKey(DIK_W)) {
+		if (input->TriggerKey(DIK_W)) {
 			if (--pause <= -1) {
 				pause = 2;
 			}
 		}
-		if (Input::GetInstance()->TriggerKey(DIK_S)) {
+		if (input->TriggerKey(DIK_S)) {
 			if (++pause >= 3) {
 				pause = 0;
 			}
 		}
 
-		if (Input::GetInstance()->TriggerKey(DIK_SPACE)) {
+		if (input->TriggerKey(DIK_SPACE)) {
 			if (pause == 0) {
 				operationSprite["ESC_Pause"]->SetIsInvisible(false);
 			} else if (pause == 1) {
 				SceneManager::GetInstance()->ChangeScene("TITLE");
+				// BGM止める
+				Audio::GetInstance()->StopWave("sound/Gap-Ver.2.wav");
 			} else if (pause == 2) {
 				Game::GetInstance()->SetEndRequest(true);
 			}
@@ -609,7 +611,7 @@ void GamePlayScene::end(const std::string& sceneName) {
 		// BGM止める
 		Audio::GetInstance()->StopWave("sound/Gap-Ver.2.wav");
 
-		// ボスシーンへ
+		// 指定のシーンへ
 		SceneManager::GetInstance()->ChangeScene(sceneName);
 	} else {
 		XMFLOAT2 mosaicLevel = {};
@@ -739,14 +741,14 @@ void GamePlayScene::DamageEffect(UINT maxFrame, UINT nowFrame) {
 void GamePlayScene::PlayerMove() {
 
 	{
-		const bool hitW = Input::GetInstance()->PushKey(DIK_W);
-		const bool hitS = Input::GetInstance()->PushKey(DIK_S);
-		const bool hitA = Input::GetInstance()->PushKey(DIK_A);
-		const bool hitD = Input::GetInstance()->PushKey(DIK_D);
-		const bool hitZ = Input::GetInstance()->PushKey(DIK_Z);
-		const bool hitX = Input::GetInstance()->PushKey(DIK_X);
+		const bool hitW = input->PushKey(DIK_W);
+		const bool hitS = input->PushKey(DIK_S);
+		const bool hitA = input->PushKey(DIK_A);
+		const bool hitD = input->PushKey(DIK_D);
+		const bool hitZ = input->PushKey(DIK_Z);
+		const bool hitX = input->PushKey(DIK_X);
 
-		const bool hitSpace = Input::GetInstance()->TriggerKey(DIK_SPACE);
+		const bool hitSpace = input->TriggerKey(DIK_SPACE);
 
 		if (avoidFrame >= 1) {
 			avoidFrame--;

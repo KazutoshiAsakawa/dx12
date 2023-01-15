@@ -23,8 +23,13 @@ XMFLOAT3 lerp(const XMFLOAT3& a, const XMFLOAT3& b, float t) {
 }
 
 void BossScene::Initialize(DirectXCommon* dxcommon) {
-	// Inputのインスタンスを取得
-	Input* input = Input::GetInstance();
+	// Inputクラスはシングルトンクラス
+	// 【シングルトンクラス】オブジェクトを一つしか作れないクラス
+	// 【インスタンス】クラス型の変数のこと
+	// 【Input::GetInstance関数】Inputクラスのインスタンス(のポインタ)を取得する関数
+
+	// Inputクラスのインスタンス(へのポインタ)を変数に入れておく
+	input = Input::GetInstance();
 
 	// マウスカーソルを消す
 	ShowCursor(false);
@@ -200,7 +205,7 @@ void BossScene::Finalize() {
 }
 
 void BossScene::Update() {
-	if (Input::GetInstance()->TriggerKey(DIK_ESCAPE)) {
+	if (input->TriggerKey(DIK_ESCAPE)) {
 		bool invisibleFlag = operationSprite["ESC_Pause"]->GetIsInvisible();
 		operationSprite["ESC_Pause"]->SetIsInvisible(!invisibleFlag);
 	}
@@ -208,11 +213,11 @@ void BossScene::Update() {
 	if (operationSprite["ESC_Pause"]->GetIsInvisible() == false) {
 		// マウスの固定
 		{
-			POINT oldMousePos = Input::GetInstance()->GetMousePos();
+			POINT oldMousePos = input->GetMousePos();
 
-			Input::GetInstance()->SetMousePos({ long(WinApp::window_width / 2.f),long(WinApp::window_height / 2.f) });
+			input->SetMousePos({ long(WinApp::window_width / 2.f),long(WinApp::window_height / 2.f) });
 			// 前座標との差分
-			mousePosDiff = Input::GetInstance()->GetMousePos();
+			mousePosDiff = input->GetMousePos();
 			mousePosDiff.x -= oldMousePos.x;
 			mousePosDiff.y -= oldMousePos.y;
 		}
@@ -237,22 +242,24 @@ void BossScene::Update() {
 		operationSprite["ESC_Pause"]->Update();
 	} else {
 		pauseSprite[pause]->Update();
-		if (Input::GetInstance()->TriggerKey(DIK_W)) {
+		if (input->TriggerKey(DIK_W)) {
 			if (--pause <= -1) {
 				pause = 2;
 			}
 		}
-		if (Input::GetInstance()->TriggerKey(DIK_S)) {
+		if (input->TriggerKey(DIK_S)) {
 			if (++pause >= 3) {
 				pause = 0;
 			}
 		}
 
-		if (Input::GetInstance()->TriggerKey(DIK_SPACE)) {
+		if (input->TriggerKey(DIK_SPACE)) {
 			if (pause == 0) {
 				operationSprite["ESC_Pause"]->SetIsInvisible(false);
 			} else if (pause == 1) {
 				SceneManager::GetInstance()->ChangeScene("TITLE");
+				// BGM止める
+				Audio::GetInstance()->StopWave(bgmFileName);
 			} else if (pause == 2) {
 				PostQuitMessage(0); //OSに対して、アプリの終了を伝える
 			}
@@ -617,14 +624,14 @@ void BossScene::DamageEffect(UINT maxFrame, UINT nowFrame) {
 // プレイヤーの移動と回避
 void BossScene::PlayerMove() {
 	{
-		const bool hitW = Input::GetInstance()->PushKey(DIK_W);
-		const bool hitS = Input::GetInstance()->PushKey(DIK_S);
-		const bool hitA = Input::GetInstance()->PushKey(DIK_A);
-		const bool hitD = Input::GetInstance()->PushKey(DIK_D);
-		const bool hitZ = Input::GetInstance()->PushKey(DIK_Z);
-		const bool hitX = Input::GetInstance()->PushKey(DIK_X);
+		const bool hitW = input->PushKey(DIK_W);
+		const bool hitS = input->PushKey(DIK_S);
+		const bool hitA = input->PushKey(DIK_A);
+		const bool hitD = input->PushKey(DIK_D);
+		const bool hitZ = input->PushKey(DIK_Z);
+		const bool hitX = input->PushKey(DIK_X);
 
-		const bool hitSpace = Input::GetInstance()->TriggerKey(DIK_SPACE);
+		const bool hitSpace = input->TriggerKey(DIK_SPACE);
 
 		if (avoidFrame >= 1) {
 			avoidFrame--;

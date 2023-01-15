@@ -31,7 +31,7 @@ void TitleScene::Update()
 		auto color = title["pressS"]->GetColor();
 
 		float rate = sinf((float)frame / 60.f);
-		color.w = (rate + 2.f) / 3.f;
+		color.w = (rate + 2.f) / 5.f;
 
 		title["pressS"]->SetColor(color);
 	}
