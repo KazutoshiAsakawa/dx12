@@ -63,7 +63,7 @@ void BossScene::Initialize(DirectXCommon* dxcommon) {
 
 	// 地面
 	groundModel.reset(ObjModel::LoadFromObj("ground"));
-	groundModel->SetTiling({ 100.f,100.f });
+	groundModel->SetTiling({ 5.f,5.f });
 	groundObj = ObjObject3d::Create();
 	groundObj->SetModel(groundModel.get());
 	groundObj->SetScale({ 100,100,100 });
@@ -713,18 +713,18 @@ void BossScene::CollisionAimAndEnemyScreenPos() {
 	 aim->GetPosition().y + aim->GetSize().y / 2 };
 
 	// 敵の場所
-	XMFLOAT2 enemyPos;
+	XMFLOAT2 enemyScreenPos;
 
 	bool flag = false;
 
 	// 照準と敵のスクリーン座標の当たり判定
 	player->SetShotTarget(nullptr);
 
-	enemyPos = { boss->GetFloat2ScreenPos().x,boss->GetFloat2ScreenPos().y };
+	enemyScreenPos = { boss->GetFloat2ScreenPos().x,boss->GetFloat2ScreenPos().y };
 
 	// 当たり判定
-	if (aimLT.x <= enemyPos.x && aimLT.y <= enemyPos.y &&
-		aimRB.x >= enemyPos.x && aimRB.y >= enemyPos.y) {
+	if (aimLT.x <= enemyScreenPos.x && aimLT.y <= enemyScreenPos.y &&
+		aimRB.x >= enemyScreenPos.x && aimRB.y >= enemyScreenPos.y) {
 		flag = true;
 		player->SetShotTarget(boss.get());
 	}

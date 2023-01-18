@@ -78,9 +78,14 @@ public:
 	/// </summary>
 	void DrawFrontSprite(DirectXCommon* dxcommon) override;
 
-
+	
 	DirectX::XMVECTOR SplinePosition(const std::vector<DirectX::XMVECTOR>& posints, size_t startIndex, float t);
 
+	/// <summary>
+	/// ダメージエフェクト
+	/// </summary>
+	/// <param name="maxFrame">最大フレーム</param>
+	/// <param name="nowFrame">現在のフレーム</param>
 	void DamageEffect(UINT maxFrame, UINT nowFrame);
 
 	/// <summary>
@@ -109,6 +114,7 @@ private:
 	// マウス
 	POINT mousePosDiff{};
 
+	// 照準スプライト
 	std::unique_ptr<Sprite> aim;
 
 	// 操作画像

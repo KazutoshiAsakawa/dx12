@@ -38,6 +38,8 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon) {
 	// マウスカーソルを消す
 	ShowCursor(false);
 
+#pragma region 操作説明のスプライト
+
 	// 操作説明のスプライト
 	operationSprite["W"].reset(Sprite::Create(SpriteCommon::GetInstance()->LoadTexture(L"Resources/operation/W.png"), { 0.5f, 0.5f }, false, false));
 	operationSprite["S"].reset(Sprite::Create(SpriteCommon::GetInstance()->LoadTexture(L"Resources/operation/S.png"), { 0.5f, 0.5f }, false, false));
@@ -72,9 +74,12 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon) {
 		}
 	}
 
+#pragma endregion 操作説明のスプライト
+
 	// スプライトの生成
 	aim.reset(Sprite::Create(SpriteCommon::GetInstance()->LoadTexture(L"Resources/aim.png")));
 
+#pragma region プレイヤー
 	// hp画像
 	playerHpSpriteSize = { 330.f, 30.f };
 
@@ -86,11 +91,18 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon) {
 	playerHpSlide->SetSize(playerHpSpriteSize);
 	playerHpSlide->TransferVertexBuffer();
 
+	
+#pragma endregion プレイヤー
+
+#pragma region ポーズ画面
+
 	// ポーズ画面の画像を作る
 	pauseSprite.resize(pauseMax);
 	pauseSprite[0].reset(Sprite::Create(SpriteCommon::GetInstance()->LoadTexture(L"Resources/pause/pauseBack.png"), { 0.f, 0.f }));
 	pauseSprite[1].reset(Sprite::Create(SpriteCommon::GetInstance()->LoadTexture(L"Resources/pause/pauseTitle.png"), { 0.f, 0.f }));
 	pauseSprite[2].reset(Sprite::Create(SpriteCommon::GetInstance()->LoadTexture(L"Resources/pause/pauseClose.png"), { 0.f, 0.f }));
+
+#pragma endregion ポーズ画面
 
 	// カメラの初期化
 	camera.reset(new TrackingCamera());
@@ -115,7 +127,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon) {
 
 	// 地面
 	groundModel.reset(ObjModel::LoadFromObj("ground"));
-	groundModel->SetTiling({ 10.f,10.f });
+	groundModel->SetTiling({ 5.f,5.f });
 	groundObj = ObjObject3d::Create();
 	groundObj->SetModel(groundModel.get());
 	groundObj->SetScale({ 100,100,100 });
@@ -132,6 +144,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon) {
 	FbxObject3d::SetCamera(camera.get());
 	//グラフィックスパイプライン生成
 	FbxObject3d::CreateGraphicsPipeline();
+
 	// プレイヤー初期化
 	player = std::make_unique<Player>();
 
@@ -147,15 +160,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon) {
 	playerEntryEndPos = { 0,0,0 };
 	player->SetPosition(playerEntryStartPos);
 
-	// 神社
-	shrineObj = ObjObject3d::Create();
-	shrineObj->SetModel(ObjModel::LoadFromObj("shrine"));
-	shrineObj->SetScale({ 3,3,3 });
-	shrineObj->SetRotation({ 0,180,0 });
-	XMFLOAT3 shrinePos = playerEntryStartPos;
-	shrinePos.z -= player->GetScale().z * 2.f;	// 後ろにずらす
-	shrineObj->SetPosition(shrinePos);
-
+#pragma region カメラ
 	// カメラをレーンの位置にセット
 	camera->SetTrackingTarget(player.get());
 	camera->SetTarget(lane->GetPosition());
@@ -172,6 +177,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon) {
 	targetPos.y += player->GetPosition().y;
 	targetPos.z += player->GetPosition().z;
 	normalCamera->SetTarget(targetPos);
+#pragma endregion カメラ
 
 	// 敵
 	enemy.resize(0);
@@ -182,14 +188,22 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon) {
 	// 更新処理の関数を入れる
 	updateProcess = std::bind(&GamePlayScene::start, this);
 
+#pragma region 音
+
 	// SE読み込み
 	Audio::GetInstance()->LoadWave("sound/Kagura_Suzu02-1.wav");
 
-	// BGM読み込み
-	Audio::GetInstance()->LoadWave("sound/Gap-Ver.2.wav");
-	// BGMを再生
-	Audio::GetInstance()->PlayWave("sound/Gap-Ver.2.wav", 0.04f);
+	// Resources/に続くファイルパス
+	bgmFileName = "sound/Gap-Ver.2.wav";
 
+	// BGM読み込み
+	Audio::GetInstance()->LoadWave(bgmFileName);
+	// BGMを再生
+	Audio::GetInstance()->PlayWave(bgmFileName, 0.04f);
+
+#pragma endregion 音
+
+#pragma region スプライン曲線
 	// スプライン曲線
 	csv = Enemy::LoadCsv("Resources/spline.csv");
 
@@ -211,6 +225,16 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon) {
 	points.emplace_back(points.back());
 
 	splineStartIndex = 1;
+#pragma endregion スプライン曲線
+
+	// 神社
+	shrineObj = ObjObject3d::Create();
+	shrineObj->SetModel(ObjModel::LoadFromObj("shrine"));
+	shrineObj->SetScale({ 3,3,3 });
+	shrineObj->SetRotation({ 0,180,0 });
+	XMFLOAT3 shrinePos = playerEntryStartPos;	// プレイヤーのスタート位置に合わせる
+	shrinePos.z -= player->GetScale().z * 2.f;	// 後ろにずらす
+	shrineObj->SetPosition(shrinePos);
 
 	// 鳥居
 	toriiModel.reset(ObjModel::LoadFromObj("torii"));
@@ -225,7 +249,6 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon) {
 			toriiObj[i][x]->SetScale(XMFLOAT3(4, 4, 4));
 			XMFLOAT3 pos;
 			XMStoreFloat3(&pos, points[i]);
-			// pos.y -= 15.f;
 			pos.y = -5.f;
 
 			toriiObj[i][x]->SetPosition(pos);
@@ -252,9 +275,12 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon) {
 		}
 	}
 
+#pragma region 敵CSV
+
 	// CSV読み込み
 	csv = Enemy::LoadCsv("Resources/enemy.csv");
 
+	// todo 関数化する
 	{
 		UINT nowframe = 0;
 
@@ -264,7 +290,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon) {
 			}
 			if (y[0] == "POPPOSITION") {
 				// 敵を出す
-				enemyPos.emplace_back(std::stof(y[1]), std::stof(y[2]), std::stof(y[3]));
+				popEnemyPos.emplace_back(std::stof(y[1]), std::stof(y[2]), std::stof(y[3]));
 			} else if (y[0] == "POPTIME") {
 				// 指定時間
 				nowframe += std::stoul(y[1]);
@@ -272,6 +298,8 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon) {
 			}
 		}
 	}
+
+#pragma endregion 敵CSV
 }
 
 void GamePlayScene::Finalize() {
@@ -361,7 +389,7 @@ void GamePlayScene::Update() {
 			} else if (pause == 1) {
 				SceneManager::GetInstance()->ChangeScene("TITLE");
 				// BGM止める
-				Audio::GetInstance()->StopWave("sound/Gap-Ver.2.wav");
+				Audio::GetInstance()->StopWave(bgmFileName);
 			} else if (pause == 2) {
 				Game::GetInstance()->SetEndRequest(true);
 			}
@@ -441,25 +469,19 @@ void GamePlayScene::play() {
 #endif //_DEBUG
 
 	// プレイヤーの移動と回避
-	PlayerMove();
+	MovePlayer();
 
-	// 操作説明
-	{
-		if (operationSprite["L_Click"]->GetIsInvisible() == false) {
-			operationSprite["L_Click"]->SetPosition({ aim->GetPosition().x, aim->GetPosition().y, 0.f });
-		}
-	}
+	// 左クリックの操作説明画像の座標を更新
+	UpdateLClickOperationSpritePosition();
 
 	// 敵を発生
-	for (auto& i : enemyFrame) {
-		if (i.first <= frame) {// 敵の速度を設定
-			auto& a = EnemyAdd(enemyPos[addedEnemyNum], { 0.f, 0.f, -0.25f });
-			addedEnemyNum++;
-			a->SetLifeSpan(i.second);
-		}
-	}
+	AddEnemyFromPopData();
 
-	enemyFrame.remove_if([&](std::pair<UINT, UINT>& i) {return i.first <= frame; });
+	enemyFrame.remove_if(
+		[&](std::pair<UINT, UINT>& i) {
+			return i.first <= frame;
+		}
+	);
 
 	// 敵が全部居なくなったら次のシーンに行く
 	if (enemyFrame.empty() && enemy.empty()) {
@@ -528,7 +550,7 @@ void GamePlayScene::play() {
 		}
 	}
 
-	// スプライン曲線で移動
+	// レールをスプライン曲線で移動
 	{
 		splineFrame++;
 		float timeRate = (float)splineFrame / 120.f;
@@ -609,8 +631,7 @@ void GamePlayScene::end(const std::string& sceneName) {
 	// モザイクの時間が最大までいったら
 	if (++mosaicFrame > mosaicFrameMax) {
 		// BGM止める
-		Audio::GetInstance()->StopWave("sound/Gap-Ver.2.wav");
-
+		Audio::GetInstance()->StopWave(bgmFileName);
 		// 指定のシーンへ
 		SceneManager::GetInstance()->ChangeScene(sceneName);
 	} else {
@@ -707,7 +728,7 @@ XMVECTOR GamePlayScene::SplinePosition(const std::vector<XMVECTOR>& posints, siz
 	return position;
 }
 
-std::unique_ptr<Enemy>& GamePlayScene::EnemyAdd(XMFLOAT3 pos, XMFLOAT3 vel) {
+std::unique_ptr<Enemy>& GamePlayScene::AddEnemy(XMFLOAT3 pos, XMFLOAT3 vel) {
 	enemy.emplace_back();
 	auto& e = enemy.back();
 
@@ -737,8 +758,14 @@ void GamePlayScene::DamageEffect(UINT maxFrame, UINT nowFrame) {
 	PostEffect::GetInstance()->SetShiftG({ shiftNum,0.f });
 }
 
+void GamePlayScene::UpdateLClickOperationSpritePosition() {
+	if (operationSprite["L_Click"]->GetIsInvisible() == false) {
+		operationSprite["L_Click"]->SetPosition({ aim->GetPosition().x, aim->GetPosition().y, 0.f });
+	}
+}
+
 // プレイヤー移動
-void GamePlayScene::PlayerMove() {
+void GamePlayScene::MovePlayer() {
 
 	{
 		const bool hitW = input->PushKey(DIK_W);
@@ -793,6 +820,22 @@ void GamePlayScene::PlayerMove() {
 	}
 }
 
+void GamePlayScene::AddEnemyFromPopData() {
+
+	// 参照型変数「i」
+	// に
+	// enemyFrameの中身を
+	// 最初から最後まで
+	// 順番に入れる
+	for (auto& i : enemyFrame) {
+		if (i.first <= frame) {// 敵の速度を設定
+			auto& a = AddEnemy(popEnemyPos[addedEnemyNum], { 0.f, 0.f, -0.25f });
+			addedEnemyNum++;
+			a->SetLifeSpan(i.second);
+		}
+	}
+}
+
 // 照準と敵のスクリーン座標の当たり判定
 void GamePlayScene::CollisionAimAndEnemyScreenPos() {
 
@@ -804,7 +847,7 @@ void GamePlayScene::CollisionAimAndEnemyScreenPos() {
 	(float)input->GetMousePos().y + aim->GetSize().y / 2 };
 
 	// 敵の場所
-	XMFLOAT2 enemyPos;
+	XMFLOAT2 enemyScreenPos;
 
 	bool flag = false;
 
@@ -812,11 +855,11 @@ void GamePlayScene::CollisionAimAndEnemyScreenPos() {
 	player->SetShotTarget(nullptr);
 	for (auto& i : enemy) {
 		if (!i->GetAlive())continue;
-		enemyPos = { i->GetFloat2ScreenPos().x,i->GetFloat2ScreenPos().y };
+		enemyScreenPos = { i->GetFloat2ScreenPos().x,i->GetFloat2ScreenPos().y };
 
 		// 当たり判定
-		if (aimLT.x <= enemyPos.x && aimLT.y <= enemyPos.y &&
-			aimRB.x >= enemyPos.x && aimRB.y >= enemyPos.y) {
+		if (aimLT.x <= enemyScreenPos.x && aimLT.y <= enemyScreenPos.y &&
+			aimRB.x >= enemyScreenPos.x && aimRB.y >= enemyScreenPos.y) {
 			flag = true;
 
 			player->SetShotTarget(i.get());

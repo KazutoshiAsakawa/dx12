@@ -20,8 +20,7 @@
 /// <summary>
 /// ゲームプレイシーン
 /// </summary>
-class GamePlayScene : public BaseScene
-{
+class GamePlayScene : public BaseScene {
 public:
 	/// <summary>
 	/// 初期化
@@ -53,12 +52,10 @@ public:
 	/// </summary>
 	void play();
 
-
 	/// <summary>
 	/// プレイヤーの退場演出
 	/// </summary>
 	void exitPlayer();
-
 
 	/// <summary>
 	/// プレイヤーの死亡演出
@@ -81,16 +78,21 @@ public:
 	void DrawFrontSprite(DirectXCommon* dxcommon) override;
 
 	/// <summary>
-	/// スプライン曲線
+	/// スプライン曲線の現在の座標を計算する
 	/// </summary>
 	/// <param name="posints">座標</param>
 	/// <param name="startIndex">始点</param>
-	/// <param name="t">時間</param>
-	/// <returns></returns>
+	/// <param name="t">時間(0から1)</param>
+	/// <returns>現在の座標</returns>
 	DirectX::XMVECTOR SplinePosition(const std::vector<DirectX::XMVECTOR>& posints, size_t startIndex, float t);
 
-	// 敵を発生させる
-	std::unique_ptr<Enemy>& EnemyAdd(DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 vel);
+	/// <summary>
+	/// 敵を発生させる
+	/// </summary>
+	/// <param name="pos">発生させる位置</param>
+	/// <param name="vel">発生させる速度</param>
+	/// <returns>発生した敵</returns>
+	std::unique_ptr<Enemy>& AddEnemy(DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 vel);
 
 	/// <summary>
 	/// ダメージエフェクト
@@ -100,9 +102,19 @@ public:
 	void DamageEffect(UINT maxFrame, UINT nowFrame);
 
 	/// <summary>
+	/// 左クリックの操作説明画像の座標を更新する
+	/// </summary>
+	void UpdateLClickOperationSpritePosition();
+
+	/// <summary>
 	/// プレイヤーの移動と回避
 	/// </summary>
-	void PlayerMove();
+	void MovePlayer();
+
+	/// <summary>
+	/// 敵発生情報に従って敵を発生させる
+	/// </summary>
+	void AddEnemyFromPopData();
 
 	/// <summary>
 	/// 照準と敵のスクリーン座標の当たり判定
@@ -178,6 +190,7 @@ private:
 	UINT avoidFrame = 0;
 	UINT avoidFrameMax = 60;
 
+	// 弾の撃つ間隔
 	UINT shotInterval = 0;
 	UINT shotIntervalMax = 15;
 
@@ -220,22 +233,25 @@ private:
 	std::vector<std::vector<std::unique_ptr<ObjObject3d>>> wallObj;
 	std::unique_ptr<ObjModel> wallModel;
 
-
+	// 始まってからの経過フレーム数
 	UINT frame = 0;
 
+	// スプライン曲線のレール移動の経過フレーム数
 	UINT splineFrame = 0;
 
 	// 敵を発生
 	// 始まり,終わり
 	std::list<std::pair<UINT, UINT>> enemyFrame;
 
-	std::vector< std::vector<std::string>> csv;
-
-	std::vector< std::vector<std::string>> splineCsv;
+	// 読み込んだcsvデータを入れるところ
+	std::vector<std::vector<std::string>> csv;
 
 	// 敵の発生座標
-	std::vector<DirectX::XMFLOAT3> enemyPos;
+	std::vector<DirectX::XMFLOAT3> popEnemyPos;
 
 	// 増やした敵の数
 	UINT addedEnemyNum = 0;
+
+	// bgmファイルのファイル名
+	std::string bgmFileName;
 };
