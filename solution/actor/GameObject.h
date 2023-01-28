@@ -30,7 +30,7 @@ public:
 	/// 描画フラグの設定
 	/// </summary>
 	/// <param name="alive">描画フラグ</param>
-	inline void SetDrawFlag(bool drawFlag){this->drawFlag = drawFlag; }
+	inline void SetDrawFlag(bool drawFlag) { this->drawFlag = drawFlag; }
 	/// <summary>
 	/// 描画フラグの取得
 	/// </summary>
@@ -83,6 +83,10 @@ public:
 	inline void SetParent(ObjObject3d* parent) { obj->SetParent(parent); }
 
 	inline ObjObject3d* GetParent() { return obj->GetParent(); }
+
+	void SetIsBillboard(bool isBillboard) { obj->SetIsBillboard(isBillboard); }
+
+	void SetIsBillboardY(bool isBillboardY) { obj->SetIsBillboardY(isBillboardY); }
 
 	/// <summary>
 	/// オブジェクトを取得

@@ -88,6 +88,7 @@ void Player::Shot(ObjModel* model, float scale)
 	bullet.emplace_back(model, obj->GetPosition());
 	bullet.back().SetScale({ scale,scale,scale });
 	bullet.back().SetParent(obj->GetParent());
+	bullet.back().SetIsBillboard(true);
 	XMFLOAT3 vel;
 	constexpr float velScale = 2.f;
 

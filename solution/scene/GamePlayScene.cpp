@@ -127,14 +127,14 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon) {
 
 	// 地面
 	groundModel.reset(ObjModel::LoadFromObj("ground"));
-	groundModel->SetTiling({ 5.f,5.f });
+	groundModel->SetTiling({ 25.f,25.f });
 	groundObj = ObjObject3d::Create();
 	groundObj->SetModel(groundModel.get());
 	groundObj->SetScale({ 100,100,100 });
 	groundObj->SetPosition({ 0,-5,0 });
 
 	// 自機の読み込み
-	pBulletModel.reset(ObjModel::LoadFromObj("playerBullet"));
+	pBulletModel.reset(ObjModel::LoadFromObj("bullet"));
 	// 敵の読み込み
 	enemyModel.reset(ObjModel::LoadFromObj("butterfly")); // enemy2
 
@@ -669,12 +669,12 @@ void GamePlayScene::Draw(DirectXCommon* dxcommon) {
 	//スカイドームの描画
 	skyDomeObj->Draw();
 
-	// プレイヤーの描画
-	player->Draw();
 	// 敵の複数描画
 	for (auto& i : enemy) {
 		i->Draw();
 	}
+	// プレイヤーの描画
+	player->Draw();
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>

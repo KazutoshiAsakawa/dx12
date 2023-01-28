@@ -12,8 +12,7 @@
 /// <summary>
 /// 3Dオブジェクト
 /// </summary>
-class ObjObject3d
-{
+class ObjObject3d {
 private: // エイリアス
 	// Microsoft::WRL::を省略
 	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
@@ -26,8 +25,7 @@ private: // エイリアス
 public: // インナークラス
 
 	// 定数バッファ用データ構造体B0
-	struct ConstBufferDataB0
-	{
+	struct ConstBufferDataB0 {
 		XMMATRIX world;	// ３Ｄ変換行列
 		XMMATRIX matViewProjection;
 		XMFLOAT3 cameraPos;
@@ -119,10 +117,10 @@ public: // メンバ関数
 
 	const XMFLOAT3& GetRotation() { return rotation; }
 
-	inline const XMMATRIX& GetMatRot() {return matRot;}
-	inline const XMMATRIX& GetMatWorld() {return matWorld;}
+	inline const XMMATRIX& GetMatRot() { return matRot; }
+	inline const XMMATRIX& GetMatWorld() { return matWorld; }
 
-	inline ObjObject3d* GetParent() {return parent;}
+	inline ObjObject3d* GetParent() { return parent; }
 
 
 	/// <summary>
@@ -137,12 +135,16 @@ public: // メンバ関数
 
 	// inline void SetScale(const XMFLOAT3& scale) { this->scale = scale; }
 
-	void SetParent(ObjObject3d* parent) {this->parent = parent;}
+	void SetParent(ObjObject3d* parent) { this->parent = parent; }
 
 	/// <summary>
 	/// setter
 	/// </summary>
 	void SetModel(ObjModel* model) { this->model = model; }
+
+	void SetIsBillboard(bool isBillboard) { this->isBillboard = isBillboard; }
+
+	void SetIsBillboardY(bool isBillboardY) { this->isBillboardY = isBillboardY; }
 
 	/// <summary>
 	/// ワールド変換
@@ -164,6 +166,9 @@ private: // メンバ変数
 	XMMATRIX matWorld;
 	// 親オブジェクト
 	ObjObject3d* parent = nullptr;
+
+	bool isBillboard = false;
+	bool isBillboardY = false;
 
 	XMMATRIX matRot;
 };

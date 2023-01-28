@@ -70,7 +70,7 @@ void BossScene::Initialize(DirectXCommon* dxcommon) {
 	groundObj->SetPosition({ 0,-5,0 });
 
 	// 自機の読み込み
-	pBulletModel.reset(ObjModel::LoadFromObj("playerBullet"));
+	pBulletModel.reset(ObjModel::LoadFromObj("bullet"));
 	// 敵の読み込み
 	enemyModel.reset(ObjModel::LoadFromObj("obake"));
 
@@ -548,10 +548,11 @@ void BossScene::Draw(DirectXCommon* dxcommon) {
 	//スカイドームの描画
 	skyDomeObj->Draw();
 
+	// ボスの描画
+	boss->Draw();
+
 	// プレイヤーの描画
 	player->Draw();
-
-	boss->Draw();
 
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる
