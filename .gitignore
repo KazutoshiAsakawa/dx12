@@ -2,11 +2,5 @@ solution/.vs/
 solution/x64/
 solution/DirectXTex/Bin/
 *.pdb
-solution/lib/fbx_sdk/lib/zlib-md.lib
-solution/lib/fbx_sdk/lib/libxml2-md.lib
-solution/lib/fbx_sdk/lib/libfbxsdk-md.lib
-solution/lib/fbx_sdk/lib/libfbxsdk-mt.lib
-solution/lib/fbx_sdk/lib/libxml2-mt.lib
-solution/lib/fbx_sdk/lib/zlib-mt.lib
 solution/imgui/.vs/
 solution/imgui/x64/
