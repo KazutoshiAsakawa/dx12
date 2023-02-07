@@ -139,8 +139,8 @@ void BossScene::Initialize(DirectXCommon* dxcommon) {
 
 	// ボスHPスプライト
 	bossHpSpriteSize = { 430.f, 30.f };
-	bossHpSprite.reset(Sprite::Create(SpriteCommon::GetInstance()->LoadTexture( L"Resources/hp/hp.png") , { 0.5f, 0.f }));
-	bossHpSlide.reset(Sprite::Create(SpriteCommon::GetInstance()->LoadTexture( L"Resources/hp/hpSlide.png"), { 0.5f, 0.f }));
+	bossHpSprite.reset(Sprite::Create(SpriteCommon::GetInstance()->LoadTexture(L"Resources/hp/hp.png"), { 0.5f, 0.f }));
+	bossHpSlide.reset(Sprite::Create(SpriteCommon::GetInstance()->LoadTexture(L"Resources/hp/hpSlide.png"), { 0.5f, 0.f }));
 
 	bossHpSprite->SetPosition({ (float)WinApp::window_width / 2.f, 5.f, 0.f });
 	bossHpSlide->SetPosition({ (float)WinApp::window_width / 2.f, 5.f, 0.f });
@@ -406,7 +406,7 @@ void BossScene::play() {
 
 	// 自機と敵の弾の当たり判定
 	CollisionPlayerAndEnemyBullet();
-	
+
 	// RGBずらしのフラグ管理
 	if (shiftFlag) {
 
@@ -471,7 +471,12 @@ void BossScene::killEffect() {
 
 	if (++nowEffectFrame > effectFrameMax) {
 		updateProcess = std::bind(&BossScene::end, this, "CLEAR");
+
+		
 	} else {
+		// プレイヤーの照準を非表示
+		aim->SetIsInvisible(true);
+
 		// パーティクルの発生
 		ParticleManager::GetInstance()->CreateParticle(boss->GetPosition(), 10, 1, 5);
 
@@ -522,7 +527,8 @@ void BossScene::end(const std::string& nextScene) {
 
 	// モザイクの時間が最大までいったらplay関数に変える
 	if (++mosaicFrame > mosaicFrameMax) {
-
+		// プレイヤーの照準を表示
+		aim->SetIsInvisible(false);
 		// BGM止める
 		Audio::GetInstance()->StopWave(bgmFileName);
 		// 指定のエンド画面へ

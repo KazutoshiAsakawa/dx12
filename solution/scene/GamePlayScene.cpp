@@ -127,7 +127,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon) {
 
 	// 地面
 	groundModel.reset(ObjModel::LoadFromObj("ground"));
-	groundModel->SetTiling({ 25.f,25.f });
+	groundModel->SetTiling({ 5.f,5.f });
 	groundObj = ObjObject3d::Create();
 	groundObj->SetModel(groundModel.get());
 	groundObj->SetScale({ 100,100,100 });
@@ -300,6 +300,9 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon) {
 	}
 
 #pragma endregion 敵CSV
+
+	// プレイヤーの照準を非表示
+	aim->SetIsInvisible(true);
 }
 
 void GamePlayScene::Finalize() {
@@ -437,6 +440,9 @@ void GamePlayScene::entryPlayer() {
 		playerEntryFrame = 0;
 
 		player->SetPosition(playerEntryEndPos);
+
+		// プレイヤーの照準を表示
+		aim->SetIsInvisible(false);
 
 		// ESC以外の操作説明を表示に戻す
 		for (auto& i : operationSprite) {
@@ -597,6 +603,9 @@ void GamePlayScene::exitPlayer() {
 		// プレイヤーをだんだん小さくする(遠近法)
 		rate = 1.f - rate;
 		player->SetScale({ rate, rate, rate });
+
+		// プレイヤーの照準を表示
+		aim->SetIsInvisible(true);
 	}
 
 }
@@ -630,6 +639,9 @@ void GamePlayScene::end(const std::string& sceneName) {
 
 	// モザイクの時間が最大までいったら
 	if (++mosaicFrame > mosaicFrameMax) {
+		// プレイヤーの照準を表示
+		aim->SetIsInvisible(false);
+
 		// BGM止める
 		Audio::GetInstance()->StopWave(bgmFileName);
 		// 指定のシーンへ
