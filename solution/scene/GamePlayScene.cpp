@@ -461,6 +461,13 @@ void GamePlayScene::entryPlayer() {
 		targetPos.y += player->GetPosition().y;
 		targetPos.z += player->GetPosition().z;
 		normalCamera->SetTarget(targetPos);
+
+#ifdef _DEBUG
+		// ボスシーンに行く
+		if (input->TriggerKey(DIK_F)) {
+			updateProcess = std::bind(&GamePlayScene::end, this, "BOSSPLAY");
+		}
+#endif //_DEBUG
 	}
 }
 

@@ -281,27 +281,20 @@ void BossScene::start() {
 		mosaicFrame = 0;
 		bossText->SetIsInvisible(false);
 	} else {
+		// モザイクがだんだん薄くなる演出
 		XMFLOAT2 mosaicLevel = {};
 		float rate = (float)mosaicFrame / mosaicFrameMax;
 		mosaicLevel.x = WinApp::window_width * rate;
 		mosaicLevel.y = WinApp::window_height * rate;
 		PostEffect::GetInstance()->SetMosaicNum(mosaicLevel);
 
-		rate *= rate * rate;
+		// プレイヤーが遠くから来る演出
+		constexpr XMFLOAT3 startPos = { 0,0,-100 };
+		constexpr XMFLOAT3 endPos = { 0,0,0 };
 
-		constexpr XMFLOAT3 startEye = { 100,0,-100 };
-		constexpr XMFLOAT3 endEye = { 0,0,0 };
-
-		XMFLOAT3 eye;
-		eye = lerp(startEye, endEye, rate);
-		player->SetPosition(eye);
-
-		constexpr XMFLOAT3 startRota = { 0.f, 360.f, 0.f };
-		constexpr XMFLOAT3 endRota = { 0.f, 0.f, 0.f };
-
-		XMFLOAT3 rota;
-		rota = lerp(startRota, endRota, rate);
-		player->SetRotation(rota);
+		XMFLOAT3 pos;
+		pos = lerp(startPos, endPos, rate);
+		player->SetPosition(pos);
 	}
 }
 
@@ -472,7 +465,7 @@ void BossScene::killEffect() {
 	if (++nowEffectFrame > effectFrameMax) {
 		updateProcess = std::bind(&BossScene::end, this, "CLEAR");
 
-		
+
 	} else {
 		// プレイヤーの照準を非表示
 		aim->SetIsInvisible(true);
