@@ -110,11 +110,6 @@ void Player::Shot(ObjModel* model, float scale)
 		vectorVel = XMVectorScale(vectorVel, velScale);
 		// FLOAT3‚É•ÏŠ·
 		XMStoreFloat3(&vel, vectorVel);
-
-		// •W“I‚ÉŒü‚¯‚é
-		float rotx = atan2f(vel.y, vel.z);
-		float roty = atan2f(vel.x, vel.z);
-		bullet.back().SetRotation(XMFLOAT3(XMConvertToDegrees(rotx), XMConvertToDegrees(roty), 0));
 	}
 
 	bullet.back().SetVel(vel);
