@@ -295,6 +295,13 @@ void BossScene::start() {
 		XMFLOAT3 pos;
 		pos = lerp(startPos, endPos, rate);
 		player->SetPosition(pos);
+		
+		// 体力バーをだんだん増やす
+		playerHpSprite->SetSize({ playerHpSpriteSize.x * (1.f - powf(1.f - rate, 4.f)),
+			playerHpSprite->GetSize().y });
+		playerHpSprite->TransferVertexBuffer();
+		playerHpSprite->Update();
+
 	}
 }
 
@@ -325,12 +332,6 @@ void BossScene::bossEntry() {
 	} else {
 		// 進行度
 		float rate = (float)bossEntryNowFrame / (float)frameMax;
-
-		// 体力バーをだんだん増やす
-		playerHpSprite->SetSize({ playerHpSpriteSize.x * (1.f - powf(1.f - rate, 4.f)),
-			playerHpSprite->GetSize().y });
-		playerHpSprite->TransferVertexBuffer();
-		playerHpSprite->Update();
 
 		bossHpSprite->SetSize({ bossHpSpriteSize.x * (1.f - powf(1.f - rate, 4.f)),
 			bossHpSprite->GetSize().y });
