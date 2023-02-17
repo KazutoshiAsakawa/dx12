@@ -8,7 +8,7 @@
 #include "FbxLoader.h"
 #include "DirectXCommon.h"
 #include "Collision.h"
-#include "ParticleManager.h"
+#include "ParticleLoad.h"
 
 #include "PostEffect.h"
 
@@ -178,7 +178,7 @@ void BossScene::Initialize(DirectXCommon* dxcommon) {
 #pragma endregion ボス
 
 	// パーティクル初期化
-	ParticleManager::GetInstance()->SetCamera(camera.get());
+	ParticleLoad::GetInstance()->SetCamera(camera.get());
 
 	// 更新処理の関数を入れる
 	updateProcess = std::bind(&BossScene::start, this);
@@ -226,7 +226,7 @@ void BossScene::Update() {
 		updateProcess();
 
 		// パーティクル更新
-		ParticleManager::GetInstance()->Update();
+		ParticleLoad::GetInstance()->Update();
 
 		camera->Update();
 
@@ -295,7 +295,7 @@ void BossScene::start() {
 		XMFLOAT3 pos;
 		pos = lerp(startPos, endPos, rate);
 		player->SetPosition(pos);
-		
+
 		// 体力バーをだんだん増やす
 		playerHpSprite->SetSize({ playerHpSpriteSize.x * (1.f - powf(1.f - rate, 4.f)),
 			playerHpSprite->GetSize().y });
@@ -472,7 +472,7 @@ void BossScene::killEffect() {
 		aim->SetIsInvisible(true);
 
 		// パーティクルの発生
-		ParticleManager::GetInstance()->CreateParticle(boss->GetPosition(), 10, 1, 5);
+		ParticleLoad::GetInstance()->SetRenderParticle(0, boss->GetPosition(), 10, 1, 5);
 
 		// 進行度
 		float rate = (float)nowEffectFrame / (float)effectFrameMax;
@@ -561,7 +561,8 @@ void BossScene::Draw(DirectXCommon* dxcommon) {
 	// 3Dオブジェクト描画後処理
 	ObjObject3d::PostDraw();
 	// パーティクル描画
-	ParticleManager::GetInstance()->Draw(dxcommon->GetCmdList());
+	ParticleLoad::GetInstance()->Draw(dxcommon->GetCmdList());
+
 	// スプライト共通コマンド
 	SpriteCommon::GetInstance()->PreDraw();
 }
@@ -785,7 +786,7 @@ void BossScene::CollisionEnemyAndPlayerBullet() {
 				}
 
 				// パーティクルの発生
-				ParticleManager::GetInstance()->CreateParticle(boss->GetPosition(), 10, 4, 5, { 1,0,0 }, { 0.5f,0,0 });
+				ParticleLoad::GetInstance()->SetRenderParticle(0, boss->GetPosition(), 10, 4, 5, { 1,0,0 }, { 0.5f,0,0 });
 			}
 		}
 	}

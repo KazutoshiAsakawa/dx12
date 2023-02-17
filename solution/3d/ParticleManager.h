@@ -7,6 +7,7 @@
 #include <d3dx12.h>
 #include <forward_list>
 
+
 #include "Camera.h"
 
 /// <summary>
@@ -137,6 +138,8 @@ public: // メンバ関数
 
 	void CreateParticle(const XMFLOAT3& pos, UINT particleNum, float startScale, float vel, XMFLOAT3 start_col = { 1,1,1 }, XMFLOAT3 end_col = { 1,1,1 });
 
+	void SetFileName(const wchar_t* fileName){this->fileName=fileName;}
+
 private: // メンバ変数
 	// デバイス
 	ID3D12Device* device = nullptr;
@@ -164,7 +167,9 @@ private: // メンバ変数
 	std::forward_list<Particle> particles;
 	// カメラ
 	Camera* camera = nullptr;
-private:
+
+	const wchar_t* fileName;
+public:
 	ParticleManager() = default;
 	ParticleManager(const ParticleManager&) = delete;
 	~ParticleManager() = default;

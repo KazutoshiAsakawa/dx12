@@ -3,6 +3,7 @@
 #include "PostEffect.h"
 #include "SpriteCommon.h"
 #include "ParticleManager.h"
+#include "ParticleLoad.h"
 
 void Framework::Run()
 {
@@ -51,7 +52,9 @@ void Framework::Initialize()
 	audio = Audio::GetInstance();
 	audio->Initialize();
 
-	ParticleManager::GetInstance()->Initialize(dxCommon->GetDev());
+	// ParticleManager::GetInstance()->Initialize(dxCommon->GetDev());
+	ParticleLoad::GetInstance()->Initialize(dxCommon->GetDev());
+
 
 	// 3Dオブジェクト静的初期化
 	ObjObject3d::StaticInitialize(dxCommon->GetDev(), dxCommon->GetCmdList(), WinApp::window_width, WinApp::window_height);

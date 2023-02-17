@@ -8,7 +8,7 @@
 #include "FbxLoader.h"
 #include "DirectXCommon.h"
 #include "Collision.h"
-#include "ParticleManager.h"
+#include "ParticleLoad.h"
 
 #include "PostEffect.h"
 #include "Game.h"
@@ -91,7 +91,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon) {
 	playerHpSlide->SetSize(playerHpSpriteSize);
 	playerHpSlide->TransferVertexBuffer();
 
-	
+
 #pragma endregion プレイヤー
 
 #pragma region ポーズ画面
@@ -183,7 +183,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon) {
 	enemy.resize(0);
 
 	// パーティクル初期化
-	ParticleManager::GetInstance()->SetCamera(camera.get());
+	ParticleLoad::GetInstance()->SetCamera(camera.get());
 
 	// 更新処理の関数を入れる
 	updateProcess = std::bind(&GamePlayScene::start, this);
@@ -323,7 +323,7 @@ void GamePlayScene::Update() {
 		updateProcess();
 
 		// パーティクル更新
-		ParticleManager::GetInstance()->Update();
+		ParticleLoad::GetInstance()->Update();
 
 		nowCamera->Update();
 		lane->Update();
@@ -701,7 +701,8 @@ void GamePlayScene::Draw(DirectXCommon* dxcommon) {
 	// 3Dオブジェクト描画後処理
 	ObjObject3d::PostDraw();
 	// パーティクル描画
-	ParticleManager::GetInstance()->Draw(dxcommon->GetCmdList());
+	ParticleLoad::GetInstance()->Draw(dxcommon->GetCmdList());
+
 	// スプライト共通コマンド
 	SpriteCommon::GetInstance()->PreDraw();
 }
@@ -945,7 +946,7 @@ void GamePlayScene::CollisionEnemyAndPlayerBullet() {
 						pos.z += e->GetPosition().z;
 
 						// パーティクルの発生
-						ParticleManager::GetInstance()->CreateParticle(pos, 100, 4, 10);
+						ParticleLoad::GetInstance()->SetRenderParticle(0, pos, 100, 4, 10);
 
 						// SEを再生
 						Audio::GetInstance()->PlayWave("sound/Kagura_Suzu02-1.wav", 0.5f, 0);
@@ -963,7 +964,7 @@ void GamePlayScene::CollisionEnemyAndPlayerBullet() {
 					e->SetHitStop(true);
 
 					// パーティクルの発生
-					ParticleManager::GetInstance()->CreateParticle(pos, 10, 4, 5, { 1,0,1 }, { 0.5f,0,0.5f });
+					ParticleLoad::GetInstance()->SetRenderParticle(0,pos, 10, 4, 5, { 1,0,1 }, { 0.5f,0,0.5f });
 					break;
 				}
 			}
