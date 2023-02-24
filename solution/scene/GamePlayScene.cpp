@@ -231,9 +231,10 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon) {
 	shrineObj = ObjObject3d::Create();
 	shrineObj->SetModel(ObjModel::LoadFromObj("shrine"));
 	shrineObj->SetScale({ 3,3,3 });
-	shrineObj->SetRotation({ 0,180,0 });
+	shrineObj->SetRotation({ 0,0,0 });
 	XMFLOAT3 shrinePos = playerEntryStartPos;	// プレイヤーのスタート位置に合わせる
 	shrinePos.z -= player->GetScale().z * 2.f;	// 後ろにずらす
+	shrinePos.y -= 8.f;							// 下にずらす
 	shrineObj->SetPosition(shrinePos);
 
 	// 鳥居
@@ -964,7 +965,7 @@ void GamePlayScene::CollisionEnemyAndPlayerBullet() {
 					e->SetHitStop(true);
 
 					// パーティクルの発生
-					ParticleLoad::GetInstance()->SetRenderParticle(0,pos, 10, 4, 5, { 1,0,1 }, { 0.5f,0,0.5f });
+					ParticleLoad::GetInstance()->SetRenderParticle(0,pos, 100, 4, 5, { 1,0,1 }, { 0.5f,0,0.5f });
 					break;
 				}
 			}
