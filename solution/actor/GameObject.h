@@ -82,10 +82,22 @@ public:
 	/// <param name="parent">ペアレント</param>
 	inline void SetParent(ObjObject3d* parent) { obj->SetParent(parent); }
 
+	/// <summary>
+	/// ペアレントを取得
+	/// </summary>
+	/// <returns>ペアレント</returns>
 	inline ObjObject3d* GetParent() { return obj->GetParent(); }
 
+	/// <summary>
+	/// ビルボードの設定
+	/// </summary>
+	/// <param name="isBillboard">ビルボードフラグ</param>
 	void SetIsBillboard(bool isBillboard) { obj->SetIsBillboard(isBillboard); }
 
+	/// <summary>
+	/// Y軸ビルボードの設定
+	/// </summary>
+	/// <param name="isBillboardY">ビルボードフラグ</param>
 	void SetIsBillboardY(bool isBillboardY) { obj->SetIsBillboardY(isBillboardY); }
 
 	/// <summary>

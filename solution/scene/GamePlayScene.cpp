@@ -83,14 +83,13 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon) {
 	// hp画像
 	playerHpSpriteSize = { 330.f, 30.f };
 
-	playerHpSprite.reset(Sprite::Create(SpriteCommon::GetInstance()->LoadTexture(L"Resources/hp/hp.png"), { 0,1 }));
+	playerHpSprite.reset(Sprite::Create(SpriteCommon::GetInstance()->LoadTexture(L"Resources/hp/playerHp.png"), { 0,1 }));
 	playerHpSprite->SetPosition(XMFLOAT3(35, WinApp::window_height - 35, 0));
 
 	playerHpSlide.reset(Sprite::Create(SpriteCommon::GetInstance()->LoadTexture(L"Resources/hp/hpSlide.png"), { 0,1 }));
 	playerHpSlide->SetPosition(XMFLOAT3(35, WinApp::window_height - 35, 0));
 	playerHpSlide->SetSize(playerHpSpriteSize);
 	playerHpSlide->TransferVertexBuffer();
-
 
 #pragma endregion プレイヤー
 
@@ -234,7 +233,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon) {
 	shrineObj->SetRotation({ 0,0,0 });
 	XMFLOAT3 shrinePos = playerEntryStartPos;	// プレイヤーのスタート位置に合わせる
 	shrinePos.z -= player->GetScale().z * 2.f;	// 後ろにずらす
-	shrinePos.y -= 8.f;							// 下にずらす
+	shrinePos.y -= 9.f;							// 下にずらす
 	shrineObj->SetPosition(shrinePos);
 
 	// 鳥居
@@ -843,8 +842,7 @@ void GamePlayScene::MovePlayer() {
 
 void GamePlayScene::AddEnemyFromPopData() {
 
-	// 参照型変数「i」
-	// に
+	// 参照型変数「i」に
 	// enemyFrameの中身を
 	// 最初から最後まで
 	// 順番に入れる
@@ -898,11 +896,6 @@ void GamePlayScene::CollisionAimAndEnemyScreenPos() {
 
 				// 自機の弾の発射
 				player->Shot(pBulletModel.get(), pBulletScale);
-
-				XMFLOAT3 pos = lane->GetPosition();
-				pos.x += player->GetPosition().x;
-				pos.y += player->GetPosition().y;
-				pos.z += player->GetPosition().z;
 
 				// 操作説明を消す
 				operationSprite["L_Click"]->SetIsInvisible(true);

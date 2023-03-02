@@ -89,7 +89,7 @@ void BossScene::Initialize(DirectXCommon* dxcommon) {
 
 	// hp画像
 	playerHpSpriteSize = { 330.f, 30.f };
-	playerHpSprite.reset(Sprite::Create(SpriteCommon::GetInstance()->LoadTexture(L"Resources/hp/hp.png"), { 0,1 }));
+	playerHpSprite.reset(Sprite::Create(SpriteCommon::GetInstance()->LoadTexture(L"Resources/hp/playerHp.png"), { 0,1 }));
 	playerHpSprite->SetPosition(XMFLOAT3(35, WinApp::window_height - 35, 0));
 	playerHpSprite->SetSize({ 0.f,playerHpSpriteSize.y });
 	playerHpSlide.reset(Sprite::Create(SpriteCommon::GetInstance()->LoadTexture(L"Resources/hp/hpSlide.png"), { 0,1 }));
@@ -139,13 +139,11 @@ void BossScene::Initialize(DirectXCommon* dxcommon) {
 
 	// ボスHPスプライト
 	bossHpSpriteSize = { 430.f, 30.f };
-	bossHpSprite.reset(Sprite::Create(SpriteCommon::GetInstance()->LoadTexture(L"Resources/hp/hp.png"), { 0.5f, 0.f }));
+	bossHpSprite.reset(Sprite::Create(SpriteCommon::GetInstance()->LoadTexture(L"Resources/hp/bossHp.png"), { 0.5f, 0.f }));
 	bossHpSlide.reset(Sprite::Create(SpriteCommon::GetInstance()->LoadTexture(L"Resources/hp/hpSlide.png"), { 0.5f, 0.f }));
 
 	bossHpSprite->SetPosition({ (float)WinApp::window_width / 2.f, 5.f, 0.f });
 	bossHpSlide->SetPosition({ (float)WinApp::window_width / 2.f, 5.f, 0.f });
-
-	bossHpSprite->SetColor({ 0.5f, 1.f, 1.f, 1.f });
 
 	bossHpSprite->SetSize({ 0.f, bossHpSpriteSize.y });
 	bossHpSlide->SetSize(bossHpSpriteSize);
