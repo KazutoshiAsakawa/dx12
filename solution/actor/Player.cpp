@@ -94,6 +94,7 @@ void Player::Shot(ObjModel* model, float scale)
 
 	XMStoreFloat3(&vel, XMVector3Transform(XMVectorSet(0, 0, velScale, 1), obj->GetMatRot()));
 
+	// 標的の方向へ飛ばす
 	if (shotTarget != nullptr) {
 		// 速度を計算
 		// 自分から標的までのベクトル

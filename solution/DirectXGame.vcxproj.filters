@@ -181,7 +181,7 @@
       <Filter>ソース ファイル\base</Filter>
     </ClCompile>
     <ClCompile Include="3d\ParticleLoad.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\3d</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -355,7 +355,7 @@
       <Filter>ヘッダー ファイル\base</Filter>
     </ClInclude>
     <ClInclude Include="3d\ParticleLoad.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\3d</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -11,10 +11,11 @@ void PlayerBullet::Update()
 	pos.x += vel.x;
 	pos.y += vel.y;
 	pos.z += vel.z;
-	
-	ParticleLoad::GetInstance()->SetRenderAdd(1, rand() % 20, pos, { 0.f,0.2f,0.f }, { 0.2f,0.2f,0.2f },
-		1.0f, (float)rand() / RAND_MAX * 0.5f, { 0.07f, 0.0f, 1.5f }, { 0.f,0.f,0.f });
 
 	obj->SetPosition(pos);
+
+	ParticleLoad::GetInstance()->SetRenderAdd(1, rand() % 20, obj->GetWorldPos(), {0.f,0.2f,0.f}, {0.f,0.f,0.f},
+		1.0f, (float)rand() / RAND_MAX * 0.5f, { 0.7f, 0.7f, 0.3f }, { 1.f,0.f,0.f });
+
 	obj->Update();
 }

@@ -3,8 +3,7 @@
 #include "ObjModel.h"
 
 class Boss :
-	public Enemy
-{
+	public Enemy {
 public:
 	using Enemy::Enemy;
 

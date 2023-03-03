@@ -15,8 +15,7 @@
 #include<memory>
 
 // フレームワーク
-class Framework
-{
+class Framework {
 public:
 	/// <summary>
 	/// 実行

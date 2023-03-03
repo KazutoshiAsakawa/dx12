@@ -78,7 +78,7 @@ public:
 	/// </summary>
 	void DrawFrontSprite(DirectXCommon* dxcommon) override;
 
-	
+
 	DirectX::XMVECTOR SplinePosition(const std::vector<DirectX::XMVECTOR>& posints, size_t startIndex, float t);
 
 	/// <summary>

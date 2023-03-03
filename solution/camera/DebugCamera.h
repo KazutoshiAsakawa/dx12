@@ -5,8 +5,7 @@
 /// <summary>
 /// デバッグ用カメラ
 /// </summary>
-class DebugCamera : public Camera
-{
+class DebugCamera : public Camera {
 	using XMMATRIX = DirectX::XMMATRIX;
 public:
 	/// <summary>

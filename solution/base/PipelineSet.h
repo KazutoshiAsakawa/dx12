@@ -6,8 +6,7 @@
 /// <summary>
 /// パイプラインのセット
 /// </summary>
-struct PipelineSet
-{
+struct PipelineSet {
 	// パイプラインステートオブジェクト
 	Microsoft::WRL::ComPtr<ID3D12PipelineState> pipelinestate;
 	// ルートシグネチャ

@@ -9,20 +9,17 @@
 /// <summary>
 /// 3Dモデル
 /// </summary>
-class ObjModel
-{
+class ObjModel {
 public:	// サブクラス
 	// 頂点データ構造体
-	struct VertexPosNormalUv
-	{
+	struct VertexPosNormalUv {
 		DirectX::XMFLOAT3 pos; // xyz座標
 		DirectX::XMFLOAT3 normal; // 法線ベクトル
 		DirectX::XMFLOAT2 uv;  // uv座標
 	};
 
 	// 定数バッファ用データ構造体B1
-	struct ConstBufferDataB1
-	{
+	struct ConstBufferDataB1 {
 		DirectX::XMFLOAT3 ambient; // アンビエント係数
 		float pad1; // パディング
 		DirectX::XMFLOAT3 diffuse; // ディフューズ係数
@@ -33,8 +30,7 @@ public:	// サブクラス
 	};
 
 	// マテリアル
-	struct Material
-	{
+	struct Material {
 		std::string name;	// マテリアル名
 		DirectX::XMFLOAT3 ambient;	// アンビエント影響度
 		DirectX::XMFLOAT3 diffuse;	// ディフューズ影響度
@@ -78,8 +74,8 @@ public:	// 静的メンバ関数
 
 	static void SetDevice(ID3D12Device* device) { ObjModel::device = device; }
 
-	inline void SetTiling(const DirectX::XMFLOAT2& tiling) { this->tiling = tiling; materialDirty = true;}
-	inline const DirectX::XMFLOAT2& GetTiling() const {return this->tiling;}
+	inline void SetTiling(const DirectX::XMFLOAT2& tiling) { this->tiling = tiling; materialDirty = true; }
+	inline const DirectX::XMFLOAT2& GetTiling() const { return this->tiling; }
 private: // メンバ変数
 	// デバイス(借りてくる)
 	static ID3D12Device* device;

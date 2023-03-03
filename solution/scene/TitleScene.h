@@ -10,8 +10,7 @@
 /// <summary>
 /// タイトルシーン
 /// </summary>
-class TitleScene : public BaseScene
-{
+class TitleScene : public BaseScene {
 public:
 	/// <summary>
 	/// 初期化

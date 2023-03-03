@@ -60,7 +60,7 @@ public:
 	/// ‘Ì—Í‚ðŽæ“¾
 	/// </summary>
 	/// <returns>‘Ì—Í</returns>
-	inline UINT GetHp() { return hp; }
+	inline UINT GetHp() const { return hp; }
 
 private:
 

@@ -43,6 +43,5 @@ public:
 	/// </summary>
 	void Draw() override;
 
-private:
 };
 

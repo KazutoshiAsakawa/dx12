@@ -8,8 +8,7 @@
 /// <summary>
 /// タイトルシーン
 /// </summary>
-class GameOverScene :public BaseScene
-{
+class GameOverScene :public BaseScene {
 public:
 	/// <summary>
 	/// 初期化

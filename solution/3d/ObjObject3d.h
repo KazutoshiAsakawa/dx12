@@ -64,7 +64,6 @@ public: // 静的メンバ関数
 	/// </summary>
 	/// <returns></returns>
 	static std::unique_ptr <ObjObject3d> Create();
-	//static Object3d* Create();
 
 	static void SetCamera(Camera* camera) { ObjObject3d::camera = camera; };
 	static inline Camera* GetCamera() { return camera; }
@@ -94,7 +93,6 @@ private:// 静的メンバ関数
 	/// </summary>
 	static void CreateModel();
 
-
 public: // メンバ関数
 	bool Initialize();
 	/// <summary>
@@ -111,17 +109,28 @@ public: // メンバ関数
 	/// 座標の取得
 	/// </summary>
 	/// <returns>座標</returns>
-	const XMFLOAT3& GetPosition() { return position; }
+	const XMFLOAT3& GetPosition() const { return position; }
 
-	const XMFLOAT3& GetScale() { return scale; }
+	const XMFLOAT3& GetScale() const { return scale; }
 
-	const XMFLOAT3& GetRotation() { return rotation; }
+	const XMFLOAT3& GetRotation() const { return rotation; }
 
-	inline const XMMATRIX& GetMatRot() { return matRot; }
-	inline const XMMATRIX& GetMatWorld() { return matWorld; }
+	inline const XMMATRIX& GetMatRot() const { return matRot; }
+	inline const XMMATRIX& GetMatWorld() const { return matWorld; }
 
-	inline ObjObject3d* GetParent() { return parent; }
+	inline ObjObject3d* GetParent() const { return parent; }
 
+	/// <summary>
+	/// ワールド座標を取得
+	/// </summary>
+	/// <returns>ワールド座標</returns>
+	inline XMFLOAT3 GetWorldPos() const {
+		XMFLOAT3 worldPos;
+		worldPos.x = matWorld.r[3].m128_f32[0];
+		worldPos.y = matWorld.r[3].m128_f32[1];
+		worldPos.z = matWorld.r[3].m128_f32[2];
+		return worldPos;
+	}
 
 	/// <summary>
 	/// 座標の設定

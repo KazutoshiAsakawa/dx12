@@ -7,8 +7,7 @@
 /// <summary>
 /// ƒV[ƒ“Hê(ŠT”O)
 /// </summary>
-class AbstractSceneFactory
-{
+class AbstractSceneFactory {
 public:
 	virtual ~AbstractSceneFactory() = default;
 

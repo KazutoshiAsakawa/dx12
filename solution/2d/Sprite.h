@@ -9,12 +9,10 @@
 /// <summary>
 /// スプライト1枚分を表すクラス
 /// </summary>
-class Sprite
-{
+class Sprite {
 public:
 	// 頂点データ
-	struct VertexPosUv
-	{
+	struct VertexPosUv {
 		DirectX::XMFLOAT3 pos; // xyz座標
 		DirectX::XMFLOAT2 uv;  // uv座標
 	};
@@ -62,11 +60,11 @@ public:
 	void SetColor(const DirectX::XMFLOAT4& color) { this->color = color; }
 	void SetIsInvisible(bool isInvisible) { this->isInvisible = isInvisible; }
 
-	inline const DirectX::XMFLOAT2& GetSize() { return size; };
-	inline const DirectX::XMFLOAT2& GetTexSize() { return texSize; };
-	inline const DirectX::XMFLOAT3& GetPosition() { return position; }
-    inline const DirectX::XMFLOAT4& GetColor() { return color; }
-	inline bool GetIsInvisible() { return isInvisible; }
+	inline const DirectX::XMFLOAT2& GetSize() const { return size; };
+	inline const DirectX::XMFLOAT2& GetTexSize() const { return texSize; };
+	inline const DirectX::XMFLOAT3& GetPosition() const { return position; }
+	inline const DirectX::XMFLOAT4& GetColor() const { return color; }
+	inline bool GetIsInvisible() const { return isInvisible; }
 
 private:
 	//頂点バッファ;

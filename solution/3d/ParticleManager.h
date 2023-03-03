@@ -138,7 +138,7 @@ public: // メンバ関数
 
 	void CreateParticle(const XMFLOAT3& pos, UINT particleNum, float startScale, float vel, XMFLOAT3 start_col = { 1,1,1 }, XMFLOAT3 end_col = { 1,1,1 });
 
-	void SetFileName(const wchar_t* fileName){this->fileName=fileName;}
+	void SetFileName(const wchar_t* fileName) { this->fileName = fileName; }
 
 private: // メンバ変数
 	// デバイス

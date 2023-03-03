@@ -10,8 +10,7 @@
 #include <DirectXMath.h>
 #include <string>
 
-class FbxObject3d
-{
+class FbxObject3d {
 protected: // エイリアス
 	// Microsoft::WRL::を省略
 	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
@@ -27,16 +26,14 @@ public:	//静的メンバ変数
 
 public: // サブクラス
 	// 定数バッファ用データ構造体（座標変換行列用）
-	struct ConstBufferDataTransform
-	{
+	struct ConstBufferDataTransform {
 		XMMATRIX viewproj;	// ビュープロジェクション行列
 		XMMATRIX world;		// ワールド行列
 		XMFLOAT3 cameraPos;	// カメラ座標（ワールド座標）
 	};
 
 	// 定数バッファ用データ構造体 (スキニング)
-	struct ConstBufferDataSkin
-	{
+	struct ConstBufferDataSkin {
 		XMMATRIX bones[MAX_BONES];
 	};
 
@@ -98,7 +95,7 @@ public: // メンバ関数
 	/// 座標の取得
 	/// </summary>
 	/// <returns>座標</returns>
-	inline const XMFLOAT3& GetPosition() { return position; }
+	inline const XMFLOAT3& GetPosition() const { return position; }
 
 protected: // メンバ変数
 	// 定数バッファ

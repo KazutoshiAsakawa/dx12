@@ -3,8 +3,7 @@
 #include "GameObject.h"
 
 class TrackingCamera :
-	public Camera
-{
+	public Camera {
 public:
 	using Camera::Camera;
 

@@ -9,8 +9,7 @@
 /// <summary>
 /// デバッグ文字列クラスの定義
 /// </summary>
-class DebugText
-{
+class DebugText {
 public: // 定数の宣言    
 	static const int maxCharCount = 256;    // 最大文字数
 	static const int fontWidth = 9;         // フォント画像内1文字分の横幅

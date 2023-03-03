@@ -7,8 +7,7 @@
 
 using namespace Microsoft::WRL;
 
-class Input
-{
+class Input {
 public://メンバー関数
 	//namespace省略
 	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
@@ -42,21 +41,18 @@ public://メンバー関数
 		mousePos = pos;
 	}
 
-	enum MouseButton
-	{
+	enum MouseButton {
 		LEFT = 0,
 		RIGHT = 1
 	};
 
 	/// <param name="mouseNumber">0で左クリック,1で右クリック</param>
-	inline bool PushMouse(_In_ BYTE mouseNumber)
-	{
+	inline bool PushMouse(_In_ BYTE mouseNumber) {
 		return (bool)mouse.rgbButtons[mouseNumber];
 	}
 
 	/// <param name="mouseNumber">0で左クリック,1で右クリック</param>
-	inline bool TriggerMouse(_In_ BYTE mouseNumber)
-	{
+	inline bool TriggerMouse(_In_ BYTE mouseNumber) {
 		return PushMouse(mouseNumber) && !(bool)mousePre.rgbButtons[mouseNumber];
 	}
 

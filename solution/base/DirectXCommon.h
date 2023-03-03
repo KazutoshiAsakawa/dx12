@@ -6,8 +6,7 @@
 #include <imgui.h>
 #include"WinApp.h"
 
-class DirectXCommon
-{
+class DirectXCommon {
 	// privateなコンストラクタ（シングルトンパターン）
 	DirectXCommon();
 	// privateなデストラクタ（シングルトンパターン）

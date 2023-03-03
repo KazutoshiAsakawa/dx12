@@ -61,8 +61,6 @@ public:
 	/// <param name="filename">WAVƒtƒ@ƒCƒ‹–¼</param>
 	void LoadWave(const std::string filename);
 
-	
-
 	/// <summary>
 	/// ‰¹ºÄ¶
 	/// </summary>

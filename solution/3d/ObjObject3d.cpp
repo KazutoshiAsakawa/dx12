@@ -94,8 +94,6 @@ std::unique_ptr<ObjObject3d> ObjObject3d::Create()
 	return std::unique_ptr<ObjObject3d>(object3d);
 }
 
-
-
 bool ObjObject3d::InitializeGraphicsPipeline()
 {
 	HRESULT result = S_FALSE;

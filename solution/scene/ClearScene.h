@@ -8,8 +8,7 @@
 /// <summary>
 /// タイトルシーン
 /// </summary>
-class ClearScene :public BaseScene
-{
+class ClearScene :public BaseScene {
 public:
 	/// <summary>
 	/// 初期化

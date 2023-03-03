@@ -3,8 +3,7 @@
 
 // ゲーム用のシーン工場
 class SceneFactory :
-    public AbstractSceneFactory
-{
+	public AbstractSceneFactory {
 public:
 	/// <summary>
 	/// シーン生成

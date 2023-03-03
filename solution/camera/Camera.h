@@ -5,8 +5,7 @@
 /// <summary>
 /// カメラ基本機能
 /// </summary>
-class Camera
-{
+class Camera {
 protected: // エイリアス
 	// DirectX::を省略
 	using XMFLOAT2 = DirectX::XMFLOAT2;
@@ -44,7 +43,7 @@ public: // メンバ関数
 	void UpdateProjectionMatrix();
 
 	inline const XMMATRIX& GetViewPortMatrix() {
-	return matViewPort;
+		return matViewPort;
 	}
 
 	/// <summary>
@@ -79,13 +78,13 @@ public: // メンバ関数
 		return matBillboard;
 	}
 
-    /// <summary>
-    /// Y軸固定ビルボード行列の取得
-    /// </summary>
-    /// <returns>Y軸固定ビルボード行列</returns>
-    inline const XMMATRIX& GetBillboardYMatrix() {
-        return matBillboardY;
-    }
+	/// <summary>
+	/// Y軸固定ビルボード行列の取得
+	/// </summary>
+	/// <returns>Y軸固定ビルボード行列</returns>
+	inline const XMMATRIX& GetBillboardYMatrix() {
+		return matBillboardY;
+	}
 
 	/// <summary>
 	/// 視点座標の取得

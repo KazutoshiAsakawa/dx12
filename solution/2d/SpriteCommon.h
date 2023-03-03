@@ -6,8 +6,7 @@
 /// <summary>
 /// スプライト共通部分
 /// </summary>
-class SpriteCommon
-{
+class SpriteCommon {
 public:
 	static SpriteCommon* GetInstance();
 
@@ -48,9 +47,9 @@ public:
 	/// <returns>テクスチャリソース</returns>
 	ID3D12Resource* GetTexBuff(UINT texNumber);
 
-	const DirectX::XMMATRIX& GetMatProjection() { return matProjection; }
-	ID3D12Device* GetDevice() { return device; }
-	ID3D12GraphicsCommandList* GetCommandList() { return commandList; }
+	const DirectX::XMMATRIX& GetMatProjection() const { return matProjection; }
+	ID3D12Device* GetDevice() const { return device; }
+	ID3D12GraphicsCommandList* GetCommandList() const { return commandList; }
 
 
 

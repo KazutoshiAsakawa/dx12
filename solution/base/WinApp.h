@@ -2,8 +2,7 @@
 #pragma once
 
 // WindowsAPI
-class WinApp
-{
+class WinApp {
 	// privateなコンストラクタ（シングルトンパターン）
 	WinApp();
 	// privateなデストラクタ（シングルトンパターン）

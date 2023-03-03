@@ -1,8 +1,7 @@
 #pragma once
 #include "Sprite.h"
 //#include "DirectXCommon.h"
-class PostEffect
-{
+class PostEffect {
 	template<class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
 
 	PostEffect();
@@ -15,16 +14,14 @@ public:
 	/// <summary>
 	/// 頂点データ構造体
 	/// </summary>
-	struct VertexPosUv
-	{
+	struct VertexPosUv {
 		DirectX::XMFLOAT3 pos; // xyz座標
 		DirectX::XMFLOAT2 uv;  // uv座標
 	};
 	/// <summary>
 	/// 定数バッファ用データ構造体
 	/// </summary>
-	struct ConstBufferData
-	{
+	struct ConstBufferData {
 		DirectX::XMFLOAT2 mosaicNum{};
 
 		DirectX::XMFLOAT2 shiftR{};
@@ -127,7 +124,7 @@ private: // メンバ変数
 	DirectX::XMFLOAT2 shiftR{};
 	DirectX::XMFLOAT2 shiftG{};
 	DirectX::XMFLOAT2 shiftB{};
-	
+
 	// 画面サイズ
 	DirectX::XMFLOAT2 windowSize{};
 };

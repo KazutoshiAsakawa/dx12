@@ -112,7 +112,6 @@ public:
 	/// <returns>スクリーン座標</returns>
 	inline const DirectX::XMFLOAT2& GetFloat2ScreenPos() const { return float2ScreenPos; }
 
-
 	GameObject(
 		ObjModel* model,
 		const DirectX::XMFLOAT3& position = { 0,0,0 });

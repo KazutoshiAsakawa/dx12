@@ -4,8 +4,7 @@
 #include <functional>
 
 class Enemy :
-	public GameObject
-{
+	public GameObject {
 public:
 	using GameObject::GameObject;
 	// コンストラクタ
@@ -33,7 +32,7 @@ public:
 	void LeaveChange(DirectX::XMFLOAT3 vel);
 	void DirectionChange(DirectX::XMFLOAT3 vel);
 
-	inline const DirectX::XMFLOAT3& GetVel() { return vel; }
+	inline const DirectX::XMFLOAT3& GetVel() const { return vel; }
 	inline void SetVel(const DirectX::XMFLOAT3& vel) { this->vel = vel; }
 
 	inline auto& GetBullet() { return bullet; }
@@ -45,25 +44,23 @@ public:
 	inline void SetLifeSpan(const UINT& lifeSpan) { this->lifeSpan = lifeSpan; }
 	inline const UINT& GetLifeSpan() { return lifeSpan; }
 
-	inline void Damage(UINT damage) { if (hp >= damage)hp -= damage;else hp = 0; }
+	inline void Damage(UINT damage) { if (hp >= damage)hp -= damage; else hp = 0; }
 	inline void SetHp(UINT hp) { this->hp = hp; }
-	inline UINT GetHp() { return hp; }
+	inline UINT GetHp() const { return hp; }
 
 	inline void SetShake(bool shakeFlag) { this->shakeFlag = shakeFlag; memoryPos = obj->GetPosition(); }
-	inline bool GetShake() { return shakeFlag; }
+	inline bool GetShake() const { return shakeFlag; }
 	/// <summary>
 	/// 振動
 	/// </summary>
 	void Shake();
 
-
 	inline void SetHitStop(bool hitStopFlag) { this->hitStopFlag = hitStopFlag; };
-	inline bool GetHitStop() { return hitStopFlag; }
+	inline bool GetHitStop() const { return hitStopFlag; }
 	/// <summary>
 	/// ヒットストップ
 	/// </summary>
 	void hitStop();
-
 
 	inline void SetPhase(std::function<void()> phase) { this->phase = phase; };
 protected:

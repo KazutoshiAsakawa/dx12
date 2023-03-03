@@ -1,8 +1,7 @@
 #pragma once
 #include "GameObject.h"
 class EnemyBullet :
-    public GameObject
-{
+	public GameObject {
 public:
 	using GameObject::GameObject;
 
@@ -20,7 +19,7 @@ public:
 	/// ‘¬“x‚ğæ“¾
 	/// </summary>
 	/// <returns>‘¬“x</returns>
-	inline const DirectX::XMFLOAT3& GetVel() { return vel; }
+	inline const DirectX::XMFLOAT3& GetVel() const { return vel; }
 
 	// ’e‚ÌÁ‚¦‚éŠÔ
 	UINT life = 60 * 10;

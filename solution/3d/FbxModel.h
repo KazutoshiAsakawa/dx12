@@ -10,8 +10,7 @@
 #include <fbxsdk.h>
 
 // ノード
-struct Node
-{
+struct Node {
 	// 名前
 	std::string name;
 	// ローカルスケール
@@ -29,8 +28,7 @@ struct Node
 };
 
 
-class FbxModel
-{
+class FbxModel {
 public:
 	// フレンドクラス
 	friend class FbxLoader;
@@ -55,8 +53,7 @@ public: // 静的メンバ変数
 
 public:	// サブクラス
 	// 頂点データ構造体
-	struct VertexPosNormalUvSkin
-	{
+	struct VertexPosNormalUvSkin {
 		DirectX::XMFLOAT3 pos; // xyz座標
 		DirectX::XMFLOAT3 normal; // 法線ベクトル
 		DirectX::XMFLOAT2 uv;  // uv座標
@@ -65,8 +62,7 @@ public:	// サブクラス
 	};
 
 	// ボーン構造体
-	struct Bone
-	{
+	struct Bone {
 		// 名前
 		string name;
 		// 初期姿勢の逆行列
@@ -87,7 +83,7 @@ public: // メンバ関数
 	// 描画
 	void Draw(ID3D12GraphicsCommandList* cmdList);
 	// モデルの変形行列取得
-	const XMMATRIX& GetModelTransform() { return meshNode->globalTransform; }
+	const XMMATRIX& GetModelTransform() const { return meshNode->globalTransform; }
 
 	/// <summary>
 	/// モデルのボーン配列を取得

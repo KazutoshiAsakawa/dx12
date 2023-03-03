@@ -8,8 +8,7 @@
 
 #include <string>
 
-class FbxLoader
-{
+class FbxLoader {
 private: // エイリアス
 	// std::を省略
 	using string = std::string;
@@ -56,7 +55,6 @@ public:
 	/// </summary>
 	/// <param name="modelName">モデル名</param>
 	FbxModel* LoadModelFromFile(const string& modelName);
-	// void LoadModelFromFile(const string& modelName);
 
 private:
 	// D3D12デバイス
@@ -71,7 +69,7 @@ private:
 	/// </summary>
 	void Finalize();
 
-private: // 場所分からん
+private:
 	/// <summary>
 	/// 再帰的にノード構成を解析
 	/// </summary>

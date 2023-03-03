@@ -7,8 +7,7 @@ class SceneManager;
 /// <summary>
 /// シーン基底
 /// </summary>
-class BaseScene
-{
+class BaseScene {
 public:
 	virtual ~BaseScene() = default;
 
@@ -35,6 +34,6 @@ public:
 	/// <summary>
 	/// 前景スプライト描画
 	/// </summary>
-	virtual void DrawFrontSprite(DirectXCommon* dxcommon){};
+	virtual void DrawFrontSprite(DirectXCommon* dxcommon) {};
 };
 

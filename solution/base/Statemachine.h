@@ -1,12 +1,10 @@
 #pragma once
 #include <functional>
 
-class Statemachine
-{
+class Statemachine {
 public:
 
-	struct Node
-	{
+	struct Node {
 		std::function<Node* ()> phase;
 	};
 

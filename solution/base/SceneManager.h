@@ -6,8 +6,7 @@
 /// <summary>
 /// シーン管理
 /// </summary>
-class SceneManager
-{
+class SceneManager {
 public:
 	static SceneManager* GetInstance();
 
@@ -32,7 +31,7 @@ public:
 	/// <param name="sceneName">シーン名</param>
 	void ChangeScene(const std::string& sceneName);
 
-	void SetSceneFactory(AbstractSceneFactory* sceneFactory){ this->sceneFactory  = sceneFactory;}
+	void SetSceneFactory(AbstractSceneFactory* sceneFactory) { this->sceneFactory = sceneFactory; }
 private:
 
 	// シーン
@@ -41,7 +40,7 @@ private:
 	BaseScene* nextScene = nullptr;
 	// シーンファクトリー(借りてくる)
 	AbstractSceneFactory* sceneFactory = nullptr;
-	
+
 	SceneManager() = default;
 	~SceneManager();
 	SceneManager(const SceneManager&) = delete;
