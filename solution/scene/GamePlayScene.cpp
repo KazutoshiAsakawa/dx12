@@ -5,7 +5,6 @@
 #include "DebugText.h"
 
 #include "FbxObject3d.h"
-#include "FbxLoader.h"
 #include "DirectXCommon.h"
 #include "Collision.h"
 #include "ParticleLoad.h"
@@ -328,7 +327,6 @@ void GamePlayScene::Update() {
 		nowCamera->Update();
 		lane->Update();
 
-		//fbxObj->Update();
 		player->Update();
 		//}
 		for (auto& i : enemy) {
