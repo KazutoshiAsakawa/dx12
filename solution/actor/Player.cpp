@@ -12,14 +12,6 @@ Player::Player()
 	obj->SetPosition({ 0,0,0 });
 	obj->SetScale({ 1,1,1 });
 
-	// 照準のオブジェクト
-	aim = ObjObject3d::Create();
-	aim->Initialize();
-	constexpr float aimLength = 10.f;
-	aim->SetPosition({ 0,0,aimLength });
-	aim->SetScale({ 0.5,0.5,1 });
-	aim->SetParent(obj.get());
-
 	// 紅葉のオブジェクト
 	momijiObj = ObjObject3d::Create();
 	momijiObj->Initialize();
@@ -44,18 +36,6 @@ Player::Player()
 
 void Player::Update()
 {
-	{
-		XMMATRIX mat =
-			obj->GetCamera()->GetViewMatrix() *
-			obj->GetCamera()->GetProjectionMatrix() *
-			obj->GetCamera()->GetViewPortMatrix();
-
-		XMVECTOR screenAimPos = XMVector3Transform(aim->GetMatWorld().r[3], mat);
-		screenAimPos /= XMVectorGetW(screenAimPos);
-
-		// 変数に格納
-		float2ScreenAimPos = XMFLOAT2(XMVectorGetX(screenAimPos), XMVectorGetY(screenAimPos));
-	}
 
 	for (auto& i : bullet)
 	{
@@ -65,7 +45,6 @@ void Player::Update()
 	bullet.erase(std::remove_if(bullet.begin(), bullet.end(), [](PlayerBullet& i) {return !i.GetAlive(); }), bullet.end());
 
 	obj->Update();
-	aim->Update(); // プレイヤーの目の前にあるただのモデル
 	momijiObj->Update();
 }
 
@@ -80,7 +59,6 @@ void Player::Draw()
 		obj->Draw();
 		momijiObj->Draw();
 	}
-
 }
 
 void Player::Shot(ObjModel* model, float scale)

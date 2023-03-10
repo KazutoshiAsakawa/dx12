@@ -54,6 +54,17 @@ void TitleScene::Initialize(DirectXCommon* dxcommon) {
 	shrineObj->SetRotation({ 0,0,0 });
 	shrineObj->SetPosition({ 0,-9,-9 });
 
+	// 篝火
+	bonfireR = ObjObject3d::Create();
+	bonfireR->SetModel(ObjModel::LoadFromObj("bonfire"));
+	bonfireR->SetScale({ 2,2,2 });
+	bonfireR->SetPosition({ 5,-5,10 });
+
+	bonfireL = ObjObject3d::Create();
+	bonfireL->SetModel(ObjModel::LoadFromObj("bonfire"));
+	bonfireL->SetScale({ 2,2,2 });
+	bonfireL->SetPosition({ -5,-5,10 });
+
 	//デバイスをセット
 	FbxObject3d::SetDevice(dxcommon->GetDev());
 	//カメラをセット
@@ -104,9 +115,24 @@ void TitleScene::Update() {
 
 	player->Update();
 
+	// 篝火の炎パーティクル
+	{
+		XMFLOAT3 bonfireRPos = bonfireR->GetPosition();
+		bonfireRPos.y += 4.f;
+		ParticleLoad::GetInstance()->SetRenderAdd(1, rand() % 20, bonfireRPos, { 0.f,0.2f,0.f }, { 0.f,0.f,0.f },
+			1.0f, (float)rand() / RAND_MAX * 0.5f, { 0.7f, 0.7f, 0.3f }, { 1.f,0.f,0.f });
+
+		XMFLOAT3 bonfireLPos = bonfireL->GetPosition();
+		bonfireLPos.y += 4.f;
+		ParticleLoad::GetInstance()->SetRenderAdd(1, rand() % 20, bonfireLPos, { 0.f,0.2f,0.f }, { 0.f,0.f,0.f },
+			1.0f, (float)rand() / RAND_MAX * 0.5f, { 0.7f, 0.7f, 0.3f }, { 1.f,0.f,0.f });
+	}
+
 	groundObj->Update();
 	skyDomeObj->Update();
 	shrineObj->Update();
+	bonfireR->Update();
+	bonfireL->Update();
 
 	{
 		auto color = title["pressS"]->GetColor();
@@ -191,6 +217,9 @@ void TitleScene::Draw(DirectXCommon* dxcommon) {
 
 	// 神社
 	shrineObj->Draw();
+	// 篝火
+	bonfireR->Draw();
+	bonfireL->Draw();
 
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる

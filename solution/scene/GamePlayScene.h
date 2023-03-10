@@ -167,6 +167,10 @@ private:
 	// _Ğ
 	std::unique_ptr<ObjObject3d> shrineObj;
 
+	// â¾‰Î
+	std::unique_ptr<ObjObject3d> bonfireR;
+	std::unique_ptr<ObjObject3d> bonfireL;
+
 	// ’e
 	std::unique_ptr<ObjModel> pBulletModel = nullptr;
 	// ’e‚Ì‘å‚«‚³

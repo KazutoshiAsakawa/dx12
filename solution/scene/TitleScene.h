@@ -85,6 +85,10 @@ private:
 	// 神社
 	std::unique_ptr<ObjObject3d> shrineObj;
 
+	// 篝火
+	std::unique_ptr<ObjObject3d> bonfireR;
+	std::unique_ptr<ObjObject3d> bonfireL;
+
 	// モザイク
 	bool mosaicFlag = false;
 	UINT mosaicFrame = 0;

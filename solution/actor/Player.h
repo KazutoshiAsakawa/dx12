@@ -70,9 +70,6 @@ private:
 	// 乗り物
 	std::unique_ptr <ObjObject3d> momijiObj;
 
-	// 照準
-	std::unique_ptr <ObjObject3d> aim;
-
 	// 照準のスクリーン座標
 	DirectX::XMFLOAT2 float2ScreenAimPos;
 

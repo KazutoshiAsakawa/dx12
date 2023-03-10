@@ -235,6 +235,26 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon) {
 	shrinePos.y -= 9.f;							// 下にずらす
 	shrineObj->SetPosition(shrinePos);
 
+	// 篝火
+	bonfireR = ObjObject3d::Create();
+	bonfireR->SetModel(ObjModel::LoadFromObj("bonfire"));
+	bonfireR->SetScale({ 2,2,2 });
+	// 神社から計算して配置
+	XMFLOAT3 bonfireRPos = shrinePos;
+	bonfireRPos.x += 5.f;
+	bonfireRPos.y += 4.f;
+	bonfireRPos.z += 19.f;
+	bonfireR->SetPosition({ bonfireRPos });
+
+	bonfireL = ObjObject3d::Create();
+	bonfireL->SetModel(ObjModel::LoadFromObj("bonfire"));
+	bonfireL->SetScale({ 2,2,2 });
+	XMFLOAT3 bonfireLPos = shrinePos;
+	bonfireLPos.x -= 5.f;
+	bonfireLPos.y += 4.f;
+	bonfireLPos.z += 19.f;
+	bonfireL->SetPosition({ bonfireLPos });
+
 	// 鳥居
 	toriiModel.reset(ObjModel::LoadFromObj("torii"));
 	toriiObj.resize(points.size());
@@ -324,11 +344,26 @@ void GamePlayScene::Update() {
 		// パーティクル更新
 		ParticleLoad::GetInstance()->Update();
 
+
+		// 篝火の炎パーティクル
+		{
+			XMFLOAT3 bonfireRPos = bonfireR->GetWorldPos();
+			bonfireRPos.y += 4.f;
+
+			ParticleLoad::GetInstance()->SetRenderAdd(1, rand() % 20, bonfireRPos, {0.f,0.2f,0.f}, {0.f,0.f,0.f},
+				1.0f, (float)rand() / RAND_MAX * 0.5f, { 0.7f, 0.7f, 0.3f }, { 1.f,0.f,0.f });
+
+			XMFLOAT3 bonfireLPos = bonfireL->GetWorldPos();
+			bonfireLPos.y += 4.f;
+			ParticleLoad::GetInstance()->SetRenderAdd(1, rand() % 20, bonfireLPos, { 0.f,0.2f,0.f }, { 0.f,0.f,0.f },
+				1.0f, (float)rand() / RAND_MAX * 0.5f, { 0.7f, 0.7f, 0.3f }, { 1.f,0.f,0.f });
+		}
+
 		nowCamera->Update();
 		lane->Update();
 
 		player->Update();
-		//}
+
 		for (auto& i : enemy) {
 			i->Update();
 		}
@@ -348,6 +383,8 @@ void GamePlayScene::Update() {
 		groundObj->Update();
 		skyDomeObj->Update();
 		shrineObj->Update();
+		bonfireR->Update();
+		bonfireL->Update();
 
 		// スプライト更新
 		aim->SetPosition({ (float)input->GetMousePos().x,(float)input->GetMousePos().y,0 });
@@ -679,6 +716,9 @@ void GamePlayScene::Draw(DirectXCommon* dxcommon) {
 
 	// 神社
 	shrineObj->Draw();
+	// 篝火
+	bonfireR->Draw();
+	bonfireL->Draw();
 
 	// 地面
 	groundObj->Draw();
