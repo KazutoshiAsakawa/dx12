@@ -35,7 +35,7 @@ void BossScene::Initialize(DirectXCommon* dxcommon) {
 	ShowCursor(false);
 
 	// スプライトの生成
-	aim.reset(Sprite::Create(SpriteCommon::GetInstance()->LoadTexture(L"Resources/aim.png")));
+	aim.reset(Sprite::Create(SpriteCommon::GetInstance()->LoadTexture(L"Resources/aim1.png")));
 	aim->SetPosition({ WinApp::window_width / 2.f ,WinApp::window_height / 2.f, 0.f });
 
 	operationSprite["ESC_Pause"].reset(Sprite::Create(SpriteCommon::GetInstance()->LoadTexture(L"Resources/operation/ESC_Pause.png"), { 0.f, 0.f }, false, false));
@@ -139,11 +139,11 @@ void BossScene::Initialize(DirectXCommon* dxcommon) {
 
 	// ボスHPスプライト
 	bossHpSpriteSize = { 430.f, 30.f };
-	bossHpSprite.reset(Sprite::Create(SpriteCommon::GetInstance()->LoadTexture(L"Resources/hp/bossHp.png"), { 0.5f, 0.f }));
-	bossHpSlide.reset(Sprite::Create(SpriteCommon::GetInstance()->LoadTexture(L"Resources/hp/hpSlide.png"), { 0.5f, 0.f }));
-
-	bossHpSprite->SetPosition({ (float)WinApp::window_width / 2.f, 5.f, 0.f });
-	bossHpSlide->SetPosition({ (float)WinApp::window_width / 2.f, 5.f, 0.f });
+	bossHpSprite.reset(Sprite::Create(SpriteCommon::GetInstance()->LoadTexture(L"Resources/hp/bossHp.png"), { 0.f, 0.f }));
+	bossHpSlide.reset(Sprite::Create(SpriteCommon::GetInstance()->LoadTexture(L"Resources/hp/hpSlide.png"), { 0.f, 0.f }));
+	
+	bossHpSprite->SetPosition({ (float)WinApp::window_width / 2.f - bossHpSpriteSize.x / 2, 5.f, 0.f });
+	bossHpSlide->SetPosition({ (float)WinApp::window_width / 2.f - bossHpSpriteSize.x / 2, 5.f, 0.f });
 
 	bossHpSprite->SetSize({ 0.f, bossHpSpriteSize.y });
 	bossHpSlide->SetSize(bossHpSpriteSize);

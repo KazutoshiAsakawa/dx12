@@ -232,13 +232,13 @@ void TitleScene::Draw(DirectXCommon* dxcommon) {
 
 	// スプライト共通コマンド
 	SpriteCommon::GetInstance()->PreDraw();
-}
-
-void TitleScene::DrawFrontSprite(DirectXCommon* dxcommon) {
-	SpriteCommon::GetInstance()->PreDraw();
 
 	// スプライト描画
 	for (auto& i : title) {
 		i.second->Draw();
 	}
+}
+
+void TitleScene::DrawFrontSprite(DirectXCommon* dxcommon) {
+	SpriteCommon::GetInstance()->PreDraw();
 }

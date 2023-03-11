@@ -76,7 +76,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon) {
 #pragma endregion 操作説明のスプライト
 
 	// スプライトの生成
-	aim.reset(Sprite::Create(SpriteCommon::GetInstance()->LoadTexture(L"Resources/aim.png")));
+	aim.reset(Sprite::Create(SpriteCommon::GetInstance()->LoadTexture(L"Resources/aim1.png")));
 
 #pragma region プレイヤー
 	// hp画像
@@ -159,8 +159,6 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon) {
 	player->SetPosition(playerEntryStartPos);
 
 #pragma region カメラ
-	// カメラをレーンの位置にセット
-	camera->SetTrackingTarget(player.get());
 	camera->SetTarget(lane->GetPosition());
 	XMFLOAT3 eye = lane->GetPosition();
 	eye.z -= 50;
@@ -344,21 +342,6 @@ void GamePlayScene::Update() {
 		// パーティクル更新
 		ParticleLoad::GetInstance()->Update();
 
-
-		// 篝火の炎パーティクル
-		{
-			XMFLOAT3 bonfireRPos = bonfireR->GetWorldPos();
-			bonfireRPos.y += 4.f;
-
-			ParticleLoad::GetInstance()->SetRenderAdd(1, rand() % 20, bonfireRPos, {0.f,0.2f,0.f}, {0.f,0.f,0.f},
-				1.0f, (float)rand() / RAND_MAX * 0.5f, { 0.7f, 0.7f, 0.3f }, { 1.f,0.f,0.f });
-
-			XMFLOAT3 bonfireLPos = bonfireL->GetWorldPos();
-			bonfireLPos.y += 4.f;
-			ParticleLoad::GetInstance()->SetRenderAdd(1, rand() % 20, bonfireLPos, { 0.f,0.2f,0.f }, { 0.f,0.f,0.f },
-				1.0f, (float)rand() / RAND_MAX * 0.5f, { 0.7f, 0.7f, 0.3f }, { 1.f,0.f,0.f });
-		}
-
 		nowCamera->Update();
 		lane->Update();
 
@@ -448,6 +431,8 @@ void GamePlayScene::start() {
 		// updateProcessにentryPlayer関数をセット
 		updateProcess = std::bind(&GamePlayScene::entryPlayer, this);
 
+		ParticleLoad::GetInstance()->SetCamera(normalCamera.get());
+
 		// モザイクのフレーム数をリセット
 		mosaicFrame = 0;
 	} else {
@@ -470,6 +455,11 @@ void GamePlayScene::entryPlayer() {
 
 		// updateProcessにplay関数をセット
 		updateProcess = std::bind(&GamePlayScene::play, this);
+
+		ParticleLoad::GetInstance()->SetCamera(camera.get());
+
+		// カメラをレーンの位置にセット
+		camera->SetTrackingTarget(player.get());
 
 		// プレイヤー登場演出のフレーム数をリセット
 		playerEntryFrame = 0;
@@ -496,6 +486,26 @@ void GamePlayScene::entryPlayer() {
 		targetPos.y += player->GetPosition().y;
 		targetPos.z += player->GetPosition().z;
 		normalCamera->SetTarget(targetPos);
+
+		// 篝火の炎パーティクル
+		{
+			constexpr XMFLOAT3 velocity = { 0.f,0.2f,0.f };
+			constexpr XMFLOAT3 accel = {0.f,0.f,0.f};
+			constexpr float startScale = {1.f};
+			constexpr XMFLOAT3 startCol = {0.7f,0.7f,0.3f};
+			constexpr XMFLOAT3 endCol = {1.f,0.f,0.f};
+
+			XMFLOAT3 bonfireRPos = bonfireR->GetWorldPos();
+			bonfireRPos.y += 4.f;
+
+			ParticleLoad::GetInstance()->SetRenderAdd(1, rand() % 20, bonfireRPos, velocity, accel,
+				startScale, (float)rand() / RAND_MAX * 0.5f, startCol, endCol);
+
+			XMFLOAT3 bonfireLPos = bonfireL->GetWorldPos();
+			bonfireLPos.y += 4.f;
+			ParticleLoad::GetInstance()->SetRenderAdd(1, rand() % 20, bonfireLPos, velocity, accel,
+				startScale, (float)rand() / RAND_MAX * 0.5f, startCol, endCol);
+		}
 
 #ifdef _DEBUG
 		// ボスシーンに行く
@@ -996,7 +1006,7 @@ void GamePlayScene::CollisionEnemyAndPlayerBullet() {
 					e->SetHitStop(true);
 
 					// パーティクルの発生
-					ParticleLoad::GetInstance()->SetRenderParticle(0,pos, 100, 4, 5, { 1,0,1 }, { 0.5f,0,0.5f });
+					ParticleLoad::GetInstance()->SetRenderParticle(0, pos, 100, 4, 5, { 1,0,1 }, { 0.5f,0,0.5f });
 					break;
 				}
 			}

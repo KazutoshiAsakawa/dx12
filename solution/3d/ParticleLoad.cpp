@@ -15,7 +15,7 @@ void ParticleLoad::Initialize(ID3D12Device* device) {
 
 	// エフェクト1を二個目に入れる
 	ParticleManager* bulletParticle = new ParticleManager();
-	bulletParticle->SetFileName(L"Resources/effect1.png");
+	bulletParticle->SetFileName(L"Resources/effect.png");
 	bulletParticle->Initialize(device);
 	particles.push_back(bulletParticle);
 
