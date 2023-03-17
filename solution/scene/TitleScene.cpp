@@ -52,7 +52,7 @@ void TitleScene::Initialize(DirectXCommon* dxcommon) {
 	shrineObj->SetModel(ObjModel::LoadFromObj("shrine"));
 	shrineObj->SetScale({ 3,3,3 });
 	shrineObj->SetRotation({ 0,0,0 });
-	shrineObj->SetPosition({ 0,-9,-9 });
+	shrineObj->SetPosition({ 0,-9,-11 });
 
 	// 篝火
 	bonfireR = ObjObject3d::Create();
@@ -108,13 +108,6 @@ void TitleScene::Update() {
 	// シーン遷移
 	updateProcess();
 
-	// パーティクル更新
-	ParticleLoad::GetInstance()->Update();
-
-	camera->Update();
-
-	player->Update();
-
 	// 篝火の炎パーティクル
 	{
 		XMFLOAT3 bonfireRPos = bonfireR->GetPosition();
@@ -126,7 +119,30 @@ void TitleScene::Update() {
 		bonfireLPos.y += 4.f;
 		ParticleLoad::GetInstance()->SetRenderAdd(1, rand() % 20, bonfireLPos, { 0.f,0.2f,0.f }, { 0.f,0.f,0.f },
 			1.0f, (float)rand() / RAND_MAX * 0.5f, { 0.7f, 0.7f, 0.3f }, { 1.f,0.f,0.f });
+
 	}
+
+
+
+	{
+		XMFLOAT3 eye = camera->GetEye();
+		
+		float length = 50;
+		rad += 0.005f;
+		eye.x = player->GetPosition().x + cos(rad) * length;
+		eye.z = player->GetPosition().z + sin(rad) * length;
+
+		camera->SetEye(eye);
+	}
+
+	// パーティクル更新
+	ParticleLoad::GetInstance()->Update();
+
+	camera->Update();
+
+	player->Update();
+
+
 
 	groundObj->Update();
 	skyDomeObj->Update();

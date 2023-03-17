@@ -101,4 +101,8 @@ private:
 
 	// ƒ^ƒCƒgƒ‹‰æ–Ê
 	std::unordered_map<std::string, std::unique_ptr<Sprite>> title;
+
+	bool eyeControl = false;
+
+	float rad = 0;
 };

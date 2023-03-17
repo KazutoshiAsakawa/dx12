@@ -76,7 +76,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon) {
 #pragma endregion 操作説明のスプライト
 
 	// スプライトの生成
-	aim.reset(Sprite::Create(SpriteCommon::GetInstance()->LoadTexture(L"Resources/aim1.png")));
+	aim.reset(Sprite::Create(SpriteCommon::GetInstance()->LoadTexture(L"Resources/aim.png")));
 
 #pragma region プレイヤー
 	// hp画像
@@ -861,24 +861,24 @@ void GamePlayScene::MovePlayer() {
 
 			if (hitW && pos.y < 8.f) {
 				pos.y += moveSpeed;
-				rot.x -= 4.f;
+				rot.x -= 0.5f;
 				operationSprite["W"]->SetIsInvisible(true);
 
 			}
 			if (hitS && pos.y > -4.f) {
 				pos.y -= moveSpeed;
-				rot.x += 4.f;
+				rot.x += 0.5f;
 				operationSprite["S"]->SetIsInvisible(true);
 			}
 
 			if (hitD && pos.x < 10.f) {
 				pos.x += moveSpeed;
-				rot.z -= 4.f;
+				rot.z -= 1.f;
 				operationSprite["D"]->SetIsInvisible(true);
 			}
 			if (hitA && pos.x > -10.f) {
 				pos.x -= moveSpeed;
-				rot.z += 4.f;
+				rot.z += 1.f;
 				operationSprite["A"]->SetIsInvisible(true);
 			}
 
