@@ -110,19 +110,24 @@ void TitleScene::Update() {
 
 	// 篝火の炎パーティクル
 	{
+		constexpr XMFLOAT3 velocity = { 0.f,0.2f,0.f };
+		constexpr XMFLOAT3 accel = { 0.f,0.f,0.f };
+		constexpr float startScale = { 1.f };
+		constexpr XMFLOAT3 startCol = { 0.7f,0.7f,0.3f };
+		constexpr XMFLOAT3 endCol = { 1.f,0.f,0.f };
+
+
 		XMFLOAT3 bonfireRPos = bonfireR->GetPosition();
 		bonfireRPos.y += 4.f;
-		ParticleLoad::GetInstance()->SetRenderAdd(1, rand() % 20, bonfireRPos, { 0.f,0.2f,0.f }, { 0.f,0.f,0.f },
-			1.0f, (float)rand() / RAND_MAX * 0.5f, { 0.7f, 0.7f, 0.3f }, { 1.f,0.f,0.f });
+		ParticleLoad::GetInstance()->SetRenderAdd(1, rand() % 20, bonfireRPos, velocity, accel,
+			startScale, (float)rand() / RAND_MAX * 0.5f, startCol, endCol);
 
 		XMFLOAT3 bonfireLPos = bonfireL->GetPosition();
 		bonfireLPos.y += 4.f;
-		ParticleLoad::GetInstance()->SetRenderAdd(1, rand() % 20, bonfireLPos, { 0.f,0.2f,0.f }, { 0.f,0.f,0.f },
-			1.0f, (float)rand() / RAND_MAX * 0.5f, { 0.7f, 0.7f, 0.3f }, { 1.f,0.f,0.f });
+		ParticleLoad::GetInstance()->SetRenderAdd(1, rand() % 20, bonfireLPos, velocity, accel,
+			startScale, (float)rand() / RAND_MAX * 0.5f, startCol, endCol);
 
 	}
-
-
 
 	{
 		XMFLOAT3 eye = camera->GetEye();

@@ -19,6 +19,12 @@ void ParticleLoad::Initialize(ID3D12Device* device) {
 	bulletParticle->Initialize(device);
 	particles.push_back(bulletParticle);
 
+	// ‚à‚Ý‚¶‚ðŽOŒÂ–Ú‚É“ü‚ê‚é
+	ParticleManager* leaves = new ParticleManager();
+	leaves->SetFileName(L"Resources/leaves.png");
+	leaves->Initialize(device);
+	particles.push_back(leaves);
+
 }
 
 void ParticleLoad::Update() {

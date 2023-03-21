@@ -185,6 +185,7 @@ void ParticleManager::Add(int life, XMFLOAT3 position, XMFLOAT3 velocity, XMFLOA
 	p.num_frame = life;
 	p.s_color = start_col;
 	p.e_color = end_col;
+	
 }
 
 void ParticleManager::InitializeDescriptorHeap() {
