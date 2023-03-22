@@ -116,16 +116,23 @@ void TitleScene::Update() {
 		constexpr XMFLOAT3 startCol = { 0.7f,0.7f,0.3f };
 		constexpr XMFLOAT3 endCol = { 1.f,0.f,0.f };
 
-
+		// 篝火　右
 		XMFLOAT3 bonfireRPos = bonfireR->GetPosition();
 		bonfireRPos.y += 4.f;
 		ParticleLoad::GetInstance()->SetRenderAdd(1, rand() % 20, bonfireRPos, velocity, accel,
 			startScale, (float)rand() / RAND_MAX * 0.5f, startCol, endCol);
 
+		// 篝火　左
 		XMFLOAT3 bonfireLPos = bonfireL->GetPosition();
 		bonfireLPos.y += 4.f;
 		ParticleLoad::GetInstance()->SetRenderAdd(1, rand() % 20, bonfireLPos, velocity, accel,
 			startScale, (float)rand() / RAND_MAX * 0.5f, startCol, endCol);
+
+		XMFLOAT3 shrinePos = shrineObj->GetWorldPos();
+
+		// 紅葉
+		ParticleLoad::GetInstance()->SetRenderAdd(2, 200, { (float)rand() / RAND_MAX * 80.f - 40.f + shrinePos.x,50,(float)rand() / RAND_MAX * 80.f - 40.f }, { 0.f,-0.3f,0.f }, { 0.f,0.f,0.f },
+			1.5f, 1.5f, 0.0f,720.0f, { 0.7f, 0.7f, 0.3f }, { 1.f,0.f,0.f });
 
 	}
 

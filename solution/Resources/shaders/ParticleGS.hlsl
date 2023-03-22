@@ -32,10 +32,21 @@ void main(
 
 	float4 offset = float4(0, 0, 0, 0);
 
+	float rotation = input[0].rot;
+	
+	float4x4 rotateMatrix = float4x4(cos(rotation / 180.0 * 3.14), -sin(rotation/ 180.0 * 3.14), 0.0, 0.0,
+		sin(rotation / 180.0 * 3.14), cos(rotation / 180.0 * 3.14), 0.0, 0.0,
+		0.0, 0.0, 0.0, 0.0,
+		0.0, 0.0, 0.0, 0.0);
+	
+
 	for (uint i = 0; i < vnum; i++)
 	{
 		// 中心からのオフセットをスケーリング
 		offset = offset_array[i] * input[0].scale;
+		
+		offset = mul(rotateMatrix, offset);
+
 		// 中心からのオフセットをビルボード回転（モデル座標）
 		offset = mul(matBillboard, offset);
 		// オフセット分ずらす（ワールド座標）

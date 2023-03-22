@@ -1,10 +1,11 @@
 #include "Particle.hlsli"
 
-VSOutput main(float4 pos : POSITION, float scale : TEXCOORD, float4 color : COLOR)
+VSOutput main(float4 pos : POSITION, float4 color : COLOR, float scale : TEXCOORD, float rot : ROTATION)
 {
 	VSOutput output; // ピクセルシェーダーに渡す値
 	output.pos = pos;
-	output.scale = scale;
 	output.color = color;
+	output.scale = scale;
+	output.rot = rot;
 	return output;
 }

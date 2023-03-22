@@ -431,7 +431,9 @@ void GamePlayScene::start() {
 		// updateProcessにentryPlayer関数をセット
 		updateProcess = std::bind(&GamePlayScene::entryPlayer, this);
 
-		ParticleLoad::GetInstance()->SetCamera(normalCamera.get());
+		// ParticleLoad::GetInstance()->SetCamera(normalCamera.get());
+
+		ParticleLoad::GetInstance()->SetCamera(camera.get());
 
 		// モザイクのフレーム数をリセット
 		mosaicFrame = 0;
@@ -495,16 +497,18 @@ void GamePlayScene::entryPlayer() {
 			constexpr XMFLOAT3 startCol = {0.7f,0.7f,0.3f};
 			constexpr XMFLOAT3 endCol = {1.f,0.f,0.f};
 
+			// 篝火　右
 			XMFLOAT3 bonfireRPos = bonfireR->GetWorldPos();
 			bonfireRPos.y += 4.f;
-
 			ParticleLoad::GetInstance()->SetRenderAdd(1, rand() % 20, bonfireRPos, velocity, accel,
 				startScale, (float)rand() / RAND_MAX * 0.5f, startCol, endCol);
 
+			// 篝火　左
 			XMFLOAT3 bonfireLPos = bonfireL->GetWorldPos();
 			bonfireLPos.y += 4.f;
 			ParticleLoad::GetInstance()->SetRenderAdd(1, rand() % 20, bonfireLPos, velocity, accel,
 				startScale, (float)rand() / RAND_MAX * 0.5f, startCol, endCol);
+
 		}
 
 #ifdef _DEBUG

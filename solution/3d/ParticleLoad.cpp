@@ -52,7 +52,12 @@ void ParticleLoad::SetRenderParticle(int texnum, const XMFLOAT3& pos, UINT parti
 void ParticleLoad::SetRenderAdd(int texnum, int life, XMFLOAT3 position, XMFLOAT3 velocity,
 	XMFLOAT3 accel, float start_scale, float end_scale, XMFLOAT3 start_col, XMFLOAT3 end_col) {
 
-	particles[texnum]->Add(life, position, velocity, accel, start_scale, end_scale, start_col, end_col);
+	particles[texnum]->Add(life, position, velocity, accel, start_scale, end_scale, 0.0, 0.0, start_col, end_col);
+}
+
+void ParticleLoad::SetRenderAdd(int texnum, int life, XMFLOAT3 position, XMFLOAT3 velocity, XMFLOAT3 accel, float start_scale, float end_scale, float start_rot, float end_rot, XMFLOAT3 start_col, XMFLOAT3 end_col) {
+
+	particles[texnum]->Add(life, position, velocity, accel, start_scale, end_scale, start_rot, end_rot, start_col, end_col);
 }
 
 void ParticleLoad::SetCamera(Camera* camera) {

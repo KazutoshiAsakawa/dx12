@@ -99,9 +99,6 @@ void ParticleManager::Update() {
 
 		// スケールの線形補間
 		it->rotation = it->s_rotation + (it->e_rotation - it->s_rotation) / f;
-
-		// 色の線形補間
-		it->color = it->s_color + (it->e_color - it->s_color) / f;
 	}
 
 	// 頂点バッファへデータ転送
@@ -114,11 +111,14 @@ void ParticleManager::Update() {
 			it != particles.end();
 			it++) {
 			// 座標
-			vertMap->pos = it->position;
+			vertMap->pos = {it->position.x, it->position.y, it->position.z, 1};
 			// スケール
 			vertMap->scale = it->scale;
 			// 色
 			vertMap->color = { it->color.x, it->color.y, it->color.z, 1.f };
+			// 回転
+			vertMap->rot = it->rotation;
+
 			// 次の頂点へ
 			vertMap++;
 			if (++vertCount >= vertexCount) {
@@ -172,7 +172,7 @@ void ParticleManager::Draw(ID3D12GraphicsCommandList* cmdList) {
 	cmdList->DrawInstanced(drawNum, 1, 0, 0);
 }
 
-void ParticleManager::Add(int life, XMFLOAT3 position, XMFLOAT3 velocity, XMFLOAT3 accel, float start_scale, float end_scale, XMFLOAT3 start_col, XMFLOAT3 end_col) {
+void ParticleManager::Add(int life, XMFLOAT3 position, XMFLOAT3 velocity, XMFLOAT3 accel, float start_scale, float end_scale, float start_rot, float end_rot, XMFLOAT3 start_col, XMFLOAT3 end_col) {
 	// リストに要素を追加
 	particles.emplace_front();
 	// 追加した要素の参照
@@ -183,9 +183,11 @@ void ParticleManager::Add(int life, XMFLOAT3 position, XMFLOAT3 velocity, XMFLOA
 	p.s_scale = start_scale;
 	p.e_scale = end_scale;
 	p.num_frame = life;
+	p.s_rotation = start_rot;
+	p.e_rotation = end_rot;
 	p.s_color = start_col;
 	p.e_color = end_col;
-	
+
 }
 
 void ParticleManager::InitializeDescriptorHeap() {
@@ -284,7 +286,12 @@ void ParticleManager::InitializeGraphicsPipeline() {
 	// 頂点レイアウト
 	D3D12_INPUT_ELEMENT_DESC inputLayout[] = {
 		{ // xy座標(1行で書いたほうが見やすい)
-			"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,
+			"POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0,
+			D3D12_APPEND_ALIGNED_ELEMENT,
+			D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
+		},
+		{ // 色
+			"COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0,
 			D3D12_APPEND_ALIGNED_ELEMENT,
 			D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
 		},
@@ -293,8 +300,8 @@ void ParticleManager::InitializeGraphicsPipeline() {
 			D3D12_APPEND_ALIGNED_ELEMENT,
 			D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
 		},
-		{ // 色
-			"COLOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0,
+		{ // スケール
+			"ROTATION", 0, DXGI_FORMAT_R32_FLOAT, 0,
 			D3D12_APPEND_ALIGNED_ELEMENT,
 			D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
 		},
@@ -487,7 +494,7 @@ void ParticleManager::CreateParticle(const XMFLOAT3& pos, UINT particleNum, floa
 	r * cosf(thata),
 	r * sinf(thata) * sinf(phi) };
 
-		Add(15, pos, vel, XMFLOAT3(vel.x / -10, vel.y / -10, vel.z / -10), startScale, 0, start_col, end_col);
+		Add(15, pos, vel, XMFLOAT3(vel.x / -10, vel.y / -10, vel.z / -10), startScale, 0, 0.0, 0.0, start_col, end_col);
 	}
 
 }
