@@ -95,7 +95,6 @@ void TitleScene::Initialize(DirectXCommon* dxcommon) {
 
 	// 更新処理の関数を入れる
 	updateProcess = std::bind(&TitleScene::start, this);
-
 }
 
 void TitleScene::Finalize() {
@@ -103,8 +102,6 @@ void TitleScene::Finalize() {
 }
 
 void TitleScene::Update() {
-
-
 	// シーン遷移
 	updateProcess();
 
@@ -131,9 +128,8 @@ void TitleScene::Update() {
 		XMFLOAT3 shrinePos = shrineObj->GetWorldPos();
 
 		// 紅葉
-		ParticleLoad::GetInstance()->SetRenderAdd(2, 200, { (float)rand() / RAND_MAX * 80.f - 40.f + shrinePos.x,50,(float)rand() / RAND_MAX * 80.f - 40.f }, { 0.f,-0.3f,0.f }, { 0.f,0.f,0.f },
+		ParticleLoad::GetInstance()->SetRenderAdd(2, 200, { (float)rand() / RAND_MAX * 80.f - 40.f + shrinePos.x,50,(float)rand() / RAND_MAX * 80.f - 40.f }, { 0.f,-0.3f,0.f }, { 0.f,0.f,-0.00001f },
 			1.5f, 1.5f, 0.0f,720.0f, { 0.7f, 0.7f, 0.3f }, { 1.f,0.f,0.f });
-
 	}
 
 	{

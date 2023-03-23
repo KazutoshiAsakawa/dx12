@@ -45,6 +45,8 @@ void DirectXCommon::Initialize(WinApp* winApp)
 	InitializeFence();
 
 	InitializeImgui();
+
+	InitializeFixFPS();
 }
 
 void DirectXCommon::InitializeDevice()
@@ -296,7 +298,7 @@ void DirectXCommon::PostDraw()
 		WaitForSingleObject(event, INFINITE);
 		CloseHandle(event);
 	}
-
+	UpdateFixFPS();
 	cmdAllocator->Reset(); // キューをクリア
 	cmdList->Reset(cmdAllocator.Get(), nullptr);  // 再びコマンドリストを貯める準備
 
@@ -353,4 +355,26 @@ bool DirectXCommon::InitializeImgui() {
 	ImGui::GetIO().IniFilename = NULL;
 	ImGui::GetIO().Fonts->AddFontFromFileTTF("Resources/ume-pgo4.ttf",12.f,nullptr,ImGui::GetIO().Fonts->GetGlyphRangesJapanese());
 	return true;
+}
+
+void DirectXCommon::InitializeFixFPS() {
+	reference_ = steady_clock::now();
+}
+
+void DirectXCommon::UpdateFixFPS() {
+	const microseconds kMinTime(uint64_t(1000000.0f / 120.03f));
+	const microseconds kMinCheckTime(uint64_t(1000000.0f / 129.0f));
+
+	time_point now = steady_clock::now();
+
+	microseconds elapsed = std::chrono::duration_cast<microseconds>(now - reference_);
+
+	if (elapsed < kMinTime) {
+		while (steady_clock::now() - reference_ < kMinTime) {
+			std::this_thread::sleep_for(microseconds(1));
+		}
+	}
+
+	reference_ = steady_clock::now();
+
 }

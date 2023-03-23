@@ -5,6 +5,8 @@
 #include<wrl.h>
 #include <imgui.h>
 #include"WinApp.h"
+#include<chrono>
+#include<thread>
 
 class DirectXCommon {
 	// privateなコンストラクタ（シングルトンパターン）
@@ -15,6 +17,14 @@ class DirectXCommon {
 	DirectXCommon(const DirectXCommon& obj) = delete;
 	// コピー代入演算子を禁止（シングルトンパターン）
 	void operator=(const DirectXCommon& obj) = delete;
+
+private:
+	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
+
+	using steady_clock = std::chrono::steady_clock;
+	using microseconds = std::chrono::microseconds;
+	using time_point = steady_clock::time_point;
+
 
 public:
 	static DirectXCommon* GetInstance();
@@ -53,6 +63,9 @@ private:
 
 	bool InitializeImgui();
 
+	void InitializeFixFPS();
+	void UpdateFixFPS();
+
 	//デバイス
 	Microsoft::WRL::ComPtr<ID3D12Device> dev;
 	//DXGIファクトリオ
@@ -77,6 +90,8 @@ private:
 	Microsoft::WRL::ComPtr<ID3D12Fence> fence;
 
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> imguiHeap;
+
+	steady_clock::time_point reference_;
 
 	//WindowsAPI
 	WinApp* winApp = nullptr;
