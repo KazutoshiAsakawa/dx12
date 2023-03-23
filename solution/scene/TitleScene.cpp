@@ -13,6 +13,7 @@
 #include "PostEffect.h"
 #include "Game.h"
 #include <random>
+
 namespace {
 	// 乱数
 	float MyRand(float center, float range) {
@@ -136,9 +137,32 @@ void TitleScene::Update() {
 	// シーン遷移
 	updateProcess();
 
+	// 篝火の炎パーティクル
+	{
+		constexpr int texNum = 1;
+		constexpr XMFLOAT3 accel = { 0.f,0.f,0.f };
+		constexpr float startScale = { 1.f };
+		constexpr XMFLOAT3 startCol = { 0.7f,0.7f,0.3f };
+		constexpr XMFLOAT3 endCol = { 1.f,0.f,0.f };
+		XMFLOAT3 bonfireRPos = bonfireR->GetWorldPos();
+		bonfireRPos.y += 4.f;
+		bonfireRPos.x += MyRandMinMax(0.f, 0.125f);
+		bonfireRPos.z += MyRandMinMax(0.f, 0.125f);
+		XMFLOAT3 velocityR = { MyRand(0.f, 0.02f), 0.2f, MyRand(0.f, 0.02f) };
+		ParticleLoad::GetInstance()->SetRenderAdd(texNum, MyRandMinMax(8, 24), bonfireRPos, velocityR, accel,
+			startScale, 0.f, startCol, endCol);
+		XMFLOAT3 bonfireLPos = bonfireL->GetWorldPos();
+		bonfireLPos.y += 4.f;
+		bonfireRPos.x += MyRandMinMax(0.f, 0.125f);
+		bonfireRPos.z += MyRandMinMax(0.f, 0.125f);
+		XMFLOAT3 velocityL = { MyRand(0.f, 0.02f), 0.2f, MyRand(0.f, 0.02f) };
+		ParticleLoad::GetInstance()->SetRenderAdd(texNum, MyRandMinMax(8, 24), bonfireLPos, velocityL, accel,
+			startScale, 0.f, startCol, endCol);
+	}
+
+	// 紅葉パーティクル
 	{
 		XMFLOAT3 shrinePos = shrineObj->GetWorldPos();
-		// 紅葉
 		ParticleLoad::GetInstance()->SetRenderAdd(2, 200, { (float)rand() / RAND_MAX * 80.f - 40.f + shrinePos.x,50,(float)rand() / RAND_MAX * 80.f - 40.f }, { 0.f,-0.3f,0.f }, { 0.f,0.f,-0.00001f },
 			1.5f, 1.5f, 0.0f,720.0f, { 0.7f, 0.7f, 0.3f }, { 1.f,0.f,0.f });
 	}
@@ -158,11 +182,7 @@ void TitleScene::Update() {
 	ParticleLoad::GetInstance()->Update();
 
 	camera->Update();
-
 	player->Update();
-
-
-
 	groundObj->Update();
 	skyDomeObj->Update();
 	shrineObj->Update();
@@ -218,28 +238,6 @@ void TitleScene::play() {
 	if (input->TriggerKey(DIK_SPACE)) {
 		updateProcess = std::bind(&TitleScene::end, this, "GAMEPLAY");
 		title["pressS"]->SetIsInvisible(true);
-	}
-	// 篝火の炎パーティクル
-	{
-		constexpr int texNum = 1;
-		constexpr XMFLOAT3 accel = { 0.f,0.f,0.f };
-		constexpr float startScale = { 1.f };
-		constexpr XMFLOAT3 startCol = { 0.7f,0.7f,0.3f };
-		constexpr XMFLOAT3 endCol = { 1.f,0.f,0.f };
-		XMFLOAT3 bonfireRPos = bonfireR->GetWorldPos();
-		bonfireRPos.y += 4.f;
-		bonfireRPos.x += MyRandMinMax(0.f, 0.125f);
-		bonfireRPos.z += MyRandMinMax(0.f, 0.125f);
-		XMFLOAT3 velocityR = { MyRand(0.f, 0.02f), 0.2f, MyRand(0.f, 0.02f) };
-		ParticleLoad::GetInstance()->SetRenderAdd(texNum, MyRandMinMax(8, 24), bonfireRPos, velocityR, accel,
-			startScale, 0.f, startCol, endCol);
-		XMFLOAT3 bonfireLPos = bonfireL->GetWorldPos();
-		bonfireLPos.y += 4.f;
-		bonfireRPos.x += MyRandMinMax(0.f, 0.125f);
-		bonfireRPos.z += MyRandMinMax(0.f, 0.125f);
-		XMFLOAT3 velocityL = { MyRand(0.f, 0.02f), 0.2f, MyRand(0.f, 0.02f) };
-		ParticleLoad::GetInstance()->SetRenderAdd(texNum, MyRandMinMax(8, 24), bonfireLPos, velocityL, accel,
-			startScale, 0.f, startCol, endCol);
 	}
 }
 

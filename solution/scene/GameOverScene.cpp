@@ -11,6 +11,32 @@
 #include "ParticleLoad.h"
 
 #include "PostEffect.h"
+#include "Game.h"
+#include <random>
+
+namespace {
+	// 乱数
+	float MyRand(float center, float range) {
+		// 乱数生成器
+		static std::mt19937_64 mt64(0);
+		// 乱数生成器
+		std::normal_distribution<float> rnd(center, range);
+		// 乱数を生成
+		return rnd(mt64);
+	}
+	float MyRandMinMax(float min, float max) {
+		// 乱数生成器
+		static std::mt19937_64 mt64(0);
+		std::uniform_real_distribution<float> rnd(min, max);
+		return rnd(mt64);
+	}
+	int MyRandMinMax(int min, int max) {
+		// 乱数生成器
+		static std::mt19937_64 mt64(0);
+		std::uniform_int_distribution<int> rnd(min, max);
+		return rnd(mt64);
+	}
+}
 
 using namespace DirectX;
 
@@ -22,6 +48,8 @@ void GameOverScene::Initialize(DirectXCommon* dxcommon) {
 	// スプライトの生成
 	gameOver["die"].reset(Sprite::Create(SpriteCommon::GetInstance()->LoadTexture(L"Resources/gameover/die.png"), { 0.0f, 0.0f }, false, false));
 	gameOver["pressS"].reset(Sprite::Create(SpriteCommon::GetInstance()->LoadTexture(L"Resources/gameover/pressS.png"), { 0.0f, 0.0f }, false, false));
+
+	gameOver["pressS"]->SetIsInvisible(true);
 
 	// カメラの初期化
 	camera.reset(new DebugCamera(WinApp::window_width, WinApp::window_height));
@@ -73,7 +101,6 @@ void GameOverScene::Initialize(DirectXCommon* dxcommon) {
 
 #pragma region プレイヤー
 	// プレイヤー初期化
-	// player = std::make_unique<Player>();
 	player = ObjObject3d::Create();
 	player->SetModel(ObjModel::LoadFromObj("fox"));
 	player->SetRotation({ 0,0,90 });
@@ -101,56 +128,51 @@ void GameOverScene::Initialize(DirectXCommon* dxcommon) {
 }
 
 void GameOverScene::Finalize() {
-
 }
 
 void GameOverScene::Update() {
-
+	if (input->PushKey(DIK_ESCAPE)) {
+		Game::GetInstance()->SetEndRequest(true);
+	}
 
 	// シーン遷移
 	updateProcess();
 
 	// 篝火の炎パーティクル
 	{
-		constexpr XMFLOAT3 velocity = { 0.f,0.2f,0.f };
+		constexpr int texNum = 1;
 		constexpr XMFLOAT3 accel = { 0.f,0.f,0.f };
 		constexpr float startScale = { 1.f };
 		constexpr XMFLOAT3 startCol = { 0.7f,0.7f,0.3f };
 		constexpr XMFLOAT3 endCol = { 1.f,0.f,0.f };
-
-
-		XMFLOAT3 bonfireRPos = bonfireR->GetPosition();
+		XMFLOAT3 bonfireRPos = bonfireR->GetWorldPos();
 		bonfireRPos.y += 4.f;
-		ParticleLoad::GetInstance()->SetRenderAdd(1, rand() % 20, bonfireRPos, velocity, accel,
-			startScale, (float)rand() / RAND_MAX * 0.5f, startCol, endCol);
-
-		XMFLOAT3 bonfireLPos = bonfireL->GetPosition();
+		bonfireRPos.x += MyRandMinMax(0.f, 0.125f);
+		bonfireRPos.z += MyRandMinMax(0.f, 0.125f);
+		XMFLOAT3 velocityR = { MyRand(0.f, 0.02f), 0.2f, MyRand(0.f, 0.02f) };
+		ParticleLoad::GetInstance()->SetRenderAdd(texNum, MyRandMinMax(8, 24), bonfireRPos, velocityR, accel,
+			startScale, 0.f, startCol, endCol);
+		XMFLOAT3 bonfireLPos = bonfireL->GetWorldPos();
 		bonfireLPos.y += 4.f;
-		ParticleLoad::GetInstance()->SetRenderAdd(1, rand() % 20, bonfireLPos, velocity, accel,
-			startScale, (float)rand() / RAND_MAX * 0.5f, startCol, endCol);
-
+		bonfireRPos.x += MyRandMinMax(0.f, 0.125f);
+		bonfireRPos.z += MyRandMinMax(0.f, 0.125f);
+		XMFLOAT3 velocityL = { MyRand(0.f, 0.02f), 0.2f, MyRand(0.f, 0.02f) };
+		ParticleLoad::GetInstance()->SetRenderAdd(texNum, MyRandMinMax(8, 24), bonfireLPos, velocityL, accel,
+			startScale, 0.f, startCol, endCol);
 	}
 
-	/*{
-		XMFLOAT3 eye = camera->GetEye();
-
-		float length = 50;
-		rad += 0.005f;
-		eye.x = player->GetPosition().x + cos(rad) * length;
-		eye.z = player->GetPosition().z + sin(rad) * length;
-
-		camera->SetEye(eye);
-	}*/
+	// 紅葉パーティクル
+	{
+		XMFLOAT3 shrinePos = shrineObj->GetWorldPos();
+		ParticleLoad::GetInstance()->SetRenderAdd(2, 200, { (float)rand() / RAND_MAX * 80.f - 40.f + shrinePos.x,50,(float)rand() / RAND_MAX * 80.f - 40.f }, { 0.f,-0.3f,0.f }, { 0.f,0.f,-0.00001f },
+			1.5f, 1.5f, 0.0f, 720.0f, { 0.7f, 0.7f, 0.3f }, { 1.f,0.f,0.f });
+	}
 
 	// パーティクル更新
 	ParticleLoad::GetInstance()->Update();
 
 	camera->Update();
-
 	player->Update();
-
-
-
 	groundObj->Update();
 	skyDomeObj->Update();
 	shrineObj->Update();
@@ -186,6 +208,7 @@ void GameOverScene::start() {
 		// updateProcessにbossEntry関数をセット
 		updateProcess = std::bind(&GameOverScene::play, this);
 		mosaicFrame = 0;
+		gameOver["pressS"]->SetIsInvisible(false);
 	} else {
 		// モザイクがだんだん薄くなる演出
 		XMFLOAT2 mosaicLevel = {};
@@ -203,6 +226,7 @@ void GameOverScene::play() {
 
 	if (input->TriggerKey(DIK_SPACE)) {
 		updateProcess = std::bind(&GameOverScene::end, this, "TITLE");
+		gameOver["pressS"]->SetIsInvisible(true);
 	}
 }
 
