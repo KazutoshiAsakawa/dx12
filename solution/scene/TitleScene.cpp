@@ -11,6 +11,31 @@
 #include "ParticleLoad.h"
 
 #include "PostEffect.h"
+#include "Game.h"
+#include <random>
+namespace {
+	// 乱数
+	float MyRand(float center, float range) {
+		// 乱数生成器
+		static std::mt19937_64 mt64(0);
+		// 乱数生成器
+		std::normal_distribution<float> rnd(center, range);
+		// 乱数を生成
+		return rnd(mt64);
+	}
+	float MyRandMinMax(float min, float max) {
+		// 乱数生成器
+		static std::mt19937_64 mt64(0);
+		std::uniform_real_distribution<float> rnd(min, max);
+		return rnd(mt64);
+	}
+	int MyRandMinMax(int min, int max) {
+		// 乱数生成器
+		static std::mt19937_64 mt64(0);
+		std::uniform_int_distribution<int> rnd(min, max);
+		return rnd(mt64);
+	}
+}
 
 using namespace DirectX;
 
@@ -23,6 +48,8 @@ void TitleScene::Initialize(DirectXCommon* dxcommon) {
 	title["kitsunebi"].reset(Sprite::Create(SpriteCommon::GetInstance()->LoadTexture(L"Resources/title/kitsunebi.png"), { 0.0f, 0.0f }, false, false));
 	title["pressS"].reset(Sprite::Create(SpriteCommon::GetInstance()->LoadTexture(L"Resources/title/pressS.png"), { 0.0f, 0.0f }, false, false));
 	title["credit"].reset(Sprite::Create(SpriteCommon::GetInstance()->LoadTexture(L"Resources/title/credit.png"), { 0.0f, 0.0f }, false, false));
+
+	title["pressS"]->SetIsInvisible(true);
 
 	// カメラの初期化
 	camera.reset(new DebugCamera(WinApp::window_width, WinApp::window_height));
@@ -102,31 +129,15 @@ void TitleScene::Finalize() {
 }
 
 void TitleScene::Update() {
+	if (input->PushKey(DIK_ESCAPE)) {
+		Game::GetInstance()->SetEndRequest(true);
+	}
+
 	// シーン遷移
 	updateProcess();
 
-	// 篝火の炎パーティクル
 	{
-		constexpr XMFLOAT3 velocity = { 0.f,0.2f,0.f };
-		constexpr XMFLOAT3 accel = { 0.f,0.f,0.f };
-		constexpr float startScale = { 1.f };
-		constexpr XMFLOAT3 startCol = { 0.7f,0.7f,0.3f };
-		constexpr XMFLOAT3 endCol = { 1.f,0.f,0.f };
-
-		// 篝火　右
-		XMFLOAT3 bonfireRPos = bonfireR->GetPosition();
-		bonfireRPos.y += 4.f;
-		ParticleLoad::GetInstance()->SetRenderAdd(1, rand() % 20, bonfireRPos, velocity, accel,
-			startScale, (float)rand() / RAND_MAX * 0.5f, startCol, endCol);
-
-		// 篝火　左
-		XMFLOAT3 bonfireLPos = bonfireL->GetPosition();
-		bonfireLPos.y += 4.f;
-		ParticleLoad::GetInstance()->SetRenderAdd(1, rand() % 20, bonfireLPos, velocity, accel,
-			startScale, (float)rand() / RAND_MAX * 0.5f, startCol, endCol);
-
 		XMFLOAT3 shrinePos = shrineObj->GetWorldPos();
-
 		// 紅葉
 		ParticleLoad::GetInstance()->SetRenderAdd(2, 200, { (float)rand() / RAND_MAX * 80.f - 40.f + shrinePos.x,50,(float)rand() / RAND_MAX * 80.f - 40.f }, { 0.f,-0.3f,0.f }, { 0.f,0.f,-0.00001f },
 			1.5f, 1.5f, 0.0f,720.0f, { 0.7f, 0.7f, 0.3f }, { 1.f,0.f,0.f });
@@ -187,6 +198,8 @@ void TitleScene::start() {
 		// updateProcessにbossEntry関数をセット
 		updateProcess = std::bind(&TitleScene::play, this);
 		mosaicFrame = 0;
+		// PressSpaceを表示する
+		title["pressS"]->SetIsInvisible(false);
 	} else {
 		// モザイクがだんだん薄くなる演出
 		XMFLOAT2 mosaicLevel = {};
@@ -204,6 +217,29 @@ void TitleScene::play() {
 
 	if (input->TriggerKey(DIK_SPACE)) {
 		updateProcess = std::bind(&TitleScene::end, this, "GAMEPLAY");
+		title["pressS"]->SetIsInvisible(true);
+	}
+	// 篝火の炎パーティクル
+	{
+		constexpr int texNum = 1;
+		constexpr XMFLOAT3 accel = { 0.f,0.f,0.f };
+		constexpr float startScale = { 1.f };
+		constexpr XMFLOAT3 startCol = { 0.7f,0.7f,0.3f };
+		constexpr XMFLOAT3 endCol = { 1.f,0.f,0.f };
+		XMFLOAT3 bonfireRPos = bonfireR->GetWorldPos();
+		bonfireRPos.y += 4.f;
+		bonfireRPos.x += MyRandMinMax(0.f, 0.125f);
+		bonfireRPos.z += MyRandMinMax(0.f, 0.125f);
+		XMFLOAT3 velocityR = { MyRand(0.f, 0.02f), 0.2f, MyRand(0.f, 0.02f) };
+		ParticleLoad::GetInstance()->SetRenderAdd(texNum, MyRandMinMax(8, 24), bonfireRPos, velocityR, accel,
+			startScale, 0.f, startCol, endCol);
+		XMFLOAT3 bonfireLPos = bonfireL->GetWorldPos();
+		bonfireLPos.y += 4.f;
+		bonfireRPos.x += MyRandMinMax(0.f, 0.125f);
+		bonfireRPos.z += MyRandMinMax(0.f, 0.125f);
+		XMFLOAT3 velocityL = { MyRand(0.f, 0.02f), 0.2f, MyRand(0.f, 0.02f) };
+		ParticleLoad::GetInstance()->SetRenderAdd(texNum, MyRandMinMax(8, 24), bonfireLPos, velocityL, accel,
+			startScale, 0.f, startCol, endCol);
 	}
 }
 

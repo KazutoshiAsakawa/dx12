@@ -126,6 +126,7 @@ void BossScene::Initialize(DirectXCommon* dxcommon) {
 	boss->SetBulletModel(ObjModel::LoadFromObj("enemyBullet"));
 	bossScale = 2.f;
 	boss->SetScale({ bossScale,bossScale,bossScale });
+	boss->SetPosition({0,10,60});
 
 
 	boss->SetAlive(false);
@@ -287,8 +288,8 @@ void BossScene::start() {
 		PostEffect::GetInstance()->SetMosaicNum(mosaicLevel);
 
 		// プレイヤーが遠くから来る演出
-		constexpr XMFLOAT3 startPos = { 0,0,-100 };
-		constexpr XMFLOAT3 endPos = { 0,0,0 };
+		constexpr XMFLOAT3 startPos = { 0,10,-90 };
+		constexpr XMFLOAT3 endPos = { 0,10,10 };
 
 		XMFLOAT3 pos;
 		pos = lerp(startPos, endPos, rate);
