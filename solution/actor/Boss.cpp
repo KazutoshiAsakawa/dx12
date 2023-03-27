@@ -67,7 +67,7 @@ void Boss::PhaseApproach()
 	// ‘å‚«‚³‚ð1‚É‚·‚é
 	vectorVel = XMVector3Normalize(vectorVel);
 	// ‘å‚«‚³‚ð”CˆÓ‚Ì’l‚É‚·‚é
-	vectorVel = XMVectorScale(vectorVel, 0.3f);
+	vectorVel = XMVectorScale(vectorVel, 1.0f);
 	// FLOAT3‚É•ÏŠ·
 	XMStoreFloat3(&vel, vectorVel);
 
