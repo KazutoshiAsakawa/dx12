@@ -168,8 +168,8 @@ void ClearScene::Update() {
 			1.5f, 1.5f, 0.0f, 720.0f, { 0.7f, 0.7f, 0.3f }, { 1.f,0.f,0.f });
 	}
 
-	// キャラクターを神社の周りを走らせる
-	/*{
+	// 狐を神社の周りを走らせる
+	{
 		XMFLOAT3 playerPos = player->GetPosition();
 		float length = 15;
 		rad += 0.01f;
@@ -179,10 +179,11 @@ void ClearScene::Update() {
 		playerPos.y = 0.1f;
 
 		XMFLOAT3 playerRot = player->GetRotation();
-		playerRot.y -= shrineObj->GetPosition().x + cos(rad) * length;
+		playerRot.y -= 0.01f / 3.141592f * 180;
+
 		player->SetRotation(playerRot);
 		player->SetPosition(playerPos);
-	}*/
+	}
 
 	// パーティクル更新
 	ParticleLoad::GetInstance()->Update();

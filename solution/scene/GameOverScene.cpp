@@ -179,6 +179,7 @@ void GameOverScene::Update() {
 	bonfireR->Update();
 	bonfireL->Update();
 
+	// “_–Å
 	{
 		auto color = gameOver["pressS"]->GetColor();
 
