@@ -101,9 +101,9 @@ void ClearScene::Initialize(DirectXCommon* dxcommon) {
 
 #pragma region プレイヤー
 	// プレイヤー初期化
-	player = ObjObject3d::Create();
-	player->SetModel(ObjModel::LoadFromObj("fox"));
+	player = std::make_unique<Player>();
 	player->SetRotation({ 0,0,0 });
+
 
 #pragma endregion プレイヤー
 

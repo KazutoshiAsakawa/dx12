@@ -58,7 +58,23 @@ public:
 	/// <param name="end_col">終了時の色</param>
 	void SetRenderAdd(int texnum, int life, XMFLOAT3 position, XMFLOAT3 velocity, XMFLOAT3 accel, float start_scale, float end_scale, XMFLOAT3 start_col, XMFLOAT3 end_col);
 
-	void SetRenderAdd(int texnum, int life, XMFLOAT3 position, XMFLOAT3 velocity, XMFLOAT3 accel, float start_scale, float end_scale, float start_rot, float end_rot ,XMFLOAT3 start_col, XMFLOAT3 end_col);
+	void SetRenderAdd(int texnum, int life, XMFLOAT3 position, XMFLOAT3 velocity, XMFLOAT3 accel, float start_scale, float end_scale, float start_rot, float end_rot, XMFLOAT3 start_col, XMFLOAT3 end_col);
+
+	/// <summary>
+	/// パーティクルの全削除
+	/// </summary>
+	inline void ClearParticle() {
+		for (auto& i : particles) {
+			i->Clear();
+		}
+	}
+
+	/// <summary>
+	/// テクスチャを指定してパーティクルの全削除
+	/// </summary>
+	inline void SetRenderClearParticle(int texnum) {
+		particles[texnum]->Clear();
+	}
 
 	/// <summary>
 	/// カメラのセット

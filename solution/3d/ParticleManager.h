@@ -112,7 +112,12 @@ public: // メンバ関数
 	/// <param name="accel">加速度</param>
 	/// <param name="start_scale">開始時スケール</param>
 	/// <param name="end_scale">終了時スケール</param>
-	void Add(int life, XMFLOAT3 position, XMFLOAT3 velocity, XMFLOAT3 accel, float start_scale, float end_scale, float start_rot,float end_rot,XMFLOAT3 start_col = { 1,1,1 }, XMFLOAT3 end_col = { 1,1,1 });
+	void Add(int life, XMFLOAT3 position, XMFLOAT3 velocity, XMFLOAT3 accel, float start_scale, float end_scale, float start_rot, float end_rot, XMFLOAT3 start_col = { 1,1,1 }, XMFLOAT3 end_col = { 1,1,1 });
+
+	/// <summary>
+	/// パーティクルの削除
+	/// </summary>
+	inline void Clear() { particles.clear(); }
 
 	/// <summary>
 	/// デスクリプタヒープの初期化

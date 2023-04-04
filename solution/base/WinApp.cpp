@@ -1,6 +1,7 @@
 ﻿#include "WinApp.h"
 #include <windows.h>
 #include <imgui_impl_win32.h>
+#include <random>
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -17,8 +18,7 @@ WinApp::~WinApp() {
 	Finalize();
 }
 
-void WinApp::Initialize()
-{
+void WinApp::Initialize() {
 	// ゲーム名
 	constexpr const wchar_t gameName[] = L"狐火";
 
@@ -51,13 +51,11 @@ void WinApp::Initialize()
 	ShowWindow(hwnd, SW_SHOW);
 }
 
-void WinApp::Updata()
-{
+void WinApp::Updata() {
 
 }
 
-LRESULT WinApp::WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
-{
+LRESULT WinApp::WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
 	if (ImGui_ImplWin32_WndProcHandler(hwnd, msg, wparam, lparam)) {
 		return 1;
 	}
@@ -71,14 +69,12 @@ LRESULT WinApp::WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 	return DefWindowProc(hwnd, msg, wparam, lparam);
 }
 
-void WinApp::Finalize()
-{
+void WinApp::Finalize() {
 	// ウィンドウクラスを登録解除
 	UnregisterClass(w.lpszClassName, w.hInstance);
 }
 
-bool WinApp::ProcessMessage()
-{
+bool WinApp::ProcessMessage() {
 	MSG msg{};
 
 	// メッセージがある？
@@ -93,4 +89,31 @@ bool WinApp::ProcessMessage()
 	}
 
 	return false;
+}
+
+float WinApp::MyRand(float center, float range)
+
+{
+	// 乱数生成器
+	static std::mt19937_64 mt64(0);
+
+	// 乱数生成器
+	std::normal_distribution<> rnd(center, range);
+
+	// 乱数を生成
+	return (float)rnd(mt64);
+}
+
+float WinApp::MyRandMinMax(float min, float max) {
+	// 乱数生成器
+	static std::mt19937_64 mt64(0);
+	std::uniform_real_distribution<float> rnd(min, max);
+	return rnd(mt64);
+}
+
+int WinApp::MyRandMinMax(int min, int max) {
+	// 乱数生成器
+	static std::mt19937_64 mt64(0);
+	std::uniform_int_distribution<int> rnd(min, max);
+	return rnd(mt64);
 }

@@ -3,22 +3,11 @@
 #include <fstream>
 #include <sstream>
 #include <random>
+#include "WinApp.h"
 
 using namespace DirectX;
 
 namespace {
-
-	// 乱数
-	float MyRand(float center, float range) {
-		// 乱数生成器
-		static std::mt19937_64 mt64(0);
-
-		// 乱数生成器
-		std::normal_distribution<> rnd(center, range);
-
-		// 乱数を生成
-		return (float)rnd(mt64);
-	}
 
 	// 球面線形補間
 	XMVECTOR SLerp(XMVECTOR vel, XMVECTOR vec, float t) {
@@ -82,8 +71,7 @@ std::vector<std::vector<std::string>> Enemy::LoadCsv(const std::string& FilePath
 	return csvData;
 }
 
-void Enemy::Update()
-{
+void Enemy::Update() {
 	if (alive) {
 		phase();
 	}
@@ -152,8 +140,7 @@ void Enemy::Update()
 	obj->Update();
 }
 
-void Enemy::Draw()
-{
+void Enemy::Draw() {
 	for (auto& i : bullet) {
 		i.Draw();
 	}
@@ -163,8 +150,7 @@ void Enemy::Draw()
 	}
 }
 
-void Enemy::Shot(ObjModel* model, float scale)
-{
+void Enemy::Shot(ObjModel* model, float scale) {
 	bullet.emplace_back(model, obj->GetPosition());
 	bullet.back().SetScale({ scale ,scale ,scale });
 	bullet.back().SetParent(obj->GetParent());
@@ -197,27 +183,24 @@ void Enemy::Shot(ObjModel* model, float scale)
 	bullet.back().SetVel(vel);
 }
 
-void Enemy::Shake()
-{
+void Enemy::Shake() {
 	if (shakeRate >= 0) {
 		XMFLOAT3 pos = obj->GetPosition();
 		// memoryPos = pos;
 
-		pos.x = MyRand(memoryPos.x, 0.3f * shakeRate);
-		pos.y = MyRand(memoryPos.y, 0.3f * shakeRate);
+		pos.x = WinApp::GetInstance()->MyRand(memoryPos.x, 0.3f * shakeRate);
+		pos.y = WinApp::GetInstance()->MyRand(memoryPos.y, 0.3f * shakeRate);
 
 		shakeRate -= 0.025f;
 		obj->SetPosition(pos);
-	}
-	else {
+	} else {
 		shakeFlag = false;
 		shakeRate = shakeRateDef;
 		obj->SetPosition(memoryPos);
 	}
 }
 
-void Enemy::hitStop()
-{
+void Enemy::hitStop() {
 	// 最初のフレームだけ読み込む、速度を下げる
 	if (hitStopFrame == hitStopFrameDef) {
 		memoryVel = vel;
@@ -228,8 +211,7 @@ void Enemy::hitStop()
 	// カウント
 	if (hitStopFrame > 0) {
 		hitStopFrame--;
-	}
-	else {// カウントし終わったら速度を戻す
+	} else {// カウントし終わったら速度を戻す
 		hitStopFrame = hitStopFrameDef;
 		hitStopFlag = false;
 
@@ -238,8 +220,7 @@ void Enemy::hitStop()
 
 }
 
-void Enemy::PhaseApproach()
-{
+void Enemy::PhaseApproach() {
 
 	XMFLOAT3 pos = obj->GetPosition();
 	pos.x += vel.x;
@@ -261,8 +242,7 @@ void Enemy::PhaseApproach()
 	}
 }
 
-void Enemy::PhaseLeave()
-{
+void Enemy::PhaseLeave() {
 	XMFLOAT3 pos = obj->GetPosition();
 	pos.x += vel.x;
 	pos.y += vel.y;

@@ -12,31 +12,6 @@
 
 #include "PostEffect.h"
 #include "Game.h"
-#include <random>
-
-namespace {
-	// 乱数
-	float MyRand(float center, float range) {
-		// 乱数生成器
-		static std::mt19937_64 mt64(0);
-		// 乱数生成器
-		std::normal_distribution<float> rnd(center, range);
-		// 乱数を生成
-		return rnd(mt64);
-	}
-	float MyRandMinMax(float min, float max) {
-		// 乱数生成器
-		static std::mt19937_64 mt64(0);
-		std::uniform_real_distribution<float> rnd(min, max);
-		return rnd(mt64);
-	}
-	int MyRandMinMax(int min, int max) {
-		// 乱数生成器
-		static std::mt19937_64 mt64(0);
-		std::uniform_int_distribution<int> rnd(min, max);
-		return rnd(mt64);
-	}
-}
 
 using namespace DirectX;
 
@@ -137,39 +112,9 @@ void TitleScene::Update() {
 	// シーン遷移
 	updateProcess();
 
-	// 篝火の炎パーティクル
-	{
-		constexpr int texNum = 1;
-		constexpr XMFLOAT3 accel = { 0.f,0.f,0.f };
-		constexpr float startScale = { 1.f };
-		constexpr XMFLOAT3 startCol = { 0.7f,0.7f,0.3f };
-		constexpr XMFLOAT3 endCol = { 1.f,0.f,0.f };
-		XMFLOAT3 bonfireRPos = bonfireR->GetWorldPos();
-		bonfireRPos.y += 4.f;
-		bonfireRPos.x += MyRandMinMax(0.f, 0.125f);
-		bonfireRPos.z += MyRandMinMax(0.f, 0.125f);
-		XMFLOAT3 velocityR = { MyRand(0.f, 0.02f), 0.2f, MyRand(0.f, 0.02f) };
-		ParticleLoad::GetInstance()->SetRenderAdd(texNum, MyRandMinMax(8, 24), bonfireRPos, velocityR, accel,
-			startScale, 0.f, startCol, endCol);
-		XMFLOAT3 bonfireLPos = bonfireL->GetWorldPos();
-		bonfireLPos.y += 4.f;
-		bonfireRPos.x += MyRandMinMax(0.f, 0.125f);
-		bonfireRPos.z += MyRandMinMax(0.f, 0.125f);
-		XMFLOAT3 velocityL = { MyRand(0.f, 0.02f), 0.2f, MyRand(0.f, 0.02f) };
-		ParticleLoad::GetInstance()->SetRenderAdd(texNum, MyRandMinMax(8, 24), bonfireLPos, velocityL, accel,
-			startScale, 0.f, startCol, endCol);
-	}
-
-	// 紅葉パーティクル
-	{
-		XMFLOAT3 shrinePos = shrineObj->GetWorldPos();
-		ParticleLoad::GetInstance()->SetRenderAdd(2, 200, { (float)rand() / RAND_MAX * 80.f - 40.f + shrinePos.x,50,(float)rand() / RAND_MAX * 80.f - 40.f }, { 0.f,-0.3f,0.f }, { 0.f,0.f,-0.00001f },
-			1.5f, 1.5f, 0.0f,720.0f, { 0.7f, 0.7f, 0.3f }, { 1.f,0.f,0.f });
-	}
-
 	{
 		XMFLOAT3 eye = camera->GetEye();
-		
+
 		float length = 50;
 		rad += 0.005f;
 		eye.x = player->GetPosition().x + cos(rad) * length;
@@ -210,7 +155,7 @@ void TitleScene::Update() {
 // シーン遷移
 void TitleScene::start() {
 	// モザイクをかける時間
-	constexpr UINT mosaicFrameMax = 120;
+	constexpr UINT mosaicFrameMax = 60;
 
 	// モザイクの時間が最大までいったらplay関数に変える
 	if (++mosaicFrame > mosaicFrameMax) {
@@ -232,6 +177,42 @@ void TitleScene::start() {
 
 void TitleScene::play() {
 
+	WinApp* winApp = WinApp::GetInstance();
+
+	// 篝火の炎パーティクル
+	{
+		constexpr int texNum = 1;
+		constexpr XMFLOAT3 accel = { 0.f,0.f,0.f };
+		constexpr float startScale = { 1.f };
+		constexpr XMFLOAT3 startCol = { 0.7f,0.7f,0.3f };
+		constexpr XMFLOAT3 endCol = { 1.f,0.f,0.f };
+		XMFLOAT3 bonfireRPos = bonfireR->GetWorldPos();
+		bonfireRPos.y += 4.f;
+		bonfireRPos.x += winApp->MyRandMinMax(0.f, 0.125f);
+		bonfireRPos.z += winApp->MyRandMinMax(0.f, 0.125f);
+		XMFLOAT3 velocityR = { winApp->MyRand(0.f, 0.02f), 0.2f, winApp->MyRand(0.f, 0.02f) };
+		ParticleLoad::GetInstance()->SetRenderAdd(texNum, winApp->MyRandMinMax(8, 24), bonfireRPos, velocityR, accel,
+			startScale, 0.f, startCol, endCol);
+		XMFLOAT3 bonfireLPos = bonfireL->GetWorldPos();
+		bonfireLPos.y += 4.f;
+		bonfireRPos.x += winApp->MyRandMinMax(0.f, 0.125f);
+		bonfireRPos.z += winApp->MyRandMinMax(0.f, 0.125f);
+		XMFLOAT3 velocityL = { winApp->MyRand(0.f, 0.02f), 0.2f, winApp->MyRand(0.f, 0.02f) };
+		ParticleLoad::GetInstance()->SetRenderAdd(texNum, winApp->MyRandMinMax(8, 24), bonfireLPos, velocityL, accel,
+			startScale, 0.f, startCol, endCol);
+	}
+
+	// 紅葉パーティクル
+	{
+		XMFLOAT3 shrinePos = shrineObj->GetWorldPos();
+			ParticleLoad::GetInstance()->SetRenderAdd(2, 200,
+				{ (float)rand() / RAND_MAX * 80.f - 40.f + shrinePos.x,
+				50,
+				(float)rand() / RAND_MAX * 80.f - 40.f },
+				{ 0.f,-0.3f,0.f }, { 0.f,0.f,-0.00001f },
+				1.5f, 1.5f, 0.0f, 720.0f, { 0.7f, 0.7f, 0.3f }, { 1.f,0.f,0.f });
+	}
+
 	// スカイドームの位置
 	skyDomeObj->SetPosition(player->GetPosition());
 
@@ -243,12 +224,13 @@ void TitleScene::play() {
 
 void TitleScene::end(const std::string& nextScene) {
 	// モザイクをかける時間
-	constexpr UINT mosaicFrameMax = 50;
+	constexpr UINT mosaicFrameMax = 60;
 
 	// モザイクの時間が最大までいったらplay関数に変える
 	if (++mosaicFrame > mosaicFrameMax) {
 		// 指定のエンド画面へ
 		SceneManager::GetInstance()->ChangeScene(nextScene);
+		ParticleLoad::GetInstance()->ClearParticle();
 	} else {
 		XMFLOAT2 mosaicLevel = {};
 		float rate = (float)mosaicFrame / mosaicFrameMax;

@@ -33,6 +33,13 @@ public:
 	//メセージの処理
 	bool ProcessMessage();
 
+	// 乱数
+	float MyRand(float center, float range);
+
+	float MyRandMinMax(float min, float max);
+
+	int MyRandMinMax(int min, int max);
+
 public: //定数
 	// ウィンドウ横幅
 	static const int window_width = 1280; // 1280

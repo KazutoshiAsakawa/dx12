@@ -78,8 +78,8 @@ private:
 	std::unique_ptr<DebugCamera> camera;
 
 	// ƒvƒŒƒCƒ„[
-	// std::unique_ptr<Player> player;
-	std::unique_ptr<ObjObject3d> player;
+	std::unique_ptr<Player> player;
+	// std::unique_ptr<ObjObject3d> player;
 
 	std::function<void()> updateProcess;
 
