@@ -144,7 +144,7 @@ private:
 	int pause = 0;
 
 	// ©‹@HPÅ‘å’l
-	UINT playerHpMax = 10;
+	UINT playerHpMax = 20;
 	// HP‰æ‘œ‚Ì”z—ñ
 	DirectX::XMFLOAT2 playerHpSpriteSize;
 	std::unique_ptr<Sprite> playerHpSprite;

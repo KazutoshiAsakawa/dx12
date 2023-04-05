@@ -159,7 +159,7 @@ void Boss::PhaseSpreadAttack()
 void Boss::meleeAttack()
 {
 	// ŠgŽU—¦
-	constexpr int  num = 10;
+	constexpr int  num = 8;
 
 	for (int i = 0; i <= num; i++) {
 		spreadBullet(bulletModel, 1, -(float)i / num * XM_PI);

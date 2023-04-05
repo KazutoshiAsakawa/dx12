@@ -431,8 +431,6 @@ void GamePlayScene::start() {
 		// updateProcessにentryPlayer関数をセット
 		updateProcess = std::bind(&GamePlayScene::entryPlayer, this);
 
-		// ParticleLoad::GetInstance()->SetCamera(normalCamera.get());
-
 		ParticleLoad::GetInstance()->SetCamera(camera.get());
 
 		// モザイクのフレーム数をリセット
@@ -457,6 +455,9 @@ void GamePlayScene::entryPlayer() {
 
 		// updateProcessにplay関数をセット
 		updateProcess = std::bind(&GamePlayScene::play, this);
+
+		// 説明が見えるようにマウスの位置を変える
+		input->SetMousePos({ WinApp::window_width / 2 ,(WinApp::window_height / 2) - 20});
 
 		ParticleLoad::GetInstance()->SetCamera(camera.get());
 

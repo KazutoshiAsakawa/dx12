@@ -23,12 +23,7 @@ XMFLOAT3 lerp(const XMFLOAT3& a, const XMFLOAT3& b, float t) {
 }
 
 void BossScene::Initialize(DirectXCommon* dxcommon) {
-	// Inputクラスはシングルトンクラス
-	// 【シングルトンクラス】オブジェクトを一つしか作れないクラス
-	// 【インスタンス】クラス型の変数のこと
-	// 【Input::GetInstance関数】Inputクラスのインスタンス(のポインタ)を取得する関数
-
-	// Inputクラスのインスタンス(へのポインタ)を変数に入れておく
+	
 	input = Input::GetInstance();
 
 	// マウスカーソルを消す
@@ -198,6 +193,8 @@ void BossScene::Initialize(DirectXCommon* dxcommon) {
 
 void BossScene::Finalize() {
 	DamageEffect(1, 1);
+
+	ParticleLoad::GetInstance()->ClearParticle();
 
 	// マウスカーソルを出す
 	ShowCursor(true);
