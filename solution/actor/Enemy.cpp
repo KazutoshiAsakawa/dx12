@@ -188,8 +188,8 @@ void Enemy::Shake() {
 		XMFLOAT3 pos = obj->GetPosition();
 		// memoryPos = pos;
 
-		pos.x = WinApp::GetInstance()->MyRand(memoryPos.x, 0.3f * shakeRate);
-		pos.y = WinApp::GetInstance()->MyRand(memoryPos.y, 0.3f * shakeRate);
+		pos.x = WinApp::GetInstance()->MyRand(memoryPos.x, 0.5f * shakeRate);
+		pos.y = WinApp::GetInstance()->MyRand(memoryPos.y, 0.5f * shakeRate);
 
 		shakeRate -= 0.025f;
 		obj->SetPosition(pos);

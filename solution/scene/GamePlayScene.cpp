@@ -481,7 +481,7 @@ void GamePlayScene::entryPlayer() {
 	} else {
 		// プレイヤーの位置を変更
 		XMFLOAT3 playerPos = lerp(playerEntryStartPos, playerEntryEndPos, (float)playerEntryFrame / frameMax);
-		
+
 
 		// カメラ注視点の位置を変更
 		XMFLOAT3 targetPos = lane->GetPosition();
