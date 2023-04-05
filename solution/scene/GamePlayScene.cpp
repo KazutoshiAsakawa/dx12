@@ -393,18 +393,18 @@ void GamePlayScene::Update() {
 	}// ƒ|[ƒY‰æ–Ê
 	else {
 		pauseSprite[pause]->Update();
-		if (input->TriggerKey(DIK_W)) {
+		if (input->TriggerKey(DIK_W) || input->TriggerKey(DIK_UP)) {
 			if (--pause <= -1) {
 				pause = 2;
 			}
 		}
-		if (input->TriggerKey(DIK_S)) {
+		if (input->TriggerKey(DIK_S) || input->TriggerKey(DIK_DOWN)) {
 			if (++pause >= 3) {
 				pause = 0;
 			}
 		}
 
-		if (input->TriggerKey(DIK_SPACE)) {
+		if (input->TriggerKey(DIK_SPACE) || input->TriggerKey(DIK_RETURN)) {
 			if (pause == 0) {
 				operationSprite["ESC_Pause"]->SetIsInvisible(false);
 			} else if (pause == 1) {
