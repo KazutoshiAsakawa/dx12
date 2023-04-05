@@ -106,4 +106,5 @@ private:
 	bool eyeControl = false;
 
 	float rad = 0;
+	float speed = 0.2f;
 };

@@ -258,4 +258,6 @@ private:
 
 	// bgmファイルのファイル名
 	std::string bgmFileName;
+
+	float playerRad = 0.f;
 };

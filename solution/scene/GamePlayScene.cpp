@@ -481,7 +481,7 @@ void GamePlayScene::entryPlayer() {
 	} else {
 		// プレイヤーの位置を変更
 		XMFLOAT3 playerPos = lerp(playerEntryStartPos, playerEntryEndPos, (float)playerEntryFrame / frameMax);
-		player->SetPosition(playerPos);
+		
 
 		// カメラ注視点の位置を変更
 		XMFLOAT3 targetPos = lane->GetPosition();
@@ -490,10 +490,19 @@ void GamePlayScene::entryPlayer() {
 		targetPos.z += player->GetPosition().z;
 		normalCamera->SetTarget(targetPos);
 
+		// 狐自体を回転させる
+		XMFLOAT3 playerRot = player->GetRotation();
+		// 上下に動かす
+		playerRad += 0.01f;
+		playerPos.y = player->GetPosition().y + sin(playerRad * 5) * 0.1f;
+		playerRot.x = sin(playerRad * -5) * 15.f;
+		player->SetRotation(playerRot);
+
+		player->SetPosition(playerPos);
 #ifdef _DEBUG
 		// ボスシーンに行く
 		if (input->TriggerKey(DIK_F)) {
-			updateProcess = std::bind(&GamePlayScene::end, this, "BOSSPLAY");
+			updateProcess = std::bind(&GamePlayScene::end, this, "CLEAR");
 		}
 #endif //_DEBUG
 	}

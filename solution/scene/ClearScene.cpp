@@ -77,6 +77,7 @@ void ClearScene::Initialize(DirectXCommon* dxcommon) {
 #pragma region プレイヤー
 	// プレイヤー初期化
 	player = std::make_unique<Player>();
+	player->SetPosition({0,0.1f,0});
 	player->SetRotation({ 0,0,0 });
 
 
@@ -153,10 +154,13 @@ void ClearScene::Update() {
 		playerPos.x = shrineObj->GetPosition().x + cos(rad) * length;
 		playerPos.z = shrineObj->GetPosition().z + sin(rad) * length;
 
-		playerPos.y = 0.1f;
-
+		// 狐自体を回転させる
 		XMFLOAT3 playerRot = player->GetRotation();
 		playerRot.y -= 0.01f / 3.141592f * 180;
+
+		// 上下に動かす
+		playerPos.y = player->GetPosition().y + sin(rad * 5) * 0.1f;
+		playerRot.x =  sin(rad * -5) * 20.f;
 
 		player->SetRotation(playerRot);
 		player->SetPosition(playerPos);
@@ -214,9 +218,6 @@ void ClearScene::start() {
 }
 
 void ClearScene::play() {
-
-	// スカイドームの位置
-	skyDomeObj->SetPosition(player->GetPosition());
 
 	if (input->TriggerKey(DIK_SPACE)) {
 		updateProcess = std::bind(&ClearScene::end, this, "TITLE");
