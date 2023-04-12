@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "ObjModel.h"
 #include "Camera.h"
+#include "LightGroup.h"
 
 #include <Windows.h>
 #include <wrl.h>
@@ -68,6 +69,14 @@ public: // 静的メンバ関数
 	static void SetCamera(Camera* camera) { ObjObject3d::camera = camera; };
 	static inline Camera* GetCamera() { return camera; }
 
+
+	/// <summary>
+	/// ライトグループのセット
+	/// </summary>
+	/// <param name="lightGroup">ライトグループ</param>
+	static void SetLightGroup(LightGroup* lightGroup) {
+		ObjObject3d::lightGroup = lightGroup;
+	}
 private: // 静的メンバ変数
 	// デバイス
 	static ID3D12Device* device;
@@ -79,7 +88,8 @@ private: // 静的メンバ変数
 	static ComPtr<ID3D12PipelineState> pipelinestate;
 	// カメラ
 	static Camera* camera;
-
+	// ライト
+	static LightGroup* lightGroup;
 
 private:// 静的メンバ関数
 	/// <summary>

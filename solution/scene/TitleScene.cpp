@@ -32,6 +32,19 @@ void TitleScene::Initialize(DirectXCommon* dxcommon) {
 	camera->SetEye({ 0, 5, -20 });
 	camera->SetTarget({ 0, 0, 50 });
 
+	// ライト生成
+	lightGroup = LightGroup::Create();
+	// 3Dオブエクトにライトをセット
+	ObjObject3d::SetLightGroup(lightGroup);
+
+	lightGroup->SetDirLightActive(0, false);
+	lightGroup->SetDirLightActive(1, false);
+	lightGroup->SetDirLightActive(2, false);
+	lightGroup->SetPointLightActive(0, true);
+	pointLightPos[0] = 0.5f;
+	pointLightPos[1] = 1.0f;
+	pointLightPos[2] = 0.0f;
+
 	ObjObject3d::SetCamera(camera.get());
 
 	// OBJからモデルデータを読み込む
@@ -123,6 +136,10 @@ void TitleScene::Update() {
 		camera->SetEye(eye);
 	}
 
+	lightGroup->SetPointLightPos(0, XMFLOAT3(pointLightPos));
+	lightGroup->SetPointLightColor(0, XMFLOAT3(pointLightColor));
+	lightGroup->SetPointLightAtten(0, XMFLOAT3(pointLightAtten));
+
 	// パーティクル更新
 	ParticleLoad::GetInstance()->Update();
 
@@ -205,12 +222,12 @@ void TitleScene::play() {
 	// 紅葉パーティクル
 	{
 		XMFLOAT3 shrinePos = shrineObj->GetWorldPos();
-			ParticleLoad::GetInstance()->SetRenderAdd(2, 200,
-				{ (float)rand() / RAND_MAX * 80.f - 40.f + shrinePos.x,
-				50,
-				(float)rand() / RAND_MAX * 80.f - 40.f },
-				{ 0.f,-0.3f,0.f }, { 0.f,0.f,-0.00001f },
-				1.5f, 1.5f, 0.0f, 720.0f, { 0.7f, 0.7f, 0.3f }, { 1.f,0.f,0.f });
+		ParticleLoad::GetInstance()->SetRenderAdd(2, 200,
+			{ (float)rand() / RAND_MAX * 80.f - 40.f + shrinePos.x,
+			50,
+			(float)rand() / RAND_MAX * 80.f - 40.f },
+			{ 0.f,-0.3f,0.f }, { 0.f,0.f,-0.00001f },
+			1.5f, 1.5f, 0.0f, 720.0f, { 0.7f, 0.7f, 0.3f }, { 1.f,0.f,0.f });
 	}
 
 	// スカイドームの位置

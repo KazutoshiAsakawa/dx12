@@ -26,8 +26,7 @@ DirectXCommon::~DirectXCommon() {
 	ImGui::DestroyContext();
 }
 
-void DirectXCommon::Initialize(WinApp* winApp)
-{
+void DirectXCommon::Initialize(WinApp* winApp) {
 	assert(winApp);
 
 	this->winApp = winApp;
@@ -49,8 +48,17 @@ void DirectXCommon::Initialize(WinApp* winApp)
 	InitializeFixFPS();
 }
 
-void DirectXCommon::InitializeDevice()
-{
+void DirectXCommon::InitializeDevice() {
+#ifdef _DEBUG
+	// デバッグレイヤーをオンに
+	ComPtr<ID3D12Debug1> debugController;
+	if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController)))) {
+		debugController->EnableDebugLayer();
+		debugController->SetEnableGPUBasedValidation(TRUE);
+	}
+
+#endif
+
 	HRESULT result;
 	//　DXGIファクトリ　(デバイス生成後は解放されてもよい)
 
@@ -62,13 +70,11 @@ void DirectXCommon::InitializeDevice()
 	ComPtr<IDXGIAdapter1> tmpAdapter = nullptr;
 	for (int i = 0;
 		dxgiFactory->EnumAdapters1(i, &tmpAdapter) != DXGI_ERROR_NOT_FOUND;
-		i++)
-	{
+		i++) {
 		adapters.push_back(tmpAdapter); // 動的配列に追加する
 	}
 
-	for (int i = 0; i < adapters.size(); i++)
-	{
+	for (int i = 0; i < adapters.size(); i++) {
 		DXGI_ADAPTER_DESC1 adesc;
 		adapters[i]->GetDesc1(&adesc);  // アダプターの情報を取得
 
@@ -79,8 +85,7 @@ void DirectXCommon::InitializeDevice()
 
 		std::wstring strDesc = adesc.Description;   // アダプター名
 		// Intel UHD Graphics（オンボードグラフィック）を回避
-		if (strDesc.find(L"Intel") == std::wstring::npos)
-		{
+		if (strDesc.find(L"Intel") == std::wstring::npos) {
 			tmpAdapter = adapters[i];   // 採用
 			break;
 		}
@@ -97,21 +102,28 @@ void DirectXCommon::InitializeDevice()
 
 	D3D_FEATURE_LEVEL featureLevel;
 
-	for (int i = 0; i < _countof(levels); i++)
-	{
+	for (int i = 0; i < _countof(levels); i++) {
 		// 採用したアダプターでデバイスを生成
 		result = D3D12CreateDevice(tmpAdapter.Get(), levels[i], IID_PPV_ARGS(&dev));
-		if (result == S_OK)
-		{
+		if (result == S_OK) {
 			// デバイスを生成できた時点でループを抜ける
 			featureLevel = levels[i];
 			break;
 		}
 	}
+
+#ifdef _DEBUG
+	ComPtr<ID3D12InfoQueue> infoQueue;
+	if (SUCCEEDED(dev->QueryInterface(IID_PPV_ARGS(&infoQueue)))) {
+		infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_CORRUPTION,true);// ヤバイエラー時に止まる
+		infoQueue->SetBreakOnSeverity(D3D12_MESSAGE_SEVERITY_ERROR,true);// エラー時に止まる
+	}
+
+#endif // _DEBUG
+
 }
 
-void DirectXCommon::InitializeCommand()
-{
+void DirectXCommon::InitializeCommand() {
 	HRESULT result;
 
 	// コマンドアロケータを生成
@@ -131,8 +143,7 @@ void DirectXCommon::InitializeCommand()
 	dev->CreateCommandQueue(&cmdQueueDesc, IID_PPV_ARGS(&cmdQueue));
 }
 
-void DirectXCommon::InitializeSwapchain()
-{
+void DirectXCommon::InitializeSwapchain() {
 	// 各種設定をしてスワップチェーンを生成
 	DXGI_SWAP_CHAIN_DESC1 swapchainDesc{};
 	swapchainDesc.Width = 1280;
@@ -159,8 +170,7 @@ void DirectXCommon::InitializeSwapchain()
 	swapchain1.As(&swapchain);
 }
 
-void DirectXCommon::InitializeRenderTargetview()
-{
+void DirectXCommon::InitializeRenderTargetview() {
 	HRESULT result;
 
 	// 各種設定をしてデスクリプタヒープを生成
@@ -173,8 +183,7 @@ void DirectXCommon::InitializeRenderTargetview()
 	// 裏表の２つ分について
 	backBuffers.resize(2);
 
-	for (int i = 0; i < 2; i++)
-	{
+	for (int i = 0; i < 2; i++) {
 		// スワップチェーンからバッファを取得
 		result = swapchain->GetBuffer(i, IID_PPV_ARGS(&backBuffers[i]));
 
@@ -191,8 +200,7 @@ void DirectXCommon::InitializeRenderTargetview()
 	}
 }
 
-void DirectXCommon::InitializeDepthBuffer()
-{
+void DirectXCommon::InitializeDepthBuffer() {
 	HRESULT result;
 
 
@@ -229,8 +237,7 @@ void DirectXCommon::InitializeDepthBuffer()
 		dsvHeap->GetCPUDescriptorHandleForHeapStart());
 }
 
-void DirectXCommon::InitializeFence()
-{
+void DirectXCommon::InitializeFence() {
 	HRESULT result;
 
 	// フェンスの生成
@@ -239,13 +246,12 @@ void DirectXCommon::InitializeFence()
 	result = dev->CreateFence(fenceVal, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence));
 }
 
-void DirectXCommon::PreDraw()
-{
+void DirectXCommon::PreDraw() {
 	// バックバッファの番号を取得（2つなので0番か1番）
 	UINT bbIndex = swapchain->GetCurrentBackBufferIndex();
 
 	cmdList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(backBuffers[bbIndex].Get(),
-		D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT));
+		D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET));
 
 	// レンダーターゲットビュー用ディスクリプタヒープのハンドルを取得
 	CD3DX12_CPU_DESCRIPTOR_HANDLE rtvH = CD3DX12_CPU_DESCRIPTOR_HANDLE(rtvHeap->GetCPUDescriptorHandleForHeapStart(), bbIndex, dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV));
@@ -272,8 +278,7 @@ void DirectXCommon::PreDraw()
 	ImGui::NewFrame();
 }
 
-void DirectXCommon::PostDraw()
-{
+void DirectXCommon::PostDraw() {
 	// imgui描画
 	ImGui::Render();
 	ID3D12DescriptorHeap* ppHeaps[] = { imguiHeap.Get() };
@@ -282,6 +287,9 @@ void DirectXCommon::PostDraw()
 
 	// バックバッファの番号を取得（2つなので0番か1番）
 	UINT bbIndex = swapchain->GetCurrentBackBufferIndex();
+
+	cmdList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(backBuffers[bbIndex].Get(),
+		D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT));
 
 	// 命令のクローズ
 	cmdList->Close();
@@ -353,7 +361,7 @@ bool DirectXCommon::InitializeImgui() {
 	ImGui::GetStyle().DisplayWindowPadding = ImVec2(0.f, 0.f);
 
 	ImGui::GetIO().IniFilename = NULL;
-	ImGui::GetIO().Fonts->AddFontFromFileTTF("Resources/ume-pgo4.ttf",12.f,nullptr,ImGui::GetIO().Fonts->GetGlyphRangesJapanese());
+	ImGui::GetIO().Fonts->AddFontFromFileTTF("Resources/ume-pgo4.ttf", 12.f, nullptr, ImGui::GetIO().Fonts->GetGlyphRangesJapanese());
 	return true;
 }
 

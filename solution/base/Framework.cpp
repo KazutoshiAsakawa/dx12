@@ -4,9 +4,9 @@
 #include "SpriteCommon.h"
 #include "ParticleManager.h"
 #include "ParticleLoad.h"
+#include "LightGroup.h"
 
-void Framework::Run()
-{
+void Framework::Run() {
 	// ゲームの初期化
 	//Initialize();
 
@@ -26,8 +26,7 @@ void Framework::Run()
 	// Finalize();
 }
 
-void Framework::Initialize()
-{
+void Framework::Initialize() {
 	winApp = WinApp::GetInstance();
 	dxCommon = DirectXCommon::GetInstance();
 
@@ -52,6 +51,7 @@ void Framework::Initialize()
 	audio = Audio::GetInstance();
 	audio->Initialize();
 
+	LightGroup::StaticInitialize(dxCommon->GetDev());
 	// ParticleManager::GetInstance()->Initialize(dxCommon->GetDev());
 	ParticleLoad::GetInstance()->Initialize(dxCommon->GetDev());
 
@@ -62,18 +62,15 @@ void Framework::Initialize()
 	PostEffect::SetDevice(dxCommon->GetDev());
 }
 
-void Framework::Finalize()
-{
+void Framework::Finalize() {
 	// デバッグテキスト解放
 	debugText->Finalize();
 	// オーディオ解放
 	audio->Finalize();
 }
 
-void Framework::Update()
-{
-	if (winApp->ProcessMessage())
-	{
+void Framework::Update() {
+	if (winApp->ProcessMessage()) {
 		//ゲームループを抜ける
 		endRequest = true;
 		return;
@@ -85,8 +82,7 @@ void Framework::Update()
 	SceneManager::GetInstance()->Update(dxCommon);
 }
 
-void Framework::Draw()
-{
+void Framework::Draw() {
 	PostEffect::GetInstance()->PreDrawScene(dxCommon->GetCmdList());
 
 	// シーン描画

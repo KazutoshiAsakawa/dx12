@@ -187,6 +187,7 @@
     <ClCompile Include="collision\CollisionShape.cpp" />
     <ClCompile Include="3d\FbxLoader.cpp" />
     <ClCompile Include="3d\ParticleLoad.cpp" />
+    <ClCompile Include="LightGroup.cpp" />
     <ClCompile Include="scene\ClearScene.cpp" />
     <ClCompile Include="scene\GameOverScene.cpp" />
     <ClCompile Include="input\Input.cpp" />
@@ -306,6 +307,9 @@
     <ClInclude Include="collision\CollisionShape.h" />
     <ClInclude Include="3d\FbxLoader.h" />
     <ClInclude Include="3d\ParticleLoad.h" />
+    <ClInclude Include="DirectionalLight.h" />
+    <ClInclude Include="LightGroup.h" />
+    <ClInclude Include="PointLight.h" />
     <ClInclude Include="scene\ClearScene.h" />
     <ClInclude Include="scene\GameOverScene.h" />
     <ClInclude Include="input\Input.h" />
