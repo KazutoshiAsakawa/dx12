@@ -319,6 +319,7 @@
     <ClInclude Include="scene\GamePlayScene.h" />
     <ClInclude Include="scene\TitleScene.h" />
     <ClInclude Include="base\Statemachine.h" />
+    <ClInclude Include="SpotLight.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

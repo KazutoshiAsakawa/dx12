@@ -40,10 +40,10 @@ void TitleScene::Initialize(DirectXCommon* dxcommon) {
 	lightGroup->SetDirLightActive(0, false);
 	lightGroup->SetDirLightActive(1, false);
 	lightGroup->SetDirLightActive(2, false);
-	lightGroup->SetPointLightActive(0, true);
-	pointLightPos[0] = 0.5f;
-	pointLightPos[1] = 1.0f;
-	pointLightPos[2] = 0.0f;
+	lightGroup->SetPointLightActive(0, false);
+	lightGroup->SetPointLightActive(1, false);
+	lightGroup->SetPointLightActive(2, false);
+	lightGroup->SetSpotLightActive(0, true);
 
 	ObjObject3d::SetCamera(camera.get());
 
@@ -136,9 +136,12 @@ void TitleScene::Update() {
 		camera->SetEye(eye);
 	}
 
-	lightGroup->SetPointLightPos(0, XMFLOAT3(pointLightPos));
-	lightGroup->SetPointLightColor(0, XMFLOAT3(pointLightColor));
-	lightGroup->SetPointLightAtten(0, XMFLOAT3(pointLightAtten));
+	lightGroup->SetSpotLightDir(0, XMVECTOR({ spotLightDir[0], spotLightDir[1], spotLightDir[2], 0 }));
+	lightGroup->SetSpotLightPos(0, XMFLOAT3(spotLightPos));
+	lightGroup->SetSpotLightColor(0, XMFLOAT3(spotLightColor));
+	lightGroup->SetSpotLightAtten(0, XMFLOAT3(spotLightAtten));
+	lightGroup->SetSpotLightFactorAngle(0, XMFLOAT2(spotLightFactorAngle));
+
 
 	// パーティクル更新
 	ParticleLoad::GetInstance()->Update();
