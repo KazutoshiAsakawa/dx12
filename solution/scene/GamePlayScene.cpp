@@ -457,7 +457,7 @@ void GamePlayScene::entryPlayer() {
 		updateProcess = std::bind(&GamePlayScene::play, this);
 
 		// 説明が見えるようにマウスの位置を変える
-		input->SetMousePos({ WinApp::window_width / 2 ,(WinApp::window_height / 2) - 20});
+		input->SetMousePos({ WinApp::window_width / 2 ,(WinApp::window_height / 2) - 20 });
 
 		ParticleLoad::GetInstance()->SetCamera(camera.get());
 

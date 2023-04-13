@@ -8,36 +8,32 @@ ParticleLoad* ParticleLoad::GetInstance() {
 void ParticleLoad::Initialize(ID3D12Device* device) {
 
 	// 血のリソースを一個目に入れる
-	ParticleManager* particle = new ParticleManager();
+	auto& particle = particles.emplace_back(std::make_unique<ParticleManager>());
 	particle->SetFileName(L"Resources/blood.png");
 	particle->Initialize(device);
-	particles.push_back(particle);
 
 	// エフェクト1を二個目に入れる
-	ParticleManager* bulletParticle = new ParticleManager();
+	auto& bulletParticle = particles.emplace_back(std::make_unique<ParticleManager>());
 	bulletParticle->SetFileName(L"Resources/effect.png");
 	bulletParticle->Initialize(device);
-	particles.push_back(bulletParticle);
 
 	// もみじを三個目に入れる
-	ParticleManager* leaves = new ParticleManager();
+	auto& leaves = particles.emplace_back(std::make_unique<ParticleManager>());
 	leaves->SetFileName(L"Resources/leaves.png");
 	leaves->Initialize(device);
-	particles.push_back(leaves);
-
 }
 
 void ParticleLoad::Update() {
 
-	for (int i = 0; particles.size() > i; i++) {
-		particles[i]->Update();
+	for (auto& i : particles) {
+		i->Update();
 	}
-
 }
 
 void ParticleLoad::Draw(ID3D12GraphicsCommandList* cmdList) {
-	for (int i = 0; particles.size() > i; i++) {
-		particles[i]->Draw(cmdList);
+
+	for (auto& i : particles) {
+		i->Draw(cmdList);
 	}
 }
 
@@ -63,8 +59,8 @@ void ParticleLoad::SetRenderAdd(int texnum, int life, XMFLOAT3 position, XMFLOAT
 void ParticleLoad::SetCamera(Camera* camera) {
 	this->camera = camera;
 
-	for (int i = 0; particles.size() > i; i++) {
-		particles[i]->SetCamera(camera);
+	for (auto& i : particles) {
+		i->SetCamera(camera);
 	}
 }
 

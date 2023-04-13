@@ -51,9 +51,22 @@ struct SpotLight {
 	uint active;
 };
 
+// 丸影の数
+static const int CIRCLESHADOW_NUM = 3;
+
+struct CircleShadow {
+	float3 dir;		// 投影方向の逆ベクトル（単位ベクトル）
+	float3 casterPos;    // キャスター座標
+	float  distanceCasterLight;	// キャスターとライトの距離
+	float3 atten;	// 距離減衰係数
+	float2 factorAngleCos; // 減衰角度のコサイン
+	uint active;
+};
+
 cbuffer cbuff2 : register(b2) {
 	float3 ambientColor;
 	DirLight dirLights[DIRLIGHT_NUM];
 	PointLight pointLights[POINTLIGHT_NUM];
 	SpotLight spotLights[SPOTLIGHT_NUM];
+	CircleShadow circleShadows[CIRCLESHADOW_NUM];
 }

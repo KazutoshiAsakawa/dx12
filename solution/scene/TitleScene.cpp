@@ -4,8 +4,6 @@
 #include "Input.h"
 #include "DebugText.h"
 
-#include "FbxObject3d.h"
-#include "FbxLoader.h"
 #include "DirectXCommon.h"
 #include "Collision.h"
 #include "ParticleLoad.h"
@@ -32,18 +30,9 @@ void TitleScene::Initialize(DirectXCommon* dxcommon) {
 	camera->SetEye({ 0, 5, -20 });
 	camera->SetTarget({ 0, 0, 50 });
 
-	// ライト生成
-	lightGroup = LightGroup::Create();
-	// 3Dオブエクトにライトをセット
-	ObjObject3d::SetLightGroup(lightGroup);
-
-	lightGroup->SetDirLightActive(0, false);
-	lightGroup->SetDirLightActive(1, false);
-	lightGroup->SetDirLightActive(2, false);
+	lightGroup->SetDirLightActive(0, true);
 	lightGroup->SetPointLightActive(0, false);
-	lightGroup->SetPointLightActive(1, false);
-	lightGroup->SetPointLightActive(2, false);
-	lightGroup->SetSpotLightActive(0, true);
+	lightGroup->SetCircleShadowActive(0, true);
 
 	ObjObject3d::SetCamera(camera.get());
 
@@ -81,13 +70,6 @@ void TitleScene::Initialize(DirectXCommon* dxcommon) {
 	bonfireL->SetScale({ 2,2,2 });
 	bonfireL->SetPosition({ -5,-5,10 });
 
-	//デバイスをセット
-	FbxObject3d::SetDevice(dxcommon->GetDev());
-	//カメラをセット
-	FbxObject3d::SetCamera(camera.get());
-	//グラフィックスパイプライン生成
-	FbxObject3d::CreateGraphicsPipeline();
-
 #pragma region プレイヤー
 	// プレイヤー初期化
 	player = std::make_unique<Player>();
@@ -114,7 +96,6 @@ void TitleScene::Initialize(DirectXCommon* dxcommon) {
 }
 
 void TitleScene::Finalize() {
-
 }
 
 void TitleScene::Update() {
@@ -136,12 +117,15 @@ void TitleScene::Update() {
 		camera->SetEye(eye);
 	}
 
-	lightGroup->SetSpotLightDir(0, XMVECTOR({ spotLightDir[0], spotLightDir[1], spotLightDir[2], 0 }));
-	lightGroup->SetSpotLightPos(0, XMFLOAT3(spotLightPos));
-	lightGroup->SetSpotLightColor(0, XMFLOAT3(spotLightColor));
-	lightGroup->SetSpotLightAtten(0, XMFLOAT3(spotLightAtten));
-	lightGroup->SetSpotLightFactorAngle(0, XMFLOAT2(spotLightFactorAngle));
-
+	/*lightGroup->SetSpotLightDir(0, XMLoadFloat3(&spotLightDir));
+	lightGroup->SetSpotLightPos(0, spotLightPos);
+	lightGroup->SetSpotLightColor(0, spotLightColor);
+	lightGroup->SetSpotLightAtten(0, spotLightAtten);
+	lightGroup->SetSpotLightFactorAngle(0, spotLightFactorAngle);*/
+	lightGroup->SetCircleShadowDir(0, XMLoadFloat3(&circleShadowDir));
+	lightGroup->SetCircleShadowCasterPos(0, player->GetPosition());
+	lightGroup->SetCircleShadowAtten(0, circleShadowAtten);
+	lightGroup->SetCircleShadowFactorAngle(0, circleShadowFactorAngle);
 
 	// パーティクル更新
 	ParticleLoad::GetInstance()->Update();

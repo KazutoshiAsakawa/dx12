@@ -21,8 +21,7 @@ ComPtr<ID3D12PipelineState> ObjObject3d::pipelinestate;
 Camera* ObjObject3d::camera = nullptr;
 LightGroup* ObjObject3d::lightGroup = nullptr;
 
-bool ObjObject3d::StaticInitialize(ID3D12Device* device, ID3D12GraphicsCommandList* cmdList, int window_width, int window_height, Camera* camera)
-{
+bool ObjObject3d::StaticInitialize(ID3D12Device* device, ID3D12GraphicsCommandList* cmdList, int window_width, int window_height, Camera* camera) {
 	// nullptrチェック
 	assert(device);
 
@@ -51,8 +50,7 @@ bool ObjObject3d::StaticInitialize(ID3D12Device* device, ID3D12GraphicsCommandLi
 	return true;
 }
 
-void ObjObject3d::PreDraw()
-{
+void ObjObject3d::PreDraw() {
 	//// PreDrawとPostDrawがペアで呼ばれていなければエラー
 	//assert(Object3d::cmdList == nullptr);
 
@@ -67,14 +65,12 @@ void ObjObject3d::PreDraw()
 	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 
-void ObjObject3d::PostDraw()
-{
+void ObjObject3d::PostDraw() {
 	//// コマンドリストを解除
 	//Object3d::cmdList = nullptr;
 }
 
-std::unique_ptr<ObjObject3d> ObjObject3d::Create()
-{
+std::unique_ptr<ObjObject3d> ObjObject3d::Create() {
 	// 3Dオブジェクトのインスタンスを生成
 	ObjObject3d* object3d = new ObjObject3d();
 	if (object3d == nullptr) {
@@ -95,8 +91,7 @@ std::unique_ptr<ObjObject3d> ObjObject3d::Create()
 	return std::unique_ptr<ObjObject3d>(object3d);
 }
 
-bool ObjObject3d::InitializeGraphicsPipeline()
-{
+bool ObjObject3d::InitializeGraphicsPipeline() {
 	HRESULT result = S_FALSE;
 	ComPtr<ID3DBlob> vsBlob; // 頂点シェーダオブジェクト
 	ComPtr<ID3DBlob> psBlob;	// ピクセルシェーダオブジェクト
@@ -251,13 +246,11 @@ bool ObjObject3d::InitializeGraphicsPipeline()
 	return true;
 }
 
-void ObjObject3d::CreateModel()
-{
+void ObjObject3d::CreateModel() {
 
 }
 
-bool ObjObject3d::Initialize()
-{
+bool ObjObject3d::Initialize() {
 	// nullptrチェック
 	assert(device);
 
@@ -274,8 +267,7 @@ bool ObjObject3d::Initialize()
 	return true;
 }
 
-void ObjObject3d::Update()
-{
+void ObjObject3d::Update() {
 	// カメラが無いかチェック
 	assert(camera);
 
@@ -293,10 +285,11 @@ void ObjObject3d::Update()
 	constMap->world = matWorld;
 	constMap->cameraPos = cameraPos;
 	constBuffB0->Unmap(0, nullptr);
+
+	lightGroup->Update();
 }
 
-void ObjObject3d::Draw()
-{
+void ObjObject3d::Draw() {
 	// nullptrチェック
 	assert(device);
 	assert(ObjObject3d::cmdList);
@@ -313,9 +306,8 @@ void ObjObject3d::Draw()
 	model->Draw(cmdList, 1);
 }
 
-void ObjObject3d::UpdateWorldMatrix()
-{
-	XMMATRIX matScale,  matTrans;
+void ObjObject3d::UpdateWorldMatrix() {
+	XMMATRIX matScale, matTrans;
 
 	// スケール、回転、平行移動行列の計算
 	matScale = XMMatrixScaling(scale.x, scale.y, scale.z);

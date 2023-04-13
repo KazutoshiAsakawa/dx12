@@ -10,6 +10,7 @@
 #include "PlayerBullet.h"
 #include "Enemy.h"
 #include "TrackingCamera.h"
+#include "LightGroup.h"
 
 #include <unordered_map>
 

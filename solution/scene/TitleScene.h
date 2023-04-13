@@ -106,26 +106,28 @@ private:
 	bool eyeControl = false;
 
 	float rad = 0;
-
-	LightGroup* lightGroup = nullptr;
-	float ambientColor0[3] = { 1,1,1 };
+	DirectX::XMFLOAT3 ambientColor0 = { 1,1,1 };
 	// åıê¸ï˚å¸èâä˙íl
-	float lightDir0[3] = { 0,0,1 };
-	float lightColor0[3] = { 1,0,0 };
+	DirectX::XMFLOAT3 lightDir0 = { 0,0,1 };
+	DirectX::XMFLOAT3 lightColor0 = { 1,0,0 };
 
-	float lightDir1[3] = { 0,1,0 };
-	float lightColor1[3] = { 0,1,0 };
+	DirectX::XMFLOAT3 lightDir1 = { 0,1,0 };
+	DirectX::XMFLOAT3 lightColor1 = { 0,1,0 };
 
-	float lightDir2[3] = { 1,0,0 };
-	float lightColor2[3] = { 0,0,1 };
+	DirectX::XMFLOAT3 lightDir2 = { 1,0,0 };
+	DirectX::XMFLOAT3 lightColor2 = { 0,0,1 };
 
-	float pointLightPos[3] = { 0,0,0 };
-	float pointLightColor[3] = { 1,1,1 };
-	float pointLightAtten[3] = { 0.3f,0.1f,0.1f };
+	DirectX::XMFLOAT3 pointLightPos = { 0,0,0 };
+	DirectX::XMFLOAT3 pointLightColor = { 1,1,1 };
+	DirectX::XMFLOAT3 pointLightAtten = { 0.3f,0.1f,0.1f };
 
-	float spotLightDir[3] = { 0,-1,0 };
-	float spotLightPos[3] = { 0,5,0 };
-	float spotLightColor[3] = { 1,1,1 };
-	float spotLightAtten[3] = { 0.0f,0.0f,0.0f };
-	float spotLightFactorAngle[2] = { 20.0f, 30.0f };
+	DirectX::XMFLOAT3 spotLightDir = { 0,-1,0 };
+	DirectX::XMFLOAT3 spotLightPos = { 0,5,0 };
+	DirectX::XMFLOAT3 spotLightColor = { 1,1,1 };
+	DirectX::XMFLOAT3 spotLightAtten = { 0.0f,0.0f,0.0f };
+	DirectX::XMFLOAT2 spotLightFactorAngle = { 20.0f, 30.0f };
+
+	DirectX::XMFLOAT3 circleShadowDir = { 0,-1,0 };
+	DirectX::XMFLOAT3 circleShadowAtten = { 0.5f,0.6f,0.0f };
+	DirectX::XMFLOAT2 circleShadowFactorAngle = { 0.0f, 0.5f };
 };

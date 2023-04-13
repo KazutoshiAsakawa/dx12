@@ -52,9 +52,7 @@ void Framework::Initialize() {
 	audio->Initialize();
 
 	LightGroup::StaticInitialize(dxCommon->GetDev());
-	// ParticleManager::GetInstance()->Initialize(dxCommon->GetDev());
 	ParticleLoad::GetInstance()->Initialize(dxCommon->GetDev());
-
 
 	// 3Dオブジェクト静的初期化
 	ObjObject3d::StaticInitialize(dxCommon->GetDev(), dxCommon->GetCmdList(), WinApp::window_width, WinApp::window_height);

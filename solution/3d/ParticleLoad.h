@@ -83,7 +83,7 @@ public:
 	void SetCamera(Camera* camera);
 
 private:
-	std::vector<ParticleManager*> particles;
+	std::vector<std::unique_ptr<ParticleManager>> particles;
 
 	// ƒJƒƒ‰
 	Camera* camera = nullptr;

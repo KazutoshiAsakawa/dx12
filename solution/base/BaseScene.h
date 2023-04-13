@@ -3,18 +3,24 @@
 
 // 前方宣言
 class SceneManager;
+class LightGroup;
 
 /// <summary>
 /// シーン基底
 /// </summary>
 class BaseScene {
+
 public:
 	virtual ~BaseScene() = default;
+
+	void InitializeScene();
 
 	/// <summary>
 	/// 初期化
 	/// </summary>
 	virtual void Initialize(DirectXCommon* dxcommon) = 0;
+
+	void FinalizeScene();
 
 	/// <summary>
 	/// 終了処理
@@ -35,5 +41,7 @@ public:
 	/// 前景スプライト描画
 	/// </summary>
 	virtual void DrawFrontSprite(DirectXCommon* dxcommon) {};
+
+	std::unique_ptr<LightGroup> lightGroup = nullptr;
 };
 
