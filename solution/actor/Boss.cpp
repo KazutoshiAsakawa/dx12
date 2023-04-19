@@ -2,8 +2,10 @@
 
 using namespace DirectX;
 
-void Boss::Update()
-{
+#undef max
+#undef min
+
+void Boss::Update() {
 	if (alive) {
 		// ƒ{ƒX‚ÌŒü‚«
 		{
@@ -45,8 +47,7 @@ void Boss::Update()
 	}
 }
 
-void Boss::Draw()
-{
+void Boss::Draw() {
 	obj->Draw();
 
 	for (auto& i : bullet) {
@@ -54,8 +55,7 @@ void Boss::Draw()
 	}
 }
 
-void Boss::PhaseApproach()
-{
+void Boss::PhaseApproach() {
 	vel.x = attackTarget->GetPosition().x - GetPosition().x;
 	vel.y = attackTarget->GetPosition().y - GetPosition().y;
 	vel.z = attackTarget->GetPosition().z - GetPosition().z;
@@ -84,8 +84,7 @@ void Boss::PhaseApproach()
 	}
 }
 
-void Boss::PhaseLeave()
-{
+void Boss::PhaseLeave() {
 	vel.x = attackTarget->GetPosition().x - GetPosition().x;
 	vel.y = attackTarget->GetPosition().y - GetPosition().y;
 	vel.z = attackTarget->GetPosition().z - GetPosition().z;
@@ -101,29 +100,25 @@ void Boss::PhaseLeave()
 	// FLOAT3‚É•ÏŠ·
 	XMStoreFloat3(&vel, vectorVel);
 
-	XMFLOAT3 pos;
-	pos = GetPosition();
+	XMFLOAT3 pos = GetPosition();
 	pos.x += vel.x;
 	pos.y += vel.y;
 	pos.z += vel.z;
 
 	// ˆÚ“®§ŒÀ(’n–Ê)
-	if (0 > pos.y) {
-		pos.y = 0;
-	}
+	pos.y = std::max(pos.y, 0.f);
 
 	SetPosition(pos);
 
 	// ˆê’è‹——£—£‚ê‚½‚ç‹ß‚Ã‚­
-	if (lengthSq > (GetScale().z * 30) * (GetScale().z * 30)) {
+	if (lengthSq > (GetScale().z * 30.f) * (GetScale().z * 30.f)) {
 		SetPhase(std::bind(&Boss::PhaseAttack, this));
 		SetShotTarget(attackTarget);
 		nowShotFrame = shotInterval;
 	}
 }
 
-void Boss::PhaseAttack()
-{
+void Boss::PhaseAttack() {
 	// 0‚É‚È‚Á‚½‚çŒ‚‚Â
 	if (nowShotFrame-- == 0) {
 		Shot(bulletModel, 1);
@@ -140,8 +135,7 @@ void Boss::PhaseAttack()
 }
 
 // ŠgU’e‚ğŒ‚‚ÂƒtƒF[ƒY
-void Boss::PhaseSpreadAttack()
-{
+void Boss::PhaseSpreadAttack() {
 	if (nowShotFrame-- == 0) {
 		meleeAttack();
 		nowShotNum++;
@@ -156,8 +150,7 @@ void Boss::PhaseSpreadAttack()
 }
 
 // ŠgU’e‚ğŒ‚‚Â
-void Boss::meleeAttack()
-{
+void Boss::meleeAttack() {
 	// ŠgU—¦
 	constexpr int  num = 8;
 
@@ -167,8 +160,7 @@ void Boss::meleeAttack()
 }
 
 // ŠgU’e
-void Boss::spreadBullet(ObjModel* model, float scale, float angle)
-{
+void Boss::spreadBullet(ObjModel* model, float scale, float angle) {
 	bullet.emplace_back(model, obj->GetPosition());
 	bullet.back().SetScale({ scale, scale ,scale });
 	bullet.back().SetParent(obj->GetParent());
