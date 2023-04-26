@@ -29,8 +29,10 @@ public:
 	void PhaseLeave() override;
 	// ’e”­Ë
 	void PhaseAttack();
-
+	// ’eŠgU
 	void PhaseSpreadAttack();
+	//  ‰¡ˆÚ“®‚µ‚È‚ª‚çŒ‚‚Â
+	void PhaseLateralAttack();
 
 	// ‹ßÚUŒ‚
 	void meleeAttack();
@@ -46,5 +48,6 @@ private:
 	UINT nowShotFrame;
 	UINT shotNum = 12;
 	UINT nowShotNum;
+	float rad = 90;
 };
 

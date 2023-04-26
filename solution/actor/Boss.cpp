@@ -149,6 +149,11 @@ void Boss::PhaseSpreadAttack() {
 	}
 }
 
+// ‰¡ˆÚ“®‚µ‚È‚ª‚çUŒ‚
+void Boss::PhaseLateralAttack() {
+	
+}
+
 // ŠgU’e‚ğŒ‚‚Â
 void Boss::meleeAttack() {
 	// ŠgU—¦
