@@ -92,7 +92,7 @@ void TitleScene::Initialize(DirectXCommon* dxcommon) {
 	ParticleLoad::GetInstance()->SetCamera(camera.get());
 
 	// 更新処理の関数を入れる
-	updateProcess = std::bind(&TitleScene::start, this);
+	updateProcess = std::bind(&TitleScene::Start, this);
 }
 
 void TitleScene::Finalize() {
@@ -157,7 +157,7 @@ void TitleScene::Update() {
 }
 
 // シーン遷移
-void TitleScene::start() {
+void TitleScene::Start() {
 	// モザイクをかける時間
 	constexpr UINT mosaicFrameMax = 60;
 
@@ -165,7 +165,7 @@ void TitleScene::start() {
 	if (++mosaicFrame > mosaicFrameMax) {
 		PostEffect::GetInstance()->SetMosaicNum({ WinApp::window_width ,WinApp::window_height });
 		// updateProcessにbossEntry関数をセット
-		updateProcess = std::bind(&TitleScene::play, this);
+		updateProcess = std::bind(&TitleScene::Play, this);
 		mosaicFrame = 0;
 		// PressSpaceを表示する
 		title["pressS"]->SetIsInvisible(false);
@@ -179,7 +179,7 @@ void TitleScene::start() {
 	}
 }
 
-void TitleScene::play() {
+void TitleScene::Play() {
 
 	WinApp* winApp = WinApp::GetInstance();
 
@@ -221,12 +221,12 @@ void TitleScene::play() {
 	skyDomeObj->SetPosition(player->GetPosition());
 
 	if (input->TriggerKey(DIK_SPACE)) {
-		updateProcess = std::bind(&TitleScene::end, this, "GAMEPLAY");
+		updateProcess = std::bind(&TitleScene::End, this, "GAMEPLAY");
 		title["pressS"]->SetIsInvisible(true);
 	}
 }
 
-void TitleScene::end(const std::string& nextScene) {
+void TitleScene::End(const std::string& nextScene) {
 	// モザイクをかける時間
 	constexpr UINT mosaicFrameMax = 60;
 

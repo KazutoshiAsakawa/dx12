@@ -182,7 +182,7 @@ void GamePlayScene::Initialize(DirectXCommon* dxcommon) {
 	ParticleLoad::GetInstance()->SetCamera(camera.get());
 
 	// 更新処理の関数を入れる
-	updateProcess = std::bind(&GamePlayScene::start, this);
+	updateProcess = std::bind(&GamePlayScene::Start, this);
 
 #pragma region 音
 
@@ -419,7 +419,7 @@ void GamePlayScene::Update() {
 }
 
 // シーン遷移
-void GamePlayScene::start() {
+void GamePlayScene::Start() {
 	// モザイクをかける時間
 	constexpr UINT mosaicFrameMax = 50;
 
@@ -429,7 +429,7 @@ void GamePlayScene::start() {
 		PostEffect::GetInstance()->SetMosaicNum({ WinApp::window_width ,WinApp::window_height });
 
 		// updateProcessにentryPlayer関数をセット
-		updateProcess = std::bind(&GamePlayScene::entryPlayer, this);
+		updateProcess = std::bind(&GamePlayScene::EntryPlayer, this);
 
 		ParticleLoad::GetInstance()->SetCamera(camera.get());
 
@@ -445,7 +445,7 @@ void GamePlayScene::start() {
 	}
 }
 
-void GamePlayScene::entryPlayer() {
+void GamePlayScene::EntryPlayer() {
 	constexpr UINT frameMax = 180;
 
 	if (++playerEntryFrame > frameMax) {
@@ -454,7 +454,7 @@ void GamePlayScene::entryPlayer() {
 		ObjObject3d::SetCamera(camera.get());
 
 		// updateProcessにplay関数をセット
-		updateProcess = std::bind(&GamePlayScene::play, this);
+		updateProcess = std::bind(&GamePlayScene::Play, this);
 
 		// 説明が見えるようにマウスの位置を変える
 		input->SetMousePos({ WinApp::window_width / 2 ,(WinApp::window_height / 2) - 20 });
@@ -502,19 +502,19 @@ void GamePlayScene::entryPlayer() {
 #ifdef _DEBUG
 		// ボスシーンに行く
 		if (input->TriggerKey(DIK_F)) {
-			updateProcess = std::bind(&GamePlayScene::end, this, "CLEAR");
+			updateProcess = std::bind(&GamePlayScene::End, this, "CLEAR");
 		}
 #endif //_DEBUG
 	}
 }
 
-void GamePlayScene::play() {
+void GamePlayScene::Play() {
 	skyDomeObj->SetPosition(lane->GetPosition());
 
 #ifdef _DEBUG
 	// ボスシーンに行く
 	if (input->TriggerKey(DIK_F)) {
-		updateProcess = std::bind(&GamePlayScene::end, this, "BOSSPLAY");
+		updateProcess = std::bind(&GamePlayScene::End, this, "BOSSPLAY");
 	}
 #endif //_DEBUG
 
@@ -550,7 +550,7 @@ void GamePlayScene::play() {
 		pos.z += player->GetPosition().z;
 		normalCamera->SetEye(pos);
 
-		updateProcess = std::bind(&GamePlayScene::exitPlayer, this);
+		updateProcess = std::bind(&GamePlayScene::ExitPlayer, this);
 	}
 
 	// 敵が範囲外になったら行動を変える
@@ -622,12 +622,12 @@ void GamePlayScene::play() {
 	frame++;
 }
 
-void GamePlayScene::exitPlayer() {
+void GamePlayScene::ExitPlayer() {
 	constexpr UINT frameMax = 120;
 
 	// 時間が来たら
 	if (++playerExitFrame > frameMax) {
-		updateProcess = std::bind(&GamePlayScene::end, this, "BOSSPLAY");
+		updateProcess = std::bind(&GamePlayScene::End, this, "BOSSPLAY");
 
 		// プレイヤー退場演出のフレーム数をリセット
 		playerEntryFrame = 0;
@@ -654,7 +654,7 @@ void GamePlayScene::exitPlayer() {
 
 }
 
-void GamePlayScene::deathPlayer() {
+void GamePlayScene::DeathPlayer() {
 	XMFLOAT3 rota = player->GetRotation();
 	rota.z += 1.f;
 
@@ -664,7 +664,7 @@ void GamePlayScene::deathPlayer() {
 	if (rota.z > 90.f || scale < 0.f) {
 		scale = 0.f;
 		player->SetAlive(false);
-		updateProcess = std::bind(&GamePlayScene::end, this, "GAMEOVER");
+		updateProcess = std::bind(&GamePlayScene::End, this, "GAMEOVER");
 	}
 	player->SetRotation(rota);
 	player->SetScale({ scale, scale, scale });
@@ -677,7 +677,7 @@ void GamePlayScene::deathPlayer() {
 	}
 }
 
-void GamePlayScene::end(const std::string& sceneName) {
+void GamePlayScene::End(const std::string& sceneName) {
 	// モザイクをかける時間
 	constexpr UINT mosaicFrameMax = 50;
 
@@ -1034,7 +1034,7 @@ void GamePlayScene::CollisionPlayerAndEnemyBullet() {
 						if (player->GetHp() == 0) {		// 体力が0になったら
 							shiftFlag = false;	// RGBずらしはしない
 							// プレイヤー死亡演出へ移動
-							updateProcess = std::bind(&GamePlayScene::deathPlayer, this);
+							updateProcess = std::bind(&GamePlayScene::DeathPlayer, this);
 						}
 						break;
 					}

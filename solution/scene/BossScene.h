@@ -40,33 +40,33 @@ public:
 	/// <summary>
 	/// 開始
 	/// </summary>
-	void start();
+	void Start();
 
 	/// <summary>
 	/// ボス登場
 	/// </summary>
-	void bossEntry();
+	void BossEntry();
 
 	/// <summary>
 	/// ゲーム本編
 	/// </summary>
-	void play();
+	void Play();
 
 	/// <summary>
 	/// ボスを倒したエフェクト
 	/// </summary>
-	void killEffect();
+	void KillEffect();
 
 	/// <summary>
 	/// プレイヤーの死亡演出
 	/// </summary>
-	void deathPlayer();
+	void DeathPlayer();
 
 	/// <summary>
 	///	終わったときの演出
 	/// </summary>
 	/// <param name="nextScene">次のシーン</param>
-	void end(const std::string& nextScene);
+	void End(const std::string& nextScene);
 
 	/// <summary>
 	/// 描画

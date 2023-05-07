@@ -41,32 +41,32 @@ public:
 	/// <summary>
 	/// 最初のシーン遷移
 	/// </summary>
-	void start();
+	void Start();
 
 	/// <summary>
 	/// プレイヤーの登場演出
 	/// </summary>
-	void entryPlayer();
+	void EntryPlayer();
 
 	/// <summary>
 	/// プレイ画面
 	/// </summary>
-	void play();
+	void Play();
 
 	/// <summary>
 	/// プレイヤーの退場演出
 	/// </summary>
-	void exitPlayer();
+	void ExitPlayer();
 
 	/// <summary>
 	/// プレイヤーの死亡演出
 	/// </summary>
-	void deathPlayer();
+	void DeathPlayer();
 
 	/// <summary>
 	/// 終わったときの演出
 	/// </summary>
-	void end(const std::string& sceneName);
+	void End(const std::string& sceneName);
 
 	/// <summary>
 	/// 描画

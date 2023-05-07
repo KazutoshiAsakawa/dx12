@@ -99,7 +99,7 @@ void ClearScene::Initialize(DirectXCommon* dxcommon) {
 	ParticleLoad::GetInstance()->SetCamera(camera.get());
 
 	// 更新処理の関数を入れる
-	updateProcess = std::bind(&ClearScene::start, this);
+	updateProcess = std::bind(&ClearScene::Start, this);
 
 }
 
@@ -196,7 +196,7 @@ void ClearScene::Update() {
 }
 
 // シーン遷移
-void ClearScene::start() {
+void ClearScene::Start() {
 	// モザイクをかける時間
 	constexpr UINT mosaicFrameMax = 120;
 
@@ -204,7 +204,7 @@ void ClearScene::start() {
 	if (++mosaicFrame > mosaicFrameMax) {
 		PostEffect::GetInstance()->SetMosaicNum({ WinApp::window_width ,WinApp::window_height });
 		// updateProcessにbossEntry関数をセット
-		updateProcess = std::bind(&ClearScene::play, this);
+		updateProcess = std::bind(&ClearScene::Play, this);
 		mosaicFrame = 0;
 		gameOver["pressS"]->SetIsInvisible(false);
 	} else {
@@ -217,15 +217,15 @@ void ClearScene::start() {
 	}
 }
 
-void ClearScene::play() {
+void ClearScene::Play() {
 
 	if (input->TriggerKey(DIK_SPACE)) {
-		updateProcess = std::bind(&ClearScene::end, this, "TITLE");
+		updateProcess = std::bind(&ClearScene::End, this, "TITLE");
 		gameOver["pressS"]->SetIsInvisible(true);
 	}
 }
 
-void ClearScene::end(const std::string& nextScene) {
+void ClearScene::End(const std::string& nextScene) {
 	// モザイクをかける時間
 	constexpr UINT mosaicFrameMax = 50;
 

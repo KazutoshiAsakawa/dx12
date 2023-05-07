@@ -175,7 +175,7 @@ void BossScene::Initialize(DirectXCommon* dxcommon) {
 	ParticleLoad::GetInstance()->SetCamera(camera.get());
 
 	// 更新処理の関数を入れる
-	updateProcess = std::bind(&BossScene::start, this);
+	updateProcess = std::bind(&BossScene::Start, this);
 
 #pragma region 音
 
@@ -264,7 +264,7 @@ void BossScene::Update() {
 }
 
 // シーン遷移
-void BossScene::start() {
+void BossScene::Start() {
 	// モザイクをかける時間
 	constexpr UINT mosaicFrameMax = 120;
 
@@ -273,7 +273,7 @@ void BossScene::start() {
 		PostEffect::GetInstance()->SetMosaicNum({ WinApp::window_width ,WinApp::window_height });
 		// updateProcessにbossEntry関数をセット
 		camera->SetTrackingTarget(boss.get());
-		updateProcess = std::bind(&BossScene::bossEntry, this);
+		updateProcess = std::bind(&BossScene::BossEntry, this);
 		mosaicFrame = 0;
 		bossText->SetIsInvisible(false);
 	} else {
@@ -301,13 +301,13 @@ void BossScene::start() {
 	}
 }
 
-void BossScene::bossEntry() {
+void BossScene::BossEntry() {
 	constexpr UINT frameMax = 360;
 
 	// フレームが最大まで行ったら次の関数へ
 	if (bossEntryNowFrame++ > frameMax) {
 		camera->SetTrackingTarget(player.get());
-		updateProcess = std::bind(&BossScene::play, this);
+		updateProcess = std::bind(&BossScene::Play, this);
 
 		camera->SetEyeToCameraTargetLength(cameraLengthDef);
 
@@ -357,7 +357,7 @@ void BossScene::bossEntry() {
 	}
 }
 
-void BossScene::play() {
+void BossScene::Play() {
 
 	// スカイドームの位置
 	skyDomeObj->SetPosition(player->GetPosition());
@@ -388,7 +388,7 @@ void BossScene::play() {
 		// 照準と敵のスクリーン座標の当たり判定
 		CollisionAimAndEnemyScreenPos();
 	} else if (killBossFlag) {// ボスが死んだら
-		updateProcess = std::bind(&BossScene::end, this, "CLEAR");
+		updateProcess = std::bind(&BossScene::End, this, "CLEAR");
 	}
 
 	// 敵と自機の弾の当たり判定
@@ -456,11 +456,11 @@ void BossScene::play() {
 	frame++;
 }
 
-void BossScene::killEffect() {
+void BossScene::KillEffect() {
 	constexpr UINT effectFrameMax = 180;
 
 	if (++nowEffectFrame > effectFrameMax) {
-		updateProcess = std::bind(&BossScene::end, this, "CLEAR");
+		updateProcess = std::bind(&BossScene::End, this, "CLEAR");
 
 
 	} else {
@@ -487,7 +487,7 @@ void BossScene::killEffect() {
 	}
 }
 
-void BossScene::deathPlayer() {
+void BossScene::DeathPlayer() {
 	XMFLOAT3 rota = player->GetRotation();
 	rota.z += 1.f;
 
@@ -497,7 +497,7 @@ void BossScene::deathPlayer() {
 	if (rota.z > 90.f || scale < 0.f) {
 		scale = 0.f;
 		player->SetAlive(false);
-		updateProcess = std::bind(&BossScene::end, this, "GAMEOVER");
+		updateProcess = std::bind(&BossScene::End, this, "GAMEOVER");
 	}
 	player->SetRotation(rota);
 	player->SetScale({ scale, scale, scale });
@@ -511,7 +511,7 @@ void BossScene::deathPlayer() {
 
 }
 
-void BossScene::end(const std::string& nextScene) {
+void BossScene::End(const std::string& nextScene) {
 	// モザイクをかける時間
 	constexpr UINT mosaicFrameMax = 50;
 
@@ -775,7 +775,7 @@ void BossScene::CollisionEnemyAndPlayerBullet() {
 					killBossFlag = true;
 
 					camera->SetTrackingTarget(boss.get());
-					updateProcess = std::bind(&BossScene::killEffect, this);
+					updateProcess = std::bind(&BossScene::KillEffect, this);
 					XMFLOAT3 angle = camera->GetAngle();
 					angle.y += 180.f;
 					camera->SetAngle(angle);
@@ -815,7 +815,7 @@ void BossScene::CollisionPlayerAndEnemyBullet() {
 					if (player->GetHp() == 0) {		// 体力が0になったら
 						shiftFlag = false;	// RGBずらしはしない
 						// プレイヤー死亡演出へ移動
-						updateProcess = std::bind(&BossScene::deathPlayer, this);
+						updateProcess = std::bind(&BossScene::DeathPlayer, this);
 					}
 				}
 			}

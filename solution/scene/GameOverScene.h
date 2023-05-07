@@ -40,18 +40,18 @@ public:
 	/// <summary>
 	/// 開始
 	/// </summary>
-	void start();
+	void Start();
 
 	/// <summary>
 	/// ゲーム本編
 	/// </summary>
-	void play();
+	void Play();
 
 	/// <summary>
 	///	終わったときの演出
 	/// </summary>
 	/// <param name="nextScene">次のシーン</param>
-	void end(const std::string& nextScene);
+	void End(const std::string& nextScene);
 
 	/// <summary>
 	/// 描画

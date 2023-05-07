@@ -98,7 +98,7 @@ void GameOverScene::Initialize(DirectXCommon* dxcommon) {
 	ParticleLoad::GetInstance()->SetCamera(camera.get());
 
 	// 更新処理の関数を入れる
-	updateProcess = std::bind(&GameOverScene::start, this);
+	updateProcess = std::bind(&GameOverScene::Start, this);
 
 }
 
@@ -176,7 +176,7 @@ void GameOverScene::Update() {
 }
 
 // シーン遷移
-void GameOverScene::start() {
+void GameOverScene::Start() {
 	// モザイクをかける時間
 	constexpr UINT mosaicFrameMax = 120;
 
@@ -184,7 +184,7 @@ void GameOverScene::start() {
 	if (++mosaicFrame > mosaicFrameMax) {
 		PostEffect::GetInstance()->SetMosaicNum({ WinApp::window_width ,WinApp::window_height });
 		// updateProcessにbossEntry関数をセット
-		updateProcess = std::bind(&GameOverScene::play, this);
+		updateProcess = std::bind(&GameOverScene::Play, this);
 		mosaicFrame = 0;
 		gameOver["pressS"]->SetIsInvisible(false);
 	} else {
@@ -197,18 +197,18 @@ void GameOverScene::start() {
 	}
 }
 
-void GameOverScene::play() {
+void GameOverScene::Play() {
 
 	// スカイドームの位置
 	skyDomeObj->SetPosition(player->GetPosition());
 
 	if (input->TriggerKey(DIK_SPACE)) {
-		updateProcess = std::bind(&GameOverScene::end, this, "TITLE");
+		updateProcess = std::bind(&GameOverScene::End, this, "TITLE");
 		gameOver["pressS"]->SetIsInvisible(true);
 	}
 }
 
-void GameOverScene::end(const std::string& nextScene) {
+void GameOverScene::End(const std::string& nextScene) {
 	// モザイクをかける時間
 	constexpr UINT mosaicFrameMax = 50;
 
