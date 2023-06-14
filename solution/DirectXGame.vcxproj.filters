@@ -70,6 +70,12 @@
     <Filter Include="ヘッダー ファイル\actor">
       <UniqueIdentifier>{606d0152-1b9f-4d16-b3f7-368580790535}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\light">
+      <UniqueIdentifier>{af3a76fb-2369-4700-9d8c-f751b9551381}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\light">
+      <UniqueIdentifier>{fbee0bf4-09b9-4c09-9c22-b340680f03f2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="2d\SpriteCommon.cpp">
@@ -183,11 +189,11 @@
     <ClCompile Include="3d\ParticleLoad.cpp">
       <Filter>ソース ファイル\3d</Filter>
     </ClCompile>
-    <ClCompile Include="light\LightGroup.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="base\BaseScene.cpp">
       <Filter>ソース ファイル\base</Filter>
+    </ClCompile>
+    <ClCompile Include="light\LightGroup.cpp">
+      <Filter>ソース ファイル\light</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -363,20 +369,20 @@
     <ClInclude Include="3d\ParticleLoad.h">
       <Filter>ヘッダー ファイル\3d</Filter>
     </ClInclude>
-    <ClInclude Include="light\PointLight.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="light\LightGroup.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="light\CircleShadow.h">
+      <Filter>ヘッダー ファイル\light</Filter>
     </ClInclude>
     <ClInclude Include="light\DirectionalLight.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\light</Filter>
+    </ClInclude>
+    <ClInclude Include="light\LightGroup.h">
+      <Filter>ヘッダー ファイル\light</Filter>
+    </ClInclude>
+    <ClInclude Include="light\PointLight.h">
+      <Filter>ヘッダー ファイル\light</Filter>
     </ClInclude>
     <ClInclude Include="light\SpotLight.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="light\CircleShadow.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\light</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
